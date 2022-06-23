@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, Box, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Link from './Link';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,15 +15,20 @@ const Login = () => {
         sx={{
           textAlign: "center",
           backgroundColor: "lightBlue",
-          padding: "55px",
+          padding: "55px 75px",
           borderRadius: "20px",
-          maxWidth: "450px",
-          margin: "12rem auto 0 auto"
+          maxWidth: "550px",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         }}
       >
-        <h2>Login</h2>
         <form autoComplete="off" onSubmit={handleSubmit}>
           <Grid container alignItems="center" justify="center" direction="column" spacing={3}>
+            <Grid item>
+              <h2>Login</h2>
+            </Grid>
             <Grid item>
               <TextField label="Email" type="email" variant="outlined" />
             </Grid>
@@ -31,6 +37,10 @@ const Login = () => {
             </Grid>
             <Grid item>
               <Button variant="contained" type="submit">Submit</Button>
+            </Grid>
+            <Grid item>
+              <p>New here? <Link to="/home">Create an account</Link> </p>
+              <p>Or try out a <Link to="/home">Demo Account</Link></p>
             </Grid>
           </Grid>
         </form>
