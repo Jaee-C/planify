@@ -1,0 +1,34 @@
+#base {
+  background: url('../../public/login-background.jpg') no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#form-box {
+  text-align: center;
+  background-color: lightblue;
+  border-radius: 20px;
+  width: 600px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#form-container {
+  padding: 55px;
+}
+
+@media screen and (max-width: 992px) {
+  #form-box {
+    width: 60%;
+  }
+}

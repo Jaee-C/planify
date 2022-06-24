@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Link from "./Link";
 import "./Login.css";
 
-const Login = () => {
+const Signup = () => {
   const navigate = useNavigate();
   const handleSubmit = () => {
     navigate("/home", { replace: true });
@@ -14,15 +14,33 @@ const Login = () => {
     <div id="base">
       <Box id="form-box">
         <form autoComplete="off" onSubmit={handleSubmit}>
-        <Grid container direction="column" spacing={3} id="form-container">
+          <Grid container direction="column" spacing={3} id="form-container">
             <Grid item>
-              <h2>Login</h2>
+              <h2>Create an Account</h2>
             </Grid>
             <Grid item>
-              <TextField label="Email" type="email" variant="outlined" fullWidth />
+              <TextField
+                label="Email"
+                type="email"
+                variant="outlined"
+                fullWidth
+              />
             </Grid>
             <Grid item>
-              <TextField label="Password" type="password" variant="outlined" fullWidth />
+              <TextField
+                label="Password"
+                type="password"
+                variant="outlined"
+                fullWidth
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                label="Confirm Password"
+                type="password-repeat"
+                variant="outlined"
+                fullWidth
+              />
             </Grid>
             <Grid item>
               <Button variant="contained" type="submit">
@@ -31,7 +49,7 @@ const Login = () => {
             </Grid>
             <Grid item>
               <p>
-                New here? <Link to="/signup">Create an account</Link>
+                Already have an account? <Link to="/">Log In</Link>
               </p>
               <p>
                 Or try out a <Link to="/home">Demo Account</Link>
@@ -44,4 +62,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
