@@ -1,28 +1,62 @@
 import React from "react";
 import { Button, Box, Grid, TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import Link from "./Link";
 import "./Login.css";
 
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().required("Required").email("Invalid email"),
+  password: Yup.string().required("Required"),
+});
+
 const Login = () => {
   const navigate = useNavigate();
-  const handleSubmit = () => {
-    navigate("/home", { replace: true });
-  };
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: LoginSchema,
+    onSubmit: () => {
+      navigate("/home", { replace: true });
+    },
+  });
 
   return (
     <div id="base">
       <Box id="form-box">
-        <form autoComplete="off" onSubmit={handleSubmit}>
-        <Grid container direction="column" spacing={3} id="form-container">
+        <form autoComplete="off" onSubmit={formik.handleSubmit}>
+          <Grid container direction="column" spacing={3} id="form-container">
             <Grid item>
               <h2>Login</h2>
             </Grid>
             <Grid item>
-              <TextField label="Email" type="email" variant="outlined" fullWidth />
+              <TextField
+                fullWidth
+                id="email"
+                name="email"
+                label="Email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
             </Grid>
             <Grid item>
-              <TextField label="Password" type="password" variant="outlined" fullWidth />
+            <TextField
+              fullWidth
+              id="password"
+              name="password"
+              label="Password"
+              type="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
             </Grid>
             <Grid item>
               <Button variant="contained" type="submit">
