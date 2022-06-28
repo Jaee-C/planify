@@ -1,0 +1,19 @@
+{
+  "name": "issue-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jaee-C/issue-tracker.git"
+  },
+  "author": "Jaee-C",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Jaee-C/issue-tracker/issues"
+  },
+  "homepage": "https://github.com/Jaee-C/issue-tracker#readme"
+}
