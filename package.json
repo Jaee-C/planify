@@ -22,9 +22,12 @@
   },
   "homepage": "https://github.com/Jaee-C/issue-tracker#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "mongoose": "^6.4.1",
-    "passport": "^0.6.0"
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "concurrently": "^7.2.2"
