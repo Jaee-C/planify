@@ -68,19 +68,20 @@ describe("User Authentication", function() {
           return done();
         });
     });
-  });
 
-  it ("should return 401 if user does not exist", function(done) {
-    const email = "weird@mail.com";
-    const password = "weird";
+    it ("should return 401 if user does not exist", function(done) {
+      const email = "weird@mail.com";
+      const password = "weird";
+  
+      request(app)
+        .post("/api/auth/login")
+        .send( {email, password })
+        .expect(401)
+        .end(err => {
+          if (err) return done(err);
+          return done();
+        });
+    });
 
-    request(app)
-      .post("/api/auth/login")
-      .send( {email, password })
-      .expect(401)
-      .end(err => {
-        if (err) return done(err);
-        return done();
-      });
   });
 });

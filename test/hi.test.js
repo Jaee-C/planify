@@ -5,7 +5,7 @@ const expect = chai.expect();
 const app = require("../server");
 
 // Parent block
-describe("/GET hi", () => {
+describe("GET /hi", () => {
   it("it should GET hi", (done) => {
     request(app)
       .get("/api/hi")
