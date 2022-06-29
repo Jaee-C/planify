@@ -12,9 +12,7 @@ exports.login = async (req, res, next) => {
       });
     }
     req.logIn(user, err => {
-      if (err) {
-        return next(err);
-      }
+      if (err) { return next(err); }
       return res.status(200).json({
         message: "Login successful"
       });
