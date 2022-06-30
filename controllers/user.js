@@ -37,8 +37,6 @@ exports.signup = async (req, res, next) => {
     }
     await user.save();
   
-    return res.status(constants.HTTP_OK).json({
-      message: "User created"
-    });
+    return res.redirect(constants.HTTP_OK, "/login");
   });
 }

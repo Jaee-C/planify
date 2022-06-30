@@ -27,9 +27,7 @@ describe("User Authentication", function () {
       request(app)
         .post("/api/auth/signup")
         .send({ email, password })
-        .expect((res) => {
-          expect(res.body.message).to.equal("User created");
-        })
+        .expect("Location", "/login")
         .expect(constants.HTTP_OK)
         .end((err, res) => {
           if (err) return done(err);
@@ -79,11 +77,19 @@ describe("User Authentication", function () {
         .post("/api/auth/login")
         .send({ email, password })
         .expect(constants.HTTP_UNAUTHORIZED)
-        .end((err) => {
-          if (err) return done(err);
-          return done();
-        });
+        .end(done);
     });
+
+    it ("should return 401 if password is incorrect", function (done) {
+      const email = "admin@admin.com";
+      const password = "weird";
+
+      request(app)
+        .post("/api/auth/login")
+        .send({ email, password })
+        .expect(constants.HTTP_UNAUTHORIZED)
+        .end(done);
+      });
   });
 });
 
