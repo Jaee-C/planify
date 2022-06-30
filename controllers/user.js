@@ -10,15 +10,13 @@ exports.login = async (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.status(401).json({
+      return res.status(constants.HTTP_UNAUTHORIZED).json({
         message: "Invalid credentials"
       });
     }
     req.logIn(user, err => {
       if (err) { return next(err); }
-      return res.status(200).json({
-        message: "Login successful"
-      });
+      return res.redirect(constants.HTTP_OK, "/");
     });
   })(req, res, next);
 }
@@ -37,11 +35,10 @@ exports.signup = async (req, res, next) => {
     if (existingUser) {
       return res.status(constants.HTTP_BAD_REQUEST).send("User already exists.")
     }
-  });
-  await user.save();
-
-
-  return res.status(constants.HTTP_OK).json({
-    message: "User created"
+    await user.save();
+  
+    return res.status(constants.HTTP_OK).json({
+      message: "User created"
+    });
   });
 }

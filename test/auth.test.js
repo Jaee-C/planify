@@ -67,10 +67,8 @@ describe("User Authentication", function () {
         .post("/api/auth/login")
         .send({ email, password })
         .expect(constants.HTTP_OK)
-        .end((err, res) => {
-          expect(res.headers.location).to.be.equal("/");
-          return done();
-        });
+        .expect('Location', '/')
+        .end(done);
     });
 
     it("should return 401 if user does not exist", function (done) {

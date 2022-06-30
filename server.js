@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const mongoose = require("mongoose");
 const passport = require("passport");
 const bodyParser = require("body-parser");
@@ -9,7 +10,6 @@ require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const api = require("./routes/");
 
 const app = express();
-app.use(bodyParser.json());
 
 // Connect to db
 mongoose
@@ -17,8 +17,18 @@ mongoose
   .then(() => console.log("Connected to MongoDB at " + process.env.DB_URI))
   .catch(err => console.log(err));
 
-// Initialise passport middleware
+app.use(bodyParser.json());
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
+
+// Initialize Passport on every route
 app.use(passport.initialize());
+
+// Allow passport to use express-session
+app.use(passport.session());
 
 // Passport config
 require("./config/passportConfig")(passport);
