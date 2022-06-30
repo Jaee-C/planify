@@ -6,56 +6,66 @@ const request = require("supertest");
 const app = require("../server");
 const User = require("../models/user");
 
-// Set up connection to database
-let mongoose = require("mongoose");
-require("dotenv").config();
+const mongoose = require("mongoose");
+const dbHandler = require("./db-handler");
 
-before(function(done) {
-  mongoose.connect(process.env.DB_URI, { useNewUrlParser: true });
+/**
+ * Connect to the test database
+ */
+before(function (done) {
+  dbHandler.connect();
   done();
 });
 
-describe("User Authentication", function() {
-  describe ("POST /api/auth/signup", function() {
-    it ("should create a new user", function(done) {
+/**
+ * Remove and close the db 
+ */
+after(function (done) {
+  dbHandler.closeDatabase();
+  done();
+});
+
+describe("User Authentication", function () {
+  describe("POST /api/auth/signup", function () {
+    it("should create a new user", function (done) {
       const email = "admin@admin.com";
       const password = "admin";
-      
+
       request(app)
         .post("/api/auth/signup")
         .send({ email, password })
-        .expect(res => {
-          expect(res.headers['x-auth']).to.exist;
+        .expect((res) => {
+          expect(res.headers["x-auth"]).to.exist;
           expect(res.body._id).to.exist;
           expect(res.body.email).to.be(email);
         })
-        .end(err => {
+        .end((err) => {
           if (err) return done(err);
-          
-          User.findOne({ email }).then(user => {
+
+          User.findOne({ email }).then((user) => {
             expect(user).to.exist;
             expect(user.password).not.to.be(password);
           });
         });
     });
 
-    it ("should return 401 if user already exists", function(done) {
-      const email = "existing@email.com";
+    it("should return 401 if user already exists", function (done) {
+      const email = "admin@admin.com";
       const password = "exist";
 
       request(app)
         .post("/api/auth/signup")
         .send({ email, password })
         .expect(401)
-        .end(err => {
+        .end((err) => {
           if (err) return done(err);
           return done();
         });
     });
   });
 
-  describe ("POST /api/auth/login", function() {
-    it ("should login a user", function(done) {
+  describe("POST /api/auth/login", function () {
+    it("should login a user", function (done) {
       const email = "admin@admin.com";
       const password = "admin";
 
@@ -69,19 +79,23 @@ describe("User Authentication", function() {
         });
     });
 
-    it ("should return 401 if user does not exist", function(done) {
+    it("should return 401 if user does not exist", function (done) {
       const email = "weird@mail.com";
       const password = "weird";
-  
+
       request(app)
         .post("/api/auth/login")
-        .send( {email, password })
+        .send({ email, password })
         .expect(401)
-        .end(err => {
+        .end((err) => {
           if (err) return done(err);
           return done();
         });
     });
-
   });
+});
+
+after(function (done) {
+  mongoose.connection.close();
+  done();
 });
