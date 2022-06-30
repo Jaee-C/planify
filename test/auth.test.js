@@ -5,8 +5,8 @@ const expect = require("chai").expect;
 const request = require("supertest");
 const app = require("../server");
 const User = require("../models/user");
+const constants = require("../utils/constants");
 
-const mongoose = require("mongoose");
 const dbHandler = require("./db-handler");
 
 /**
@@ -17,15 +17,8 @@ before(function (done) {
   done();
 });
 
-/**
- * Remove and close the db 
- */
-after(function (done) {
-  dbHandler.closeDatabase();
-  done();
-});
-
 describe("User Authentication", function () {
+  // Test user signup endpoint
   describe("POST /api/auth/signup", function () {
     it("should create a new user", function (done) {
       const email = "admin@admin.com";
@@ -35,28 +28,28 @@ describe("User Authentication", function () {
         .post("/api/auth/signup")
         .send({ email, password })
         .expect((res) => {
-          expect(res.headers["x-auth"]).to.exist;
-          expect(res.body._id).to.exist;
-          expect(res.body.email).to.be(email);
+          expect(res.body.message).to.equal("User created");
         })
-        .end((err) => {
+        .expect(constants.HTTP_OK)
+        .end((err, res) => {
           if (err) return done(err);
 
           User.findOne({ email }).then((user) => {
             expect(user).to.exist;
             expect(user.password).not.to.be(password);
           });
+          done();
         });
     });
 
-    it("should return 401 if user already exists", function (done) {
+    it("should return BAD_REQUEST if user already exists", function (done) {
       const email = "admin@admin.com";
       const password = "exist";
 
       request(app)
         .post("/api/auth/signup")
         .send({ email, password })
-        .expect(401)
+        .expect(constants.HTTP_BAD_REQUEST)
         .end((err) => {
           if (err) return done(err);
           return done();
@@ -64,6 +57,7 @@ describe("User Authentication", function () {
     });
   });
 
+  // Test user login endpoint
   describe("POST /api/auth/login", function () {
     it("should login a user", function (done) {
       const email = "admin@admin.com";
@@ -72,7 +66,7 @@ describe("User Authentication", function () {
       request(app)
         .post("/api/auth/login")
         .send({ email, password })
-        .expect(200)
+        .expect(constants.HTTP_OK)
         .end((err, res) => {
           expect(res.headers.location).to.be.equal("/");
           return done();
@@ -86,7 +80,7 @@ describe("User Authentication", function () {
       request(app)
         .post("/api/auth/login")
         .send({ email, password })
-        .expect(401)
+        .expect(constants.HTTP_UNAUTHORIZED)
         .end((err) => {
           if (err) return done(err);
           return done();
@@ -95,7 +89,10 @@ describe("User Authentication", function () {
   });
 });
 
-after(function (done) {
-  mongoose.connection.close();
+/**
+ * Remove and close the db 
+ */
+ after(function (done) {
+  dbHandler.closeDatabase();
   done();
 });

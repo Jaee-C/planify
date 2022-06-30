@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const passport = require("passport");
+const bodyParser = require("body-parser");
 
 // Load environment variables
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
@@ -8,6 +9,7 @@ require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
 const api = require("./routes/");
 
 const app = express();
+app.use(bodyParser.json());
 
 // Connect to db
 mongoose
