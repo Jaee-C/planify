@@ -78,9 +78,7 @@ const Login = () => {
                   formik.touched.password && Boolean(formik.errors.password)
                 }
               />
-              <Label className="form-label">
-                Password
-              </Label>
+              <Label className="form-label">Password</Label>
               <FormFeedback>{formik.errors.password}</FormFeedback>
             </FormGroup>
 
@@ -96,9 +94,22 @@ const Login = () => {
             </div>
 
             {/* Submit Button */}
-            <Button size="lg" block color="primary" type="submit">
+            <Button
+              size="lg"
+              block
+              color="primary"
+              className="mb-3"
+              type="submit"
+            >
               Login
             </Button>
+
+            <p class="mb-5 pb-lg-2" color="primary">
+              Don't have an account?{" "}
+              <a href="#!" className="text-primary">
+                Register here
+              </a>
+            </p>
 
             <Divider>OR</Divider>
 
