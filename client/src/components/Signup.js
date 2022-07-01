@@ -16,7 +16,7 @@ import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Divider from "./Divider/Divider";
+import Divider from "./Divider";
 
 const SignupSchema = Yup.object().shape({
   firstName: Yup.string().required("Required"),
