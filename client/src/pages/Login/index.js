@@ -6,7 +6,7 @@ import LoginForm from "./LoginForm";
 const Login = () =>  (
   <Container className="py-5 h-100">
     <Row className="d-flex align-items-center justify-content-center h-100">
-      <Col md="8" lg="7" xl="6">
+      <Col lg="7" xl="6" className="d-none d-lg-block">
         <img
           src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
           className="img-fluid"
