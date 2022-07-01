@@ -15,8 +15,7 @@ import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Link from "./Link";
-import "./Login.css";
+import Divider from "./Divider/Divider";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required("Required").email("Invalid email"),
@@ -49,7 +48,7 @@ const Login = () => {
           />
         </Col>
         <Col md="7" lg="5" xl="5" className="offset-xl-1">
-          <h3 className="mb-5">Sign in</h3>
+          <h3 className="mb-5">Log in</h3>
           <form autoComplete="off" onSubmit={formik.handleSubmit}>
             {/* Email input */}
             <FormGroup floating className="mb-4">
@@ -101,9 +100,7 @@ const Login = () => {
               Login
             </Button>
 
-            <div className="divider d-flex align-items-center my-4">
-              <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
-            </div>
+            <Divider>OR</Divider>
 
             <Button
               size="lg"

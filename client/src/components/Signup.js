@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Link from "./Link";
-import "./Login.css";
 
 const SignupSchema = Yup.object().shape({
   email: Yup.string().required("Required").email("Invalid email"),
