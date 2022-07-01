@@ -1,5 +1,17 @@
 import React from "react";
-import { Button, Box, Grid, TextField } from "@mui/material";
+import {
+  Button,
+  Container,
+  FormGroup,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+  Col,
+} from "reactstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGoogle, faFacebookF } from "@fortawesome/free-brands-svg-icons";
+import { faUserSecret } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -21,60 +33,123 @@ const Login = () => {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      navigate("/home", { replace: true });
+      console.log("hi");
+      navigate("/home");
     },
   });
 
   return (
-    <div id="base">
-      <Box id="form-box">
-        <form autoComplete="off" onSubmit={formik.handleSubmit}>
-          <Grid container direction="column" spacing={3} id="form-container">
-            <Grid item>
-              <h2>Login</h2>
-            </Grid>
-            <Grid item>
-              <TextField
-                fullWidth
-                id="email"
+    <Container className="py-5 h-100">
+      <Row className="d-flex align-items-center justify-content-center h-100">
+        <Col md="8" lg="7" xl="6">
+          <img
+            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+            className="img-fluid"
+            alt="Securing phone"
+          />
+        </Col>
+        <Col md="7" lg="5" xl="5" className="offset-xl-1">
+          <h3 className="mb-5">Sign in</h3>
+          <form autoComplete="off" onSubmit={formik.handleSubmit}>
+            {/* Email input */}
+            <FormGroup floating className="mb-4">
+              <Input
+                type="email"
+                placeholder="Email"
+                bsSize="lg"
                 name="email"
-                label="Email"
                 value={formik.values.email}
                 onChange={formik.handleChange}
-                error={formik.touched.email && Boolean(formik.errors.email)}
-                helperText={formik.touched.email && formik.errors.email}
+                invalid={formik.touched.email && Boolean(formik.errors.email)}
               />
-            </Grid>
-            <Grid item>
-            <TextField
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-            />
-            </Grid>
-            <Grid item>
-              <Button variant="contained" type="submit">
-                Submit
-              </Button>
-            </Grid>
-            <Grid item>
-              <p>
-                New here? <Link to="/signup">Create an account</Link>
-              </p>
-              <p>
-                Or try out a <Link to="/home">Demo Account</Link>
-              </p>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </div>
+              <Label className="form-label">Email</Label>
+              <FormFeedback>{formik.errors.email}</FormFeedback>
+            </FormGroup>
+
+            {/* Password Input */}
+            <FormGroup floating className="mb-4">
+              <Input
+                type="password"
+                placeholder="Password"
+                bsSize="lg"
+                name="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                invalid={
+                  formik.touched.password && Boolean(formik.errors.password)
+                }
+              />
+              <Label className="form-label">
+                Password
+              </Label>
+              <FormFeedback>{formik.errors.password}</FormFeedback>
+            </FormGroup>
+
+            <div className="d-flex justify-content-around align-items-center mb-4">
+              {/* Checkbox */}
+              <FormGroup check>
+                <Input type="checkbox" value="rmb" />
+                <Label check> Remember me </Label>
+              </FormGroup>
+              <a href="#!" className="text-primary">
+                Forgot password?
+              </a>
+            </div>
+
+            {/* Submit Button */}
+            <Button size="lg" block color="primary" type="submit">
+              Login
+            </Button>
+
+            <div className="divider d-flex align-items-center my-4">
+              <p className="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+            </div>
+
+            <Button
+              size="lg"
+              block
+              color="primary"
+              className="mb-2"
+              style={{ backgroundColor: "#dd4b39" }}
+              role="a"
+              href="/home"
+            >
+              <FontAwesomeIcon icon={faGoogle} className="me-2" />
+              Sign in with google
+            </Button>
+            <Button
+              size="lg"
+              block
+              color="primary"
+              className=" mb-2"
+              style={{ backgroundColor: "#3b5998" }}
+              role="a"
+              href="/home"
+            >
+              <FontAwesomeIcon
+                icon={faFacebookF}
+                className="me-2"
+              ></FontAwesomeIcon>
+              Sign in with facebook
+            </Button>
+            <Button
+              size="lg"
+              block
+              color="secondary"
+              className=" mb-2"
+              role="a"
+              href="/home"
+            >
+              <FontAwesomeIcon
+                icon={faUserSecret}
+                className="me-2"
+              ></FontAwesomeIcon>
+              Try out a Demo Account
+            </Button>
+          </form>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

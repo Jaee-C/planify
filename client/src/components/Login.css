@@ -1,10 +1,4 @@
 #base {
-  background: url('../../public/login-background.jpg') no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-
   position: absolute;
   top: 0;
   left: 0;
@@ -31,4 +25,12 @@
   #form-box {
     width: 60%;
   }
+}
+
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
 }
