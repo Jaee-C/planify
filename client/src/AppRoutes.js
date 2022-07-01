@@ -3,6 +3,7 @@ import { FetchData } from "./components/FetchData";
 import { Home } from "./components/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Backlog from "./pages/Backlog";
 
 const AppRoutes = [
   {
@@ -24,6 +25,10 @@ const AppRoutes = [
   {
     path: '/fetch-data',
     element: <FetchData />
+  },
+  {
+    path: '/backlog',
+    element: <Backlog />
   }
 ];
 
