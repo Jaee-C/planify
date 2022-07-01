@@ -19,8 +19,8 @@ import * as Yup from "yup";
 import Divider from "./Divider/Divider";
 
 const SignupSchema = Yup.object().shape({
-  firstName: Yup.string(),
-  lastName: Yup.string(),
+  firstName: Yup.string().required("Required"),
+  lastName: Yup.string().required("Required"),
   email: Yup.string().required("Required").email("Invalid email"),
   password: Yup.string().required("Required"),
   passwordRepeat: Yup.string()
@@ -61,6 +61,7 @@ const Signup = () => {
                     <Input
                       type="text"
                       placeholder="First Name"
+                      name="firstName"
                       value={formik.values.firstName}
                       onChange={formik.handleChange}
                       invalid={formik.touched.firstName && Boolean(formik.errors.firstName)}
@@ -75,6 +76,7 @@ const Signup = () => {
                     <Input
                       type="text"
                       placeholder="Last Name"
+                      name="lastName"
                       value={formik.values.lastName}
                       onChange={formik.handleChange}
                       invalid={formik.touched.lastName && Boolean(formik.errors.lastName)}
@@ -90,6 +92,7 @@ const Signup = () => {
                 <Input
                   type="email"
                   placeholder="Email"
+                  name="email"
                   value={formik.values.email}
                   onChange={formik.handleChange}
                   invalid={formik.touched.email && Boolean(formik.errors.email)}
@@ -103,6 +106,7 @@ const Signup = () => {
                 <Input
                   type="password"
                   placeholder="Password"
+                  name="password"
                   value={formik.values.password}
                   onChange={formik.handleChange}
                   invalid={formik.touched.password && Boolean(formik.errors.password)}
@@ -114,8 +118,9 @@ const Signup = () => {
               {/* Confirm Password input */}
               <FormGroup floating>
                 <Input
-                  type="passwordRepeat"
+                  type="password"
                   placeholder="Confirm Password"
+                  name="passwordRepeat"
                   value={formik.values.passwordRepeat}
                   onChange={formik.handleChange}
                   invalid={formik.touched.passwordRepeat && Boolean(formik.errors.passwordRepeat)}
