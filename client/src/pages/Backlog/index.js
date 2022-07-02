@@ -8,15 +8,8 @@ import { issues } from "./issue-data";
 
 const Backlog = () => {
   const [allIssues, setIssues] = useState(issues);
-  const [isDragging, setDragging] = useState(false);
-
-  // Dimension Locking
-  const onBeforeDragStart = () => {
-    setDragging(true);
-  }
 
   const onDragEnd = result => {
-    setDragging(false);
 
     // dropped outside the list
     if (
@@ -35,9 +28,10 @@ const Backlog = () => {
   }
 
   return (
-    <Container>
-      <DragDropContext onDragEnd={onDragEnd} onBeforeDragStart={onBeforeDragStart}>
-        <IssueList issues={allIssues} isDragging={isDragging} />
+    <Container className="mt-3">
+      <h2>Backlog</h2>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <IssueList issues={allIssues} />
       </DragDropContext>
     </Container>
   );

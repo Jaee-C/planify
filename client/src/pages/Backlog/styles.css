@@ -1,0 +1,21 @@
+.issue-item .btn-gray-300 {
+  visibility: hidden;
+}
+
+.issue-item:hover .btn-gray-300 {
+  visibility: visible;
+}
+
+.btn-gray-300 {
+  background-color: var(--bs-gray-300);
+  border-color: transparent;
+}
+
+.btn-gray-300:hover, .btn-gray-300:focus {
+  background-color: var(--bs-gray-400);
+  border-color: transparent;
+}
+
+.icon {
+  color: var(--bs-gray-700);
+}
