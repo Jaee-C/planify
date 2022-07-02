@@ -28,10 +28,12 @@ const Backlog = () => {
   }
 
   return (
-    <Container className="mt-3">
+    <Container className="mt-4">
       <h2>Backlog</h2>
       <DragDropContext onDragEnd={onDragEnd}>
-        <IssueList issues={allIssues} />
+        <Container className="mt-3 p-0">
+          <IssueList issues={allIssues} />
+        </Container>
       </DragDropContext>
     </Container>
   );

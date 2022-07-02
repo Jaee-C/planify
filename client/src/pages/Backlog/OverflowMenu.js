@@ -19,7 +19,7 @@ const OverflowMenu = () => {
       <DropdownToggle className="btn-gray-300">
         <FontAwesomeIcon icon={faEllipsis} className="icon" />
       </DropdownToggle>
-      <DropdownMenu right>
+      <DropdownMenu end>
         <DropdownItem header>Actions</DropdownItem>
         <DropdownItem>Some Action</DropdownItem>
         <DropdownItem text>Dropdown Item Text</DropdownItem>

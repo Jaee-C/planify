@@ -2,7 +2,10 @@ import React from "react";
 import styled from '@emotion/styled';
 import { Draggable } from "react-beautiful-dnd";
 import OverflowMenu from "./OverflowMenu";
+import { Input } from "reactstrap";
 import "./styles.css";
+
+import { ISSUE_STATUS } from "../../utils/constants";
 
 const Container = styled.div`
   border: 1px solid lightgrey;
@@ -35,10 +38,16 @@ const Issue = ({ issue, index }) => (
         ref={provided.innerRef}
       >
         <Row className="issue-item">
-          <Col>{issue.id}</Col>
+          <Col className="text-secondary">{issue.id}</Col>
           <Col style={{flex: "1 1 0%"}}>{issue.title}</Col>
-          <Col>{issue.status}</Col>
-          <Col>{issue.assignee}</Col>
+          <Col>
+            <Input type="select" bsSize="sm" defaultValue={issue.status} className="disable-outline">
+              {ISSUE_STATUS.map((status, index) => (
+                <option key={index} value={status}>{status}</option>
+              ))}
+            </Input>
+          </Col>
+          {/* <Col>{issue.assignee}</Col> */}
           <Col><OverflowMenu /></Col>
         </Row>
       </Container>
