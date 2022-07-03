@@ -1,18 +1,32 @@
 const passport = require("passport");
-const bcrypt = require("bcryptjs");
 const constants = require("../utils/constants");
 const User = require("../models/user");
 
+// Login user
 exports.login = async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
     }
+
+    // Error message
     if (!user) {
-      return res.status(constants.HTTP_UNAUTHORIZED).json({
-        message: "Invalid credentials",
-      });
+      if (info.response === constants.ERROR_USER_NOT_FOUND) {
+        return res
+          .status(constants.HTTP_BAD_REQUEST)
+          .json({ message: "User not found" });
+      } else if (info.response === constants.ERROR_INVALID_PASSWORD) {
+        return res
+          .status(constants.HTTP_UNAUTHORIZED)
+          .json({ message: "Invalid password" });
+      } else {
+        return res
+          .status(constants.HTTP_INTERNAL_SERVER_ERROR)
+          .json({ message: "Something went wrong" });
+      }
     }
+
+    // Login success
     req.logIn(user, (err) => {
       if (err) {
         return next(err);
@@ -22,27 +36,38 @@ exports.login = async (req, res, next) => {
   })(req, res, next);
 };
 
+// User create new account
 exports.signup = async (req, res, next) => {
   const { email, password, firstName, lastName } = req.body;
-  let user;
+
+  // Create new user
   try {
-    user = await User.create({ email, password, firstName, lastName });
+    await User.create({ email, password, firstName, lastName });
   } catch (e) {
-    if (e.name === 'SequelizeUniqueConstraintError') {
-      return res.status(403).json({message: "User already exists"});
+    if (e.name === "SequelizeUniqueConstraintError") {
+      // Email already used
+      return res
+        .status(constants.HTTP_BAD_REQUEST)
+        .json({ message: "User already exists" });
     } else {
-      return res.status(500).json({message: "Something went wrong"});
+      // Something went wrong
+      return res
+        .status(constants.HTTP_INTERNAL_SERVER_ERROR)
+        .json({ message: "Something went wrong" });
     }
   }
   return res.redirect(constants.HTTP_OK, "/login");
 };
 
+// Delete user account
 exports.delete = async (req, res, next) => {
   const { email } = req.body;
+
   try {
-    await User.destroy({where: {email}});
+    await User.destroy({ where: { email } });
   } catch (e) {
-    return res.status(500).json({message: "Something went wrong"});
+    return res.status(500).json({ message: "Something went wrong" });
   }
-  return res.redirect(constants.HTTP_OK, "/login");
-}
+
+  return res.redirect(constants.HTTP_OK, "/");
+};

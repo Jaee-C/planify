@@ -43,11 +43,6 @@ const User = sequelize.define("User", {
       user.password = bcrypt.hashSync(user.password, salt);
      }
     }
-  },
-  instanceMethods: {
-    validPassword: (password) => {
-      return bcrypt.compareSync(password, this.password);
-    }
   }
 });
 

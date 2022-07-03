@@ -9,17 +9,9 @@ const constants = require("../utils/constants");
 
 const dbHandler = require("./db-handler");
 
-/**
- * Connect to the test database
- */
-before(function (done) {
-  dbHandler.connect();
-  done();
-});
-
 describe("User Authentication", function () {
   // Test user signup endpoint
-  describe.only("POST /api/auth/signup", function () {
+  describe("POST /api/auth/signup", function () {
     it("should create a new user", function (done) {
       const email = "admin@admin.com";
       const password = "admin";
@@ -49,7 +41,7 @@ describe("User Authentication", function () {
       request(app)
         .post("/api/auth/signup")
         .send({ email, password })
-        .expect(constants.HTTP_BAD_REQUEST)
+        .expect(constants.HTTP_INTERNAL_SERVER_ERROR)
         .end((err) => {
           if (err) return done(err);
           return done();
@@ -78,7 +70,7 @@ describe("User Authentication", function () {
       request(app)
         .post("/api/auth/login")
         .send({ email, password })
-        .expect(constants.HTTP_UNAUTHORIZED)
+        .expect(constants.HTTP_BAD_REQUEST)
         .end(done);
     });
 
@@ -91,14 +83,28 @@ describe("User Authentication", function () {
         .send({ email, password })
         .expect(constants.HTTP_UNAUTHORIZED)
         .end(done);
-      });
+    });
+  });
+
+  // Test user delete endpoint
+  describe("DELETE /api/auth/delete", function () {
+    it("should delete a user", function (done) {
+      const email = "admin@admin.com";
+
+      request(app)
+        .delete("/api/auth/delete")
+        .send({ email })
+        .expect(constants.HTTP_OK)
+        .expect('Location', '/')
+        .end(done);
+    });
   });
 });
 
-/**
- * Remove and close the db 
- */
- after(function (done) {
-  dbHandler.closeDatabase();
-  done();
-});
+// /**
+//  * Remove and close the db 
+//  */
+// after(function (done) {
+//   dbHandler.clearDatabase();
+//   done();
+// });

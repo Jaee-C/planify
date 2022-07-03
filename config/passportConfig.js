@@ -1,32 +1,59 @@
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const {
+  ERROR_USER_NOT_FOUND,
+  ERROR_INVALID_PASSWORD,
+  RUNTIME_ERROR,
+} = require("../utils/constants");
 
-module.exports = passport => {
+/**
+ * Validate password
+ * @param {*} password user entered password
+ * @param {*} correct password from database
+ * @returns
+ */
+const validPassword = async (password, correct) => {
+  return await bcrypt.compare(password, correct);
+};
+
+module.exports = (passport) => {
   passport.use(
-    new LocalStrategy({
-        usernameField: "email"
-      },
-      function(email, password, done) {
-        User.findOne({ email }, function (err, user) {
-          if (err) { return done(err); }
-          if (!user) { return done(null, false); }
-          bcrypt.compare(password, user.password, (err, isMatch) => {
-            if (err) { return done(err); }
-            if (!isMatch) { return done(null, false); }
-            return done(null, user);
+    new LocalStrategy(
+      { usernameField: "email", passwordField: "password" },
+      function (email, password, done) {
+        User.findOne({ where: { email } })
+          .then(async (user) => {
+
+            // User not found in database
+            if (!user) {
+              return done(null, false, {
+                response: ERROR_USER_NOT_FOUND,
+              });
+            }
+
+            // Invalid password
+            if (!(await validPassword(password, user.password))) {
+              return done(null, false, { response: ERROR_INVALID_PASSWORD });
+            }
+            return done(null, user.get());
+          })
+          .catch((e) => {
+            return done(null, false, {
+              response: RUNTIME_ERROR,
           });
         });
       }
-  ));
+    )
+  );
 
   passport.serializeUser((user, done) => {
     done(null, user.id);
   });
 
   passport.deserializeUser((id, done) => {
-    User.findById(id, (err, user) => {
-      done(err, user);
+    User.findOne({ where: { id } }).then((user) => {
+      done(null, user);
     });
   });
-}
+};

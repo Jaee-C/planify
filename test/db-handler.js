@@ -4,6 +4,7 @@
 
 const mongoose = require("mongoose");
 require("dotenv").config();
+const sequelize = require("../config/db");
 
 /**
  * Connect to the test database
@@ -13,21 +14,12 @@ module.exports.connect = async () => {
 }
 
 /**
- * Drop database, close the connection
- */
-module.exports.closeDatabase = async () => {
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
-}
-
-/**
  * Remove all the data for all db collections
  */
 module.exports.clearDatabase = async () => {
-  const collections = mongoose.connection.collections;
-
-  for (const key in collections) {
-    const collection = collections[key];
-    await collection.deleteMany();
-  }
+  sequelize.query('show tables').then(function(rows) {
+    for (let i = 0; i < rows[0].length; i++) {
+      sequelize.query(`DELETE FROM ${rows[0][i]["Tables_in_"+process.env.DB_NAME]}`);
+    }
+  });
 }
