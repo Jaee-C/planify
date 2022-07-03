@@ -22,7 +22,7 @@ module.exports = (passport) => {
     new LocalStrategy(
       { usernameField: "email", passwordField: "password" },
       function (email, password, done) {
-        models.user.findOne({ where: { email } })
+        models.User.findOne({ where: { email } })
           .then(async (user) => {
 
             // User not found in database
@@ -52,7 +52,7 @@ module.exports = (passport) => {
   });
 
   passport.deserializeUser((id, done) => {
-    models.user.findOne({ where: { id } }).then((user) => {
+    models.User.findOne({ where: { id } }).then((user) => {
       if (user) {
         delete user.dataValues.password;
       }

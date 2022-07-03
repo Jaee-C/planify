@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('status_group', {
+  return sequelize.define('StatusGroup', {
     id: {
       type: DataTypes.INTEGER,
       allowNull: false,

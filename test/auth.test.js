@@ -33,7 +33,7 @@ describe("User Authentication", function () {
         .end((err, res) => {
           if (err) return done(err);
 
-          models.user.findOne({ email }).then((user) => {
+          models.User.findOne({ email }).then((user) => {
             expect(user).to.exist;
             expect(user.password).not.to.be(password);
           });

@@ -44,7 +44,7 @@ exports.signup = async (req, res, next) => {
 
   // Create new user
   try {
-    await models.user.create({ email, password, firstName, lastName });
+    await models.User.create({ email, password, firstName, lastName });
   } catch (e) {
     if (e.name === "SequelizeUniqueConstraintError") {
       // Email already used
@@ -66,7 +66,7 @@ exports.delete = async (req, res, next) => {
   const { email } = req.body;
 
   try {
-    await models.user.destroy({ where: { email } });
+    await models.User.destroy({ where: { email } });
   } catch (e) {
     return res.status(500).json({ message: "Something went wrong" });
   }

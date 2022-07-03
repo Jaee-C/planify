@@ -9,6 +9,6 @@ const { models } = require("../config/db");
  * Remove all the data for all db collections
  */
 module.exports.clearDatabase = async () => {
-  await models.user.destroy({ where: {} });
+  await models.User.destroy({ where: {} });
   
 }
