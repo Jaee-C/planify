@@ -10,25 +10,7 @@ module.exports = function(sequelize, DataTypes) {
         key: 'id'
       }
     },
-    issue_project_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'issue',
-        key: 'project_id'
-      }
-    },
-    issue_project_lead: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'issue',
-        key: 'project_lead'
-      }
-    },
-    assignee: {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -48,25 +30,14 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "issue_id" },
-          { name: "issue_project_id" },
-          { name: "issue_project_lead" },
-          { name: "assignee" },
+          { name: "user_id" },
         ]
       },
       {
         name: "fk_issue_has_user_user1_idx",
         using: "BTREE",
         fields: [
-          { name: "assignee" },
-        ]
-      },
-      {
-        name: "fk_issue_has_user_issue1_idx",
-        using: "BTREE",
-        fields: [
-          { name: "issue_id" },
-          { name: "issue_project_id" },
-          { name: "issue_project_lead" },
+          { name: "user_id" },
         ]
       },
     ]

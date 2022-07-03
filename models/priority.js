@@ -21,14 +21,6 @@ module.exports = function(sequelize, DataTypes) {
         model: 'project',
         key: 'id'
       }
-    },
-    project_lead: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'project',
-        key: 'lead'
-      }
     }
   }, {
     sequelize,
@@ -48,7 +40,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "project_id" },
-          { name: "project_lead" },
         ]
       },
     ]

@@ -16,12 +16,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     lead: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'user',
-        key: 'id'
-      }
+      allowNull: true
     },
     description: {
       type: DataTypes.STRING(100),
@@ -38,14 +33,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
-          { name: "lead" },
-        ]
-      },
-      {
-        name: "userId_idx",
-        using: "BTREE",
-        fields: [
-          { name: "lead" },
         ]
       },
     ]

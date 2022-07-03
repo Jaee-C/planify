@@ -53,7 +53,11 @@ module.exports = (passport) => {
 
   passport.deserializeUser((id, done) => {
     models.user.findOne({ where: { id } }).then((user) => {
-      done(null, user);
+      if (user) {
+        delete user.dataValues.password;
+      }
+      console.log(user.dataValues)
+      done(null, user.dataValues);
     });
   });
 };

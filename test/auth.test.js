@@ -108,10 +108,3 @@ describe("User Authentication", function () {
   });
 });
 
-/**
- * Reset db
- */
-after(function (done) {
-  dbHandler.clearDatabase();
-  done();
-});

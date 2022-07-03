@@ -16,25 +16,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     project_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
+      allowNull: true,
       references: {
         model: 'sprint',
         key: 'project_id'
       }
     },
-    project_lead: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      references: {
-        model: 'sprint',
-        key: 'project_lead'
-      }
-    },
     status_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'status',
         key: 'id'
@@ -42,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     priority_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'priority',
         key: 'id'
@@ -72,7 +62,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     sprint_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'sprint',
         key: 'id'
@@ -80,7 +70,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     issue_type_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'issue_type',
         key: 'id'
@@ -92,6 +82,10 @@ module.exports = function(sequelize, DataTypes) {
     },
     archivedDate: {
       type: DataTypes.DATEONLY,
+      allowNull: true
+    },
+    issueNum: {
+      type: DataTypes.INTEGER,
       allowNull: true
     }
   }, {
@@ -105,8 +99,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
-          { name: "project_id" },
-          { name: "project_lead" },
         ]
       },
       {
@@ -114,7 +106,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "project_id" },
-          { name: "project_lead" },
         ]
       },
       {
@@ -137,7 +128,6 @@ module.exports = function(sequelize, DataTypes) {
         fields: [
           { name: "sprint_id" },
           { name: "project_id" },
-          { name: "project_lead" },
         ]
       },
       {

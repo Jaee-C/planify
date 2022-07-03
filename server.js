@@ -1,5 +1,7 @@
 const express = require("express");
+const cookieParser = require('cookie-parser')
 const session = require("express-session");
+const FileStore = require('session-file-store')(session);
 const passport = require("passport");
 const bodyParser = require("body-parser");
 
@@ -16,7 +18,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  store: new FileStore,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+  },
 }));
+app.use(cookieParser(process.env.USER_SECRET));
 
 // Initialize Passport on every route
 app.use(passport.initialize());

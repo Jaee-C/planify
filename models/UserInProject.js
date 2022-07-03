@@ -1,10 +1,14 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('sprint', {
-    id: {
+  return sequelize.define('user_in_project', {
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
+      references: {
+        model: 'user',
+        key: 'id'
+      }
     },
     project_id: {
       type: DataTypes.INTEGER,
@@ -14,27 +18,10 @@ module.exports = function(sequelize, DataTypes) {
         model: 'project',
         key: 'id'
       }
-    },
-    name: {
-      type: DataTypes.STRING(20),
-      allowNull: false
-    },
-    description: {
-      type: DataTypes.STRING(45),
-      allowNull: true
-    },
-    startDate: {
-      type: DataTypes.DATE,
-      allowNull: true,
-      defaultValue: Sequelize.Sequelize.literal('CURRENT_TIMESTAMP')
-    },
-    endDate: {
-      type: DataTypes.DATE,
-      allowNull: true
     }
   }, {
     sequelize,
-    tableName: 'sprint',
+    tableName: 'user_in_project',
     timestamps: false,
     indexes: [
       {
@@ -42,15 +29,22 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
-          { name: "id" },
+          { name: "user_id" },
           { name: "project_id" },
         ]
       },
       {
-        name: "fk_sprint_project1_idx",
+        name: "fk_user_has_project_project1_idx",
         using: "BTREE",
         fields: [
           { name: "project_id" },
+        ]
+      },
+      {
+        name: "fk_user_has_project_user1_idx",
+        using: "BTREE",
+        fields: [
+          { name: "user_id" },
         ]
       },
     ]

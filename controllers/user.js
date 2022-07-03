@@ -31,7 +31,9 @@ exports.login = async (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.redirect(constants.HTTP_OK, "/");
+      console.log(user);
+      delete user.password;
+      return res.status(constants.HTTP_OK).send(user);
     });
   })(req, res, next);
 };
