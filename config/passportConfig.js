@@ -55,9 +55,10 @@ module.exports = (passport) => {
     models.User.findOne({ where: { id } }).then((user) => {
       if (user) {
         delete user.dataValues.password;
+        done(null, user.dataValues);
+      } else {
+        done(null, false);
       }
-      console.log(user.dataValues)
-      done(null, user.dataValues);
     });
   });
 };

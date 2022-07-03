@@ -52,6 +52,8 @@ function initModels(sequelize) {
   User.hasMany(IssueAssignedTo, { as: "issue_assigned_tos", foreignKey: "user_id"});
   UserInProject.belongsTo(User, { as: "user", foreignKey: "user_id"});
   User.hasMany(UserInProject, { as: "user_in_projects", foreignKey: "user_id"});
+  Project.hasMany(Issue, { foreignKey: "project_id"});
+  Issue.belongsTo(Project, { foreignKey: "project_id"});
 
   return {
     Issue,
