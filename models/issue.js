@@ -88,6 +88,10 @@ module.exports = function(sequelize, DataTypes) {
     issueNum: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    order: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
     }
   }, {
     sequelize,
