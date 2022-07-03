@@ -9,6 +9,13 @@ const constants = require("../utils/constants");
 
 const dbHandler = require("./db-handler");
 
+/**
+ * Clear db before start testing
+ */
+before(async () => {
+  await dbHandler.clearDatabase();
+})
+
 describe("User Authentication", function () {
   // Test user signup endpoint
   describe("POST /api/auth/signup", function () {
@@ -21,8 +28,8 @@ describe("User Authentication", function () {
       request(app)
         .post("/api/auth/signup")
         .send({ email, password, firstName, lastName })
-        .expect("Location", "/login")
         .expect(constants.HTTP_OK)
+        .expect("Location", "/login")
         .end((err, res) => {
           if (err) return done(err);
 
@@ -101,10 +108,10 @@ describe("User Authentication", function () {
   });
 });
 
-// /**
-//  * Remove and close the db 
-//  */
-// after(function (done) {
-//   dbHandler.clearDatabase();
-//   done();
-// });
+/**
+ * Reset db
+ */
+after(function (done) {
+  dbHandler.clearDatabase();
+  done();
+});
