@@ -1,5 +1,5 @@
 const LocalStrategy = require("passport-local").Strategy;
-const User = require("../models/user");
+const { models } = require("../config/db");
 const bcrypt = require("bcryptjs");
 const {
   ERROR_USER_NOT_FOUND,
@@ -22,7 +22,7 @@ module.exports = (passport) => {
     new LocalStrategy(
       { usernameField: "email", passwordField: "password" },
       function (email, password, done) {
-        User.findOne({ where: { email } })
+        models.user.findOne({ where: { email } })
           .then(async (user) => {
 
             // User not found in database
@@ -52,7 +52,7 @@ module.exports = (passport) => {
   });
 
   passport.deserializeUser((id, done) => {
-    User.findOne({ where: { id } }).then((user) => {
+    models.user.findOne({ where: { id } }).then((user) => {
       done(null, user);
     });
   });

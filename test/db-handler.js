@@ -3,11 +3,12 @@
  */
 
 require("dotenv").config();
-const User = require("../models/user");
+const { models } = require("../config/db");
 
 /**
  * Remove all the data for all db collections
  */
 module.exports.clearDatabase = async () => {
-  await User.destroy({ where: {} });
+  await models.user.destroy({ where: {} });
+  
 }

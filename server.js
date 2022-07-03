@@ -28,7 +28,7 @@ app.use(passport.session());
 require("./config/passportConfig")(passport);
 
 // Routes
-app.use("/api", api);
+app.use("/", api);
 
 const port = process.env.PORT || 8000;
 

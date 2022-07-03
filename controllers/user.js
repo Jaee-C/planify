@@ -1,6 +1,6 @@
 const passport = require("passport");
 const constants = require("../utils/constants");
-const User = require("../models/user");
+const { models } = require("../config/db");
 
 // Login user
 exports.login = async (req, res, next) => {
@@ -42,7 +42,7 @@ exports.signup = async (req, res, next) => {
 
   // Create new user
   try {
-    await User.create({ email, password, firstName, lastName });
+    await models.user.create({ email, password, firstName, lastName });
   } catch (e) {
     if (e.name === "SequelizeUniqueConstraintError") {
       // Email already used
@@ -64,7 +64,7 @@ exports.delete = async (req, res, next) => {
   const { email } = req.body;
 
   try {
-    await User.destroy({ where: { email } });
+    await models.user.destroy({ where: { email } });
   } catch (e) {
     return res.status(500).json({ message: "Something went wrong" });
   }

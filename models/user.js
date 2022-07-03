@@ -1,49 +1,74 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/db");
+const Sequelize = require('sequelize');
 const bcrypt = require("bcryptjs");
-
-const User = sequelize.define("User", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-    allowNull: false,
-  },
-  email: {
-    type: DataTypes.STRING(45),
-    allowNull: false,
-    unique: true,
-  },
-  password: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  firstName: {
-    type: DataTypes.STRING(45),
-    allowNull: false,
-  },
-  lastName: {
-    type: DataTypes.STRING(10),
-    allowNull: false,
-  },
-}, { 
-  tableName: "user",
-  timestamps: false,
-  initialAutoIncrement: 0,
-  hooks: {
-    beforeCreate: async (user) => {
-     if (user.password) {
-      const salt = await bcrypt.genSaltSync(10, 'a');
-      user.password = bcrypt.hashSync(user.password, salt);
-     }
+module.exports = function(sequelize, DataTypes) {
+  return sequelize.define('user', {
+    id: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
     },
-    beforeUpdate:async (user) => {
-     if (user.password) {
-      const salt = await bcrypt.genSaltSync(10, 'a');
-      user.password = bcrypt.hashSync(user.password, salt);
-     }
+    email: {
+      type: DataTypes.STRING(45),
+      allowNull: false,
+      unique: "email_UNIQUE"
+    },
+    password: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    firstName: {
+      type: DataTypes.STRING(45),
+      allowNull: false
+    },
+    lastName: {
+      type: DataTypes.STRING(10),
+      allowNull: false
     }
-  }
-});
-
-module.exports = User;
+  }, {
+    sequelize,
+    tableName: 'user',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+      {
+        name: "userId_UNIQUE",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+      {
+        name: "email_UNIQUE",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "email" },
+        ]
+      },
+    ],
+    initialAutoIncrement: 0,
+    hooks: {
+      beforeCreate: async (user) => {
+       if (user.password) {
+        const salt = bcrypt.genSaltSync(10, 'a');
+        user.password = bcrypt.hashSync(user.password, salt);
+       }
+      },
+      beforeUpdate:async (user) => {
+       if (user.password) {
+        const salt = bcrypt.genSaltSync(10, 'a');
+        user.password = bcrypt.hashSync(user.password, salt);
+       }
+      }
+    }
+  });
+};

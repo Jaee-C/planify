@@ -4,7 +4,7 @@
 const expect = require("chai").expect;
 const request = require("supertest");
 const app = require("../server");
-const User = require("../models/user");
+const { models } = require("../config/db");
 const constants = require("../utils/constants");
 
 const dbHandler = require("./db-handler");
@@ -18,7 +18,7 @@ before(async () => {
 
 describe("User Authentication", function () {
   // Test user signup endpoint
-  describe("POST /api/auth/signup", function () {
+  describe("POST /auth/signup", function () {
     it("should create a new user", function (done) {
       const email = "admin@admin.com";
       const password = "admin";
@@ -26,14 +26,14 @@ describe("User Authentication", function () {
       const lastName = "Uer";
 
       request(app)
-        .post("/api/auth/signup")
+        .post("/auth/signup")
         .send({ email, password, firstName, lastName })
         .expect(constants.HTTP_OK)
         .expect("Location", "/login")
         .end((err, res) => {
           if (err) return done(err);
 
-          User.findOne({ email }).then((user) => {
+          models.user.findOne({ email }).then((user) => {
             expect(user).to.exist;
             expect(user.password).not.to.be(password);
           });
@@ -46,7 +46,7 @@ describe("User Authentication", function () {
       const password = "exist";
 
       request(app)
-        .post("/api/auth/signup")
+        .post("/auth/signup")
         .send({ email, password })
         .expect(constants.HTTP_INTERNAL_SERVER_ERROR)
         .end((err) => {
@@ -57,13 +57,13 @@ describe("User Authentication", function () {
   });
 
   // Test user login endpoint
-  describe("POST /api/auth/login", function () {
+  describe("POST /auth/login", function () {
     it("should login a user", function (done) {
       const email = "admin@admin.com";
       const password = "admin";
 
       request(app)
-        .post("/api/auth/login")
+        .post("/auth/login")
         .send({ email, password })
         .expect(constants.HTTP_OK)
         .expect('Location', '/')
@@ -75,7 +75,7 @@ describe("User Authentication", function () {
       const password = "weird";
 
       request(app)
-        .post("/api/auth/login")
+        .post("/auth/login")
         .send({ email, password })
         .expect(constants.HTTP_BAD_REQUEST)
         .end(done);
@@ -86,7 +86,7 @@ describe("User Authentication", function () {
       const password = "weird";
 
       request(app)
-        .post("/api/auth/login")
+        .post("/auth/login")
         .send({ email, password })
         .expect(constants.HTTP_UNAUTHORIZED)
         .end(done);
@@ -94,12 +94,12 @@ describe("User Authentication", function () {
   });
 
   // Test user delete endpoint
-  describe("DELETE /api/auth/delete", function () {
+  describe("DELETE /auth/delete", function () {
     it("should delete a user", function (done) {
       const email = "admin@admin.com";
 
       request(app)
-        .delete("/api/auth/delete")
+        .delete("/auth/delete")
         .send({ email })
         .expect(constants.HTTP_OK)
         .expect('Location', '/')

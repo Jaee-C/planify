@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const { Sequelize } = require("sequelize");
+const initModels = require("../models/init-models");
 
 // Load environment variables
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
@@ -16,4 +17,6 @@ const sequelize = new Sequelize(
   }
 );
 
-module.exports = sequelize;
+const models = initModels(sequelize);
+
+module.exports = { sequelize, models };

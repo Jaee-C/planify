@@ -8,7 +8,7 @@ const app = require("../server");
 describe("GET /hi", () => {
   it("it should GET hi", (done) => {
     request(app)
-      .get("/api/hi")
+      .get("/hi")
       .expect(200)
       .expect("Helllo")
       .end(err => {
