@@ -1,6 +1,5 @@
 const passport = require("passport");
 const bcrypt = require("bcryptjs");
-const ROLE_USER = require("../utils/constants").ROLE_USER;
 const constants = require("../utils/constants");
 const User = require("../models/user");
 
@@ -11,32 +10,39 @@ exports.login = async (req, res, next) => {
     }
     if (!user) {
       return res.status(constants.HTTP_UNAUTHORIZED).json({
-        message: "Invalid credentials"
+        message: "Invalid credentials",
       });
     }
-    req.logIn(user, err => {
-      if (err) { return next(err); }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
       return res.redirect(constants.HTTP_OK, "/");
     });
   })(req, res, next);
-}
+};
 
 exports.signup = async (req, res, next) => {
-  const { email, password } = req.body;
-  const user = new User({ email, password, ROLE_USER });
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(password, salt);
-
-  User.findOne({ email }, async (err, existingUser) => {
-    if (err) {
-      return res.status(constants.HTTP_INTERNAL_SERVER_ERROR).send("Error finding user in database.")
+  const { email, password, firstName, lastName } = req.body;
+  let user;
+  try {
+    user = await User.create({ email, password, firstName, lastName });
+  } catch (e) {
+    if (e.name === 'SequelizeUniqueConstraintError') {
+      return res.status(403).json({message: "User already exists"});
+    } else {
+      return res.status(500).json({message: "Something went wrong"});
     }
+  }
+  return res.redirect(constants.HTTP_OK, "/login");
+};
 
-    if (existingUser) {
-      return res.status(constants.HTTP_BAD_REQUEST).send("User already exists.")
-    }
-    await user.save();
-  
-    return res.redirect(constants.HTTP_OK, "/login");
-  });
+exports.delete = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    await User.destroy({where: {email}});
+  } catch (e) {
+    return res.status(500).json({message: "Something went wrong"});
+  }
+  return res.redirect(constants.HTTP_OK, "/login");
 }

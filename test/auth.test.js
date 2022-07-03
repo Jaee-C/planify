@@ -19,14 +19,16 @@ before(function (done) {
 
 describe("User Authentication", function () {
   // Test user signup endpoint
-  describe("POST /api/auth/signup", function () {
+  describe.only("POST /api/auth/signup", function () {
     it("should create a new user", function (done) {
       const email = "admin@admin.com";
       const password = "admin";
+      const firstName = "Admin";
+      const lastName = "Uer";
 
       request(app)
         .post("/api/auth/signup")
-        .send({ email, password })
+        .send({ email, password, firstName, lastName })
         .expect("Location", "/login")
         .expect(constants.HTTP_OK)
         .end((err, res) => {
