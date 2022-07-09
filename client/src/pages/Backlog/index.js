@@ -6,12 +6,13 @@ import IssueList from "./IssueList";
 import reorder from "../../utils/reorder";
 import { issues } from "./issue-data";
 import { useParams } from "react-router-dom";
+import { useQuery } from "react-query";
+import { fetchIssues } from "../../utils/api";
 
 const Backlog = () => {
+  const { data, status } = useQuery('issues', fetchIssues)
   const [allIssues, setIssues] = useState(issues);
 
-  
-  
   const params = useParams();
   const projectKey = params.key;
 
