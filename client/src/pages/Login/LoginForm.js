@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Button,
   FormGroup,
   FormFeedback,
   Input,
@@ -13,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Divider from "../../components/Divider";
+import Button from "../../components/Button";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string().required("Required").email("Invalid email"),

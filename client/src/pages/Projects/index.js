@@ -8,10 +8,6 @@ import { fetchProjects } from "../../utils/api";
 const Projects = () => {
   const { data, status } = useQuery('projects', fetchProjects);
 
-  if (status === "success") {
-    console.log("Projects fetched");
-  }
-
   return (
     <Container>
       <ProjectHeader />

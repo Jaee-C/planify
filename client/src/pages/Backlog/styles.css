@@ -20,7 +20,3 @@
   color: var(--bs-gray-700);
 }
 
-.disable-outline:focus, input:focus, button:focus {
-  outline: none;
-  box-shadow: none;
-}

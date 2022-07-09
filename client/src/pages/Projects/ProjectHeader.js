@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "@emotion/styled";
-import { Button } from "reactstrap";
+import Button from "../../components/Button";
+import CreateProject from "./CreateProject";
 
 const Title = styled.h2`
   min-width: 0px;
@@ -16,23 +17,34 @@ const SideButton = styled.div`
   padding-left: 32px;
   flex: 0 0 auto;
   white-space: nowrap;
-`
+`;
 
 const Row = styled.div`
   display: flex;
   align-items: flex-start;
   flex-wrap: nowrap;
-`
+`;
 
 const ProjectHeader = () => {
+  const [creatingProject, setCreatingProject] = useState(false);
+
+  const toggleModal = () => {
+    setCreatingProject(!creatingProject);
+  }
+
   return (
-    <div style={{margin: "24px 0px 16px"}}>
+    <div style={{ margin: "24px 0px 16px" }}>
       <Row>
         <Title>Projects</Title>
-        <SideButton><Button color="primary">Create Project</Button></SideButton>
+        <SideButton>
+          <Button color="primary" type="button" onClick={toggleModal}>
+            Create Project
+          </Button>
+          <CreateProject modal={creatingProject} toggle={toggleModal} />
+        </SideButton>
       </Row>
     </div>
-  )
+  );
 };
 
 export default ProjectHeader;

@@ -1,11 +1,12 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import OverflowMenu from "./OverflowMenu";
-import { Input } from "reactstrap";
+
 import "./styles.css";
 import Row from "../../components/Row";
 import Col from "../../components/Col";
 import Container from "../../components/IssueContainer";
+import Input from "../../components/Input";
 
 import { ISSUE_STATUS } from "../../utils/constants";
 
@@ -22,7 +23,7 @@ const Issue = ({ issue, index }) => (
           <Col className="text-secondary">{issue.id}</Col>
           <Col style={{flex: "1 1 0%"}}>{issue.title}</Col>
           <Col>
-            <Input type="select" bsSize="sm" defaultValue={issue.status} className="disable-outline">
+            <Input type="select" bsSize="sm" defaultValue={issue.status}>
               {ISSUE_STATUS.map((status, index) => (
                 <option key={index} value={status}>{status}</option>
               ))}

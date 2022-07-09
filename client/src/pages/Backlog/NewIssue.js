@@ -6,7 +6,7 @@ import { useMutation } from "react-query";
 import Row from "../../components/Row";
 import Col from "../../components/Col";
 import Container from "../../components/IssueContainer";
-import { Input } from "reactstrap";
+import Input from "../../components/Input";
 import { addIssue } from "../../utils/api";
 
 const NewIssueContainer = styled(Container)`
@@ -15,14 +15,6 @@ const NewIssueContainer = styled(Container)`
   border-bottom: none;
   &:hover {
     background-color: #f2f3f5;
-  }
-`;
-
-const IssueInput = styled(Input)`
-  &:focus {
-    outline: none;
-    box-shadow: none;
-    border-width: medium;
   }
 `;
 
@@ -58,7 +50,7 @@ const NewIssue = ({ projectKey }) => {
       <Row className="issue-item">
         {creatingIssue ? (
           <form style={{ width: "100%" }} onSubmit={formik.handleSubmit}>
-            <IssueInput
+            <Input
               type="text"
               placeholder="What needs to be done?"
               name="title"

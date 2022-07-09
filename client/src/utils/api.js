@@ -8,7 +8,8 @@ export const fetchIssues = async () => {
 
 export const fetchProjects = async () => {
   // const res = await fetch(`${api_url}/projects`);
-  // return res.json();
+  // return res.json()
+  console.log("fetchProjects");
   return projects;
 }
 
