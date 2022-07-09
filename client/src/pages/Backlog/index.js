@@ -5,13 +5,15 @@ import { DragDropContext } from "react-beautiful-dnd";
 import IssueList from "./IssueList";
 import reorder from "../../utils/reorder";
 import { issues } from "./issue-data";
+import { useParams } from "react-router-dom";
 
 const Backlog = () => {
   const [allIssues, setIssues] = useState(issues);
+
   
-  /* TODO: Use query params to get the projectId: https://v5.reactrouter.com/web/example/nesting,
-  then pass project Id to components */
-  const projectId = 0;
+  
+  const params = useParams();
+  const projectKey = params.key;
 
   const onDragEnd = result => {
 
@@ -36,7 +38,7 @@ const Backlog = () => {
       <h2>Backlog</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Container className="mt-3 p-0">
-          <IssueList issues={allIssues} projectId={projectId} />
+          <IssueList issues={allIssues} projectKey={projectKey} />
         </Container>
       </DragDropContext>
     </Container>

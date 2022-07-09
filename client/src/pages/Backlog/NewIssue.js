@@ -24,7 +24,7 @@ const IssueInput = styled(Input)`
   }
 `;
 
-const NewIssue = ({ projectId }) => {
+const NewIssue = ({ projectKey }) => {
   const [creatingIssue, setCreatingIssue] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -32,7 +32,7 @@ const NewIssue = ({ projectId }) => {
       description: "",
       assignee: "",
       status: "TODO",
-      project_id: projectId,
+      projectKey: projectKey,
       order: 0,
     },
     onSubmit: (values) => {

@@ -4,7 +4,7 @@ import { Droppable } from "react-beautiful-dnd";
 import Issue from "./Issue";
 import NewIssue from "./NewIssue";
 
-const IssueList = ({ issues, projectId }) => {
+const IssueList = ({ issues, projectKey }) => {
   return (
     <Droppable droppableId="backlogTable" style={{ width: "100%" }}>
       {(provided) => (
@@ -19,7 +19,7 @@ const IssueList = ({ issues, projectId }) => {
               index={index}
             />
           ))}
-          <NewIssue projectId={projectId} />
+          <NewIssue projectKey={projectKey} />
           {provided.placeholder}
         </div>
       )}
