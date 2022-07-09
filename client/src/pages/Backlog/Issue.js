@@ -30,7 +30,7 @@ const Issue = ({ issue, index }) => (
             </Input>
           </Col>
           {/* <Col>{issue.assignee}</Col> */}
-          <Col><OverflowMenu /></Col>
+          <Col><OverflowMenu id={issue.id} /></Col>
         </Row>
       </Container>
     )}
