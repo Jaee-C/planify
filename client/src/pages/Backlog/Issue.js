@@ -1,32 +1,13 @@
 import React from "react";
-import styled from '@emotion/styled';
 import { Draggable } from "react-beautiful-dnd";
 import OverflowMenu from "./OverflowMenu";
 import { Input } from "reactstrap";
 import "./styles.css";
+import Row from "../../components/Row";
+import Col from "../../components/Col";
+import Container from "../../components/IssueContainer";
 
 import { ISSUE_STATUS } from "../../utils/constants";
-
-const Container = styled.div`
-  border: 1px solid lightgrey;
-  border-radius: 2px;
-  padding: 8px;
-  padding-left: 15px;
-  background-color: white;
-  margin-top: -1px;
-  &:hover {
-    background-color: #f2f3f5;
-  }
-`;
-
-const Row = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Col = styled.div`
-  margin-left: 8px;
-`;
 
 const Issue = ({ issue, index }) => (
   <Draggable draggableId={issue.id.toString()} index={index} style={{width:"100%"}}>

@@ -2,8 +2,9 @@ import React from "react";
 import { Droppable } from "react-beautiful-dnd";
 
 import Issue from "./Issue";
+import NewIssue from "./NewIssue";
 
-const IssueList = ({ issues }) => {
+const IssueList = ({ issues, projectId }) => {
   return (
     <Droppable droppableId="backlogTable" style={{ width: "100%" }}>
       {(provided) => (
@@ -18,6 +19,7 @@ const IssueList = ({ issues }) => {
               index={index}
             />
           ))}
+          <NewIssue projectId={projectId} />
           {provided.placeholder}
         </div>
       )}

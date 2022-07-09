@@ -8,6 +8,10 @@ import { issues } from "./issue-data";
 
 const Backlog = () => {
   const [allIssues, setIssues] = useState(issues);
+  
+  /* TODO: Use query params to get the projectId: https://v5.reactrouter.com/web/example/nesting,
+  then pass project Id to components */
+  const projectId = 0;
 
   const onDragEnd = result => {
 
@@ -32,7 +36,7 @@ const Backlog = () => {
       <h2>Backlog</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Container className="mt-3 p-0">
-          <IssueList issues={allIssues} />
+          <IssueList issues={allIssues} projectId={projectId} />
         </Container>
       </DragDropContext>
     </Container>

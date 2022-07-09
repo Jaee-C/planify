@@ -4,6 +4,7 @@ import { Home } from "./components/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Backlog from "./pages/Backlog";
+import Projects from "./pages/Projects";
 
 const AppRoutes = [
   {
@@ -15,6 +16,11 @@ const AppRoutes = [
     path: '/backlog',
     element: <Backlog />,
     name: "Backlog"
+  },
+  {
+    path: '/projects',
+    element: <Projects />,
+    name: "Projects"
   },
   {
     path: '/counter',
