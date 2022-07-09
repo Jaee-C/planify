@@ -38,7 +38,7 @@ const SignupForm = () => {
     },
     validationSchema: SignupSchema,
     onSubmit: () => {
-      navigate("/home", { replace: true });
+      navigate("/", { replace: true });
     },
   });
 

@@ -30,7 +30,7 @@ const LoginForm = () => {
     validationSchema: LoginSchema,
     onSubmit: () => {
       console.log("hi");
-      navigate("/home");
+      navigate("/projects");
     },
   });
 
