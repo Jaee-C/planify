@@ -13,6 +13,10 @@ const Backlog = () => {
   const { data, status } = useQuery('issues', fetchIssues)
   const [allIssues, setIssues] = useState(issues);
 
+  if (status === "success") {
+    console.log("Issues fetched");
+  }
+
   const params = useParams();
   const projectKey = params.key;
 
