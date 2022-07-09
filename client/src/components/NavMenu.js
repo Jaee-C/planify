@@ -30,9 +30,9 @@ export class NavMenu extends Component {
           <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
           <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
             <ul className="navbar-nav flex-grow">
-              {AppRoutes.map((route, index) => (
+              {AppRoutes.filter(route => !route.hidden ).map((route, index) => (
                 <NavItem key={index}>
-                  <NavLink tag={Link} className="text-dark" to={route.path}>{route.name}</NavLink>
+                  <NavLink tag={Link} className="text-dark" to={route.path.replace('*', '')}>{route.name}</NavLink>
                 </NavItem>
               ))}
             </ul>

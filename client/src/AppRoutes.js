@@ -13,12 +13,13 @@ const AppRoutes = [
     name: "Home",
   },
   {
-    path: '/backlog',
+    path: '/projects/:key/backlog',
     element: <Backlog />,
-    name: "Backlog"
+    name: "Backlog",
+    hidden: true,
   },
   {
-    path: '/projects',
+    path: '/projects/*',
     element: <Projects />,
     name: "Projects"
   },
