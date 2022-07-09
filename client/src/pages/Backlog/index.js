@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Container } from "reactstrap";
 import { DragDropContext } from "react-beautiful-dnd";
 
 import IssueList from "./IssueList";
 import reorder from "../../utils/reorder";
-import { issues } from "./issue-data";
 import { useParams } from "react-router-dom";
 import { useQuery } from "react-query";
 import { fetchIssues } from "../../utils/api";
 
 const Backlog = () => {
-  const { data, status } = useQuery('issues', fetchIssues)
-  const [allIssues, setIssues] = useState(issues);
+  const { data, status } = useQuery('issues', fetchIssues, { refetchOnWindowFocus: false })
+  const [allIssues, setIssues] = useState([]);
 
   if (status === "success") {
     console.log("Issues fetched");
   }
+
+  useMemo(() => {
+    setIssues(data);
+  }, [data]);
 
   const params = useParams();
   const projectKey = params.key;
@@ -43,7 +46,8 @@ const Backlog = () => {
       <h2>Backlog</h2>
       <DragDropContext onDragEnd={onDragEnd}>
         <Container className="mt-3 p-0">
-          <IssueList issues={allIssues} projectKey={projectKey} />
+          {status === "success" ? (<IssueList issues={allIssues} projectKey={projectKey} />) : null}
+          
         </Container>
       </DragDropContext>
     </Container>

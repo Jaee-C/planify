@@ -24,3 +24,16 @@ export const issues = [
     assignee: "WJ",
   }
 ];
+
+export const projects = [
+  {
+    name: "Issue Tracker",
+    key: "IT",
+    lead: "Weng Jae Chin"
+  },
+  {
+    name: "Project Management",
+    key: "PM",
+    lead: "Weng Jae Chin",
+  }
+];

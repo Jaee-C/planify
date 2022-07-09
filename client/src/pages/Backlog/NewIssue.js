@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import styled from "@emotion/styled";
 import { useFormik } from "formik";
+import { useMutation } from "react-query";
 
 import Row from "../../components/Row";
 import Col from "../../components/Col";
 import Container from "../../components/IssueContainer";
 import { Input } from "reactstrap";
+import { addIssue } from "../../utils/api";
 
 const NewIssueContainer = styled(Container)`
   border-left: none;
@@ -25,6 +27,7 @@ const IssueInput = styled(Input)`
 `;
 
 const NewIssue = ({ projectKey }) => {
+  const mutation = useMutation(newIssue => ( addIssue(newIssue) ));
   const [creatingIssue, setCreatingIssue] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -37,6 +40,7 @@ const NewIssue = ({ projectKey }) => {
     },
     onSubmit: (values) => {
       console.log(values);
+      mutation.mutate(values);
       setCreatingIssue(false);
     },
   });
