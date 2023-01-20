@@ -23,6 +23,21 @@ jobs:
       run: npm run lint
     - name: Build
       run: npm run build
+  
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client/
+    
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure environment
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+        cache: 'npm'
+        cache-dependency-path: './client/package-lock.json'
     - name: Unit Test
       run: npm run test
 
