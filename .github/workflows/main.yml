@@ -1,14 +1,17 @@
-
+name: Client
 on: [pull_request, workflow_dispatch]
   
 jobs:
-  client:
-    runs-on: ubuntu-18.04
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client/
     
     steps:
-    - working-directory: client
     - uses: actions/checkout@v3
-    - name: Build
-      run: docker compose build
+    - name: Build app
+      run: docker compose build build-test
 #     - name: Run approval tests
 #       run: docker compose run site-test
