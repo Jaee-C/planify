@@ -17,6 +17,7 @@ jobs:
         node-version: 16
         cache: 'npm'
         cache-dependency-path: './client/package-lock.json'
+    - run: npm install
     - name: Lint
       run: npm run lint
     - name: Build
@@ -37,6 +38,7 @@ jobs:
         node-version: 16
         cache: 'npm'
         cache-dependency-path: './client/package-lock.json'
+    - run: npm install
     - name: Unit Test
       run: npm run test
 
