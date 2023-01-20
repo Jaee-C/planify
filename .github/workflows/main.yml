@@ -11,36 +11,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
-    - name: Configure environment
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: 'npm'
-        cache-dependency-path: './client/package-lock.json'
-    - run: npm install
-    - name: Lint
-      run: npm run lint
-    - name: Build
-      run: npm run build
-  
-  test:
-    name: Unit Test
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client/
-    
-    steps:
-    - uses: actions/checkout@v3
-    - name: Configure environment
-      uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: 'npm'
-        cache-dependency-path: './client/package-lock.json'
-    - run: npm install
-    - name: Unit Test
-      run: npm run test
-
-    
-    
+    - name: Build image
+      run: docker compose build
+    - name: Build app
+      run: docker compose run build-test
+#     - name: Run approval tests
+#       run: docker compose run site-test
