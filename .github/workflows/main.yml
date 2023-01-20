@@ -4,9 +4,11 @@ on: [pull_request, workflow_dispatch]
 jobs:
   client:
     runs-on: ubuntu-18.04
+    defaults:
+      run:
+        working-directory: client/
     
     steps:
-    - working-directory: client
     - uses: actions/checkout@v3
     - name: Configure environment
       uses: actions/setup-node@v3
