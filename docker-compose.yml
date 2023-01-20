@@ -45,3 +45,9 @@ services:
       target: ci-target
     volumes:
       - ./client:/usr/src/app
+  build-test:
+    build:
+      context: client
+      target: build-target
+    volumes:
+      - ./client:/usr/src/app
