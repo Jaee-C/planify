@@ -19,8 +19,14 @@ FROM base-target as test-target
 
 CMD npm run test
 
+FROM base-target as ci-target
+
+RUN npm run lint
+
+CMD npm run test
+
 # Build
-FROM base-targe as build-target
+FROM base-target as build-target
 ENV NODE_ENV=production
 
 # Use build tools, installed as development packages, to produce a release build.

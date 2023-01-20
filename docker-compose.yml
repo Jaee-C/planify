@@ -39,3 +39,9 @@ services:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app:delegated
+  ci:
+    build:
+      context: client
+      target: ci-target
+    volumes:
+      - ./client:/usr/src/app
