@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-18.04
     defaults:
       run:
-        working-directory: client/
+        working-directory: ./client/
     
     steps:
     - uses: actions/checkout@v3
@@ -15,6 +15,7 @@ jobs:
       with:
         node-version: 16
         cache: 'npm'
+        cache-dependency-path: './client/package-lock.json'
     - name: Install dependencies
       run: npm install
     - name: Lint
