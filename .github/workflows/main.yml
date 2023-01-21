@@ -1,5 +1,15 @@
 name: Client
-on: [pull_request, workflow_dispatch]
+on: 
+  pull_request:
+    types:
+      - closed
+      - edited
+  push:
+    branches:
+      - 'master'
+  
+  workflow_dispatch:
+  
   
 jobs:
   build:
