@@ -8,14 +8,9 @@ services:
       args:
         npm_install_command: install
     volumes:
-      # This bind mount allows changes on the host file system to affect the container.
-      # Saving a code file can cause an incremental build, a hot reload in the browser,
-      # and a reconnection of the debugger.
-      # The mount is in delegated mode:
-      # Changes on the host, like saving a code file, immediately affect the container.
-      # Changes within the container, like build output, make their way back to the host,
-      # but are not strictly synchronized.
-      - ./client:/usr/src/app:cached
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
     ports:
       - 3000:3000
       - 9229:9229
@@ -27,7 +22,9 @@ services:
       args:
         npm_install_command: install
     volumes:
-      - ./client:/usr/src/app:delegated
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
     ports:
       - 6006:6006
     command: npm run storybook
@@ -38,16 +35,24 @@ services:
       args:
         npm_install_command: install
     volumes:
-      - ./client:/usr/src/app:delegated
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
   ci:
     build:
       context: client
       target: ci-target
     volumes:
       - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
   build-test:
     build:
       context: client
       target: build-target
     volumes:
       - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+volumes:
+  nodemodules: {}

@@ -17,7 +17,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <p>
-            Get started by being lazy&nbsp;
+            get started by omg ok update now? &nbsp;
             <code className={styles.code}>pages/index.tsx</code>
           </p>
           <div>
