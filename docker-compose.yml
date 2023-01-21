@@ -9,7 +9,7 @@ services:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - nodemodules:/usr/src/app/node_modules
       - /usr/src/app/.next
     ports:
       - 3000:3000
@@ -23,7 +23,7 @@ services:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - nodemodules:/usr/src/app/node_modules
       - /usr/src/app/.next
     ports:
       - 6006:6006
@@ -36,7 +36,7 @@ services:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - nodemodules:/usr/src/app/node_modules
       - /usr/src/app/.next
   ci:
     build:
@@ -44,7 +44,7 @@ services:
       target: ci-target
     volumes:
       - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - nodemodules:/usr/src/app/node_modules
       - /usr/src/app/.next
   build-test:
     build:
@@ -52,7 +52,7 @@ services:
       target: build-target
     volumes:
       - ./client:/usr/src/app
-      - /usr/src/app/node_modules
+      - nodemodules:/usr/src/app/node_modules
       - /usr/src/app/.next
 volumes:
   nodemodules: {}
