@@ -1,18 +1,26 @@
-# Test
+## Test
 FROM node:19.4-alpine as base-target
-ENV NODE_ENV=development
-ENV PATH $PATH:/usr/src/app/node_modules/.bin
 
+ENV PORT 3000
+
+# Create app directory
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY package*.json ./
-
-# CI and release builds should use npm ci to fully respect the lockfile.
-# Local development may use npm install for opportunistic package updates.
+# Installing dependencies
+COPY package*.json /usr/src/app/
 ARG npm_install_command=ci
 RUN npm $npm_install_command
 
-COPY . .
+# Copying source files
+COPY . /usr/src/app
+
+# Building app
+RUN npm run build
+EXPOSE 3000
+
+# Running the app
+CMD "npm" "run" "dev"
 
 # Test
 FROM base-target as test-target
