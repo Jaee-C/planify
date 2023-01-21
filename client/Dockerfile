@@ -9,7 +9,8 @@ WORKDIR /usr/src/app
 
 # Installing dependencies
 COPY package*.json /usr/src/app/
-RUN npm install
+ARG npm_install_command=ci
+RUN npm $npm_install_command
 
 # Copying source files
 COPY . /usr/src/app
