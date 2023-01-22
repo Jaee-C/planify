@@ -22,11 +22,6 @@ EXPOSE 3000
 # Running the app
 CMD "npm" "run" "dev"
 
-# Test
-FROM base-target as test-target
-
-CMD npm run test
-
 FROM base-target as ci-target
 
 RUN npm run lint

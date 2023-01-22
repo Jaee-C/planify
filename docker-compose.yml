@@ -9,8 +9,8 @@ services:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app
-      - nodemodules:/usr/src/app/node_modules
-      - /usr/src/app/.next
+      - nodemodules:/usr/src/app/node_modules:delegated
+      - next:/usr/src/app/.next
     ports:
       - 3000:3000
       - 9229:9229
@@ -23,21 +23,22 @@ services:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app
-      - nodemodules:/usr/src/app/node_modules
-      - /usr/src/app/.next
+      - nodemodules:/usr/src/app/node_modules:delegated
+      - next:/usr/src/app/.next
     ports:
       - 6006:6006
     command: npm run storybook
   site-test:
     build:
       context: client
-      target: test-target
+      target: base-target
       args:
         npm_install_command: install
     volumes:
       - ./client:/usr/src/app
-      - nodemodules:/usr/src/app/node_modules
-      - /usr/src/app/.next
+      - nodemodules:/usr/src/app/node_modules:delegated
+      - next:/usr/src/app/.next
+    command: npm run test
   ci:
     build:
       context: client
@@ -45,7 +46,7 @@ services:
     volumes:
       - ./client:/usr/src/app
       - nodemodules:/usr/src/app/node_modules
-      - /usr/src/app/.next
+      - next:/usr/src/app/.next
   build-test:
     build:
       context: client
@@ -53,6 +54,7 @@ services:
     volumes:
       - ./client:/usr/src/app
       - nodemodules:/usr/src/app/node_modules
-      - /usr/src/app/.next
+      - next:/usr/src/app/.next
 volumes:
   nodemodules: {}
+  next: {}

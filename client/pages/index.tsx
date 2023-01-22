@@ -17,7 +17,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.description}>
           <p>
-            get started by omg ok update now? &nbsp;
+            get started by is that part useless? &nbsp;
             <code className={styles.code}>pages/index.tsx</code>
           </p>
           <div>
