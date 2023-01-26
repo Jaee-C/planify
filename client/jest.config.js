@@ -1,4 +1,11 @@
-module.exports = {
+// jest.config.js
+const nextJest = require('next/jest')
+
+// Providing the path to your Next.js app which will enable loading next.config.js and .env files
+const createJestConfig = nextJest({ dir: './' })
+
+// Any custom config you want to pass to Jest
+const customJestConfig = {
   // The root of your source code, typically /src
   // `<rootDir>` is a token Jest substitutes
   roots: ["<rootDir>"],
@@ -26,3 +33,5 @@ module.exports = {
 
   testEnvironment: "jsdom"
 };
+
+module.exports = createJestConfig(customJestConfig)
