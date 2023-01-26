@@ -11,22 +11,18 @@ enum NavigationPage {
 export default function TopNavigation() {
   const [activePage, setActivePage] = useState(NavigationPage.HOME);
 
-  function handleChangePage(page: NavigationPage) {
-    setActivePage(page);
-  }
-
   return (
     <header className='bg-blue-400 relative top-0 z-50 w-full px-5 h-14 flex
                        items-center justify-between shadow shadow-slate-300'>
       <nav className='min-w-0 flex grow items-stretch relative shrink-0 h-full'>
         <TopNavigationButton
-          onClick={() => handleChangePage(NavigationPage.HOME)}
+          onClick={() => setActivePage(NavigationPage.HOME)}
           active={activePage == NavigationPage.HOME}
         >
           Home
         </TopNavigationButton>
         <TopNavigationButton
-          onClick={() => handleChangePage(NavigationPage.PROJECTS)}
+          onClick={() => setActivePage(NavigationPage.PROJECTS)}
           active={activePage == NavigationPage.PROJECTS}
         >
           Projects

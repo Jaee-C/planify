@@ -35,7 +35,14 @@ const customJestConfig = {
   // Module file extensions for importing
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 
-  testEnvironment: "jsdom"
+  testEnvironment: "jsdom",
+
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/pages/**',
+  ],
+  collectCoverage: false,
+  coverageProvider: 'v8',
 };
 
 module.exports = createJestConfig(customJestConfig)
