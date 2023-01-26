@@ -15,8 +15,6 @@ RUN npm $npm_install_command
 # Copying source files
 COPY . /usr/src/app
 
-# Building app
-RUN npm run build
 EXPOSE 3000
 
 # Running the app
