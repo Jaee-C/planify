@@ -38,7 +38,7 @@ services:
       - ./client:/usr/src/app
       - nodemodules:/usr/src/app/node_modules:delegated
       - next:/usr/src/app/.next
-    command: npm run test
+    command: npm test
   ci:
     build:
       context: client

@@ -22,6 +22,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build app
-      run: docker compose build build-test
+      run: docker compose build build-tests
 #     - name: Run approval tests
-#       run: docker compose run site-test
+#       run: docker compose run site-tests
