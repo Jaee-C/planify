@@ -1,9 +1,7 @@
 name: Client
 on: 
   pull_request:
-    types:
-      - closed
-      - edited
+    types: ['opened', 'reopened', 'edited']
   push:
     branches:
       - 'master'
@@ -22,6 +20,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build app
-      run: docker compose build build-tests
-#     - name: Run approval tests
-#       run: docker compose run site-tests
+      run: docker compose build build-test
+    - name: Run approval tests
+      run: docker compose run site-test
