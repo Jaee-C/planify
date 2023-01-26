@@ -1,9 +1,7 @@
 name: Client
 on: 
   pull_request:
-    types:
-      - closed
-      - edited
+    types: ['opened', 'reopened', 'edited']
   push:
     branches:
       - 'master'
