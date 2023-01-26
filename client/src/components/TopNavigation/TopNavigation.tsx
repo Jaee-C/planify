@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import TopNavigationButton
-  from '@/src/components/TopNavigation/TopNavigationButton';
-import { setState } from 'jest-circus';
+  from 'src/components/TopNavigation/TopNavigationButton';
 
-export enum NavigationPage {
+enum NavigationPage {
   HOME,
   PROJECTS,
   ISSUES
@@ -22,15 +21,13 @@ export default function TopNavigation() {
       <nav className='min-w-0 flex grow items-stretch relative shrink-0 h-full'>
         <TopNavigationButton
           onClick={() => handleChangePage(NavigationPage.HOME)}
-          activePage={activePage}
-          page={NavigationPage.HOME}
+          active={activePage == NavigationPage.HOME}
         >
           Home
         </TopNavigationButton>
         <TopNavigationButton
           onClick={() => handleChangePage(NavigationPage.PROJECTS)}
-          activePage={activePage}
-          page={NavigationPage.PROJECTS}
+          active={activePage == NavigationPage.PROJECTS}
         >
           Projects
         </TopNavigationButton>

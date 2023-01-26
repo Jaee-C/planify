@@ -9,6 +9,13 @@ const customJestConfig = {
   // The root of your source code, typically /src
   // `<rootDir>` is a token Jest substitutes
   roots: ["<rootDir>"],
+  modulePaths: [
+    "<rootDir>",
+    "<rootDir>/src",
+  ],
+  moduleDirectories: [
+    "node_modules"
+  ],
 
   // Jest transformations -- this adds support for TypeScript
   // using ts-jest
