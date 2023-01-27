@@ -18,8 +18,12 @@ jobs:
     
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 19
+    - run: npm ci
     - name: Build app
-      run: docker compose build build-test
+      run: npm run build
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -28,5 +32,10 @@ jobs:
         working-directory: ./client/
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 19
+    - run: npm ci
+    - run: npm run
     - name: Run approval tests
-      run: docker compose run site-test
+      run: npm run test
