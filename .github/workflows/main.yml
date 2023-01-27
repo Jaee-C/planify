@@ -36,5 +36,6 @@ jobs:
       with:
         node-version: 19
     - run: npm ci
+    - run: npm run
     - name: Run approval tests
-      run: npm test
+      run: npm run test
