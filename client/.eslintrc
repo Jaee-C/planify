@@ -3,7 +3,7 @@
   "extends": [
     "eslint:recommended",
     "google",
-    "prettier"
+    "plugin:prettier/recommended"
   ],
   "plugins": [
     "@typescript-eslint",
@@ -14,9 +14,7 @@
     "sourceType": "module"
   },
   "env": {
-    "es6": true,
-    "node": true,
-    "mocha": true
+    "es6": true
   },
   "rules": {
     "prettier/prettier": ["error"],
@@ -26,9 +24,8 @@
       "requireParamType": false,
       "requireParamDescription": false,
       "requireReturnDescription": false,
-      "requireReturn": false,
-      "prefer": {"returns": "return"}
+      "requireReturnType": false
     }]
   },
-  "ignorePatterns": ["*.config.*", "*.test.*", "coverage/*", "node_modules/*", "*.d.ts"]
+  "ignorePatterns": ["*.config.*", "*.test.*", "coverage/*"]
 }

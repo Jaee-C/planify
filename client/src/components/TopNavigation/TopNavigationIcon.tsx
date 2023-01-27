@@ -6,6 +6,13 @@ interface NavigationIconProp {
   onClick: MouseEventHandler;
 }
 
+/**
+ * React component for Icon Button on the top navigation bar.
+ *
+ * @param icon - A react-icons component, acts as the icon for the button
+ * @param onClick - event handler for a mouse click on the button
+ * @returns Icon button component
+ */
 export default function TopNavigationIcon({icon, onClick}: NavigationIconProp) {
   return <RoundButton onClick={onClick}>{icon}</RoundButton>;
 }

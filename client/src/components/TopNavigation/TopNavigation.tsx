@@ -16,6 +16,7 @@ enum NavigationPage {
 
 /**
  * React component for the page's top navigation bar
+ * @returns Navigation bar component
  */
 export default function TopNavigation() {
   const [activePage, setActivePage] = useState(NavigationPage.HOME);
