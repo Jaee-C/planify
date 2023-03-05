@@ -13,7 +13,7 @@ interface ButtonProp {
  */
 export default function Button({children, onClick}: ButtonProp) {
   return (
-    <a href="src/components/utils/Button#" onClick={onClick}>
+    <a href="#" onClick={onClick}>
       {children}
     </a>
   );
