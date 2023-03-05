@@ -12,10 +12,6 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client/
-    
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
@@ -27,9 +23,6 @@ jobs:
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./client/
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-node@v3
