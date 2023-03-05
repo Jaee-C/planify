@@ -18,12 +18,12 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": ".",
+    "baseUrl": "./client",
     "paths": {
       "@/*": [
         "./*"
       ],
-      "src/*": ["src/*"],
+      "src/*": ["src/*"]
     }
   },
   "include": [
@@ -32,6 +32,6 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "client/node_modules"
   ]
 }

@@ -22,12 +22,13 @@
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-use-before-define": "off",
-    "valid-jsdoc": [2, {
+    "valid-jsdoc": ["off", {
       "requireParamType": false,
       "requireParamDescription": false,
       "requireReturnDescription": false,
       "requireReturnType": false
-    }]
+    }],
+    "require-jsdoc": "off"
   },
   "ignorePatterns": ["*.config.*", "*.test.*", "coverage/*"]
 }

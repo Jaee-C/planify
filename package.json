@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "precommit": "lint-staged && next build && jest"
+    "lint-staged": "lint-staged"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx}": [
@@ -16,6 +16,11 @@
       "git add ."
     ]
   },
+  "pre-commit": [
+    "lint-staged",
+    "build",
+    "test"
+  ],
   "dependencies": {
     "axios": "^1.2.4",
     "next": "13.1.2",
@@ -43,9 +48,9 @@
     "jest": "^29.4.0",
     "jest-environment-jsdom": "^29.4.0",
     "lint-staged": "^13.1.0",
-    "monorepo-staged-precommit": "^1.0.14",
     "msw": "^1.0.0",
     "postcss": "^8.4.21",
+    "pre-commit": "^1.2.2",
     "prettier": "2.8.3",
     "tailwindcss": "^3.2.4",
     "ts-jest": "^29.0.5",

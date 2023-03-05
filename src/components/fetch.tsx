@@ -42,7 +42,7 @@ function greetingReducer(state: GreetingState, action: GreetingAction) {
 export default function Fetch({url}: FetchProps) {
   const [{error, greeting}, dispatch] = useReducer(
     greetingReducer,
-    initialState,
+    initialState
   );
 
   const [buttonClicked, setButtonClicked] = useState(false);
@@ -50,13 +50,13 @@ export default function Fetch({url}: FetchProps) {
   const fetchGreeting = async (url: string) =>
     axios
       .get<GreetingState>(url)
-      .then((response) => {
+      .then(response => {
         const {data} = response;
         const {greeting} = data;
         dispatch({type: 'SUCCESS', greeting});
         setButtonClicked(true);
       })
-      .catch((error) => {
+      .catch(error => {
         dispatch({type: 'ERROR', error});
       });
 

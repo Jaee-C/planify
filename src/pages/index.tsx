@@ -1,5 +1,5 @@
 import React from 'react';
-import TopNavigation from '@/src/components/TopNavigation/TopNavigation';
+import TopNavigation from '../components/TopNavigation/TopNavigation';
 
 /**
  * Entrypoint page for the application.

@@ -1,5 +1,5 @@
 import React, {MouseEventHandler} from 'react';
-import Button from 'src/components/utils/Button';
+import Button from './Button';
 
 interface BoxButtonProp {
   children: React.ReactNode;

@@ -1,5 +1,5 @@
 import React, {MouseEventHandler} from 'react';
-import RoundButton from 'src/components/utils/RoundButton';
+import RoundButton from '../utils/RoundButton';
 
 interface NavigationIconProp {
   icon: React.ReactNode;

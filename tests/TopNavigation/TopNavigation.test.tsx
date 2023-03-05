@@ -2,7 +2,7 @@ import React from 'react';
 import {render, screen} from '@testing-library/react';
 import '@testing-library/react';
 
-import TopNavigation from 'src/components/TopNavigation/TopNavigation';
+import TopNavigation from '../../src/components/TopNavigation/TopNavigation';
 
 const links = [
   {text: 'Home', location: '/'},

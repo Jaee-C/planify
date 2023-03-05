@@ -4,7 +4,8 @@ import '@testing-library/react';
 
 import TopNavigationButton, {
   borderClassNames,
-} from 'src/components/TopNavigation/TopNavigationButton';
+} from '../../src/components/TopNavigation/TopNavigationButton';
+
 
 const handleClick = jest.fn();
 

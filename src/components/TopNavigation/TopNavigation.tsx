@@ -3,8 +3,8 @@ import {IconContext} from 'react-icons';
 import {AiTwotoneSetting} from 'react-icons/ai';
 import {IoHelpCircle} from 'react-icons/io5';
 
-import TopNavigationButton from 'src/components/TopNavigation/TopNavigationButton';
-import TopNavigationIcon from 'src/components/TopNavigation/TopNavigationIcon';
+import TopNavigationButton from './TopNavigationButton';
+import TopNavigationIcon from './TopNavigationIcon';
 
 enum NavigationPage {
   HOME,

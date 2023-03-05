@@ -1,5 +1,5 @@
 import React, {MouseEventHandler} from 'react';
-import BoxButton from 'src/components/utils/BoxButton';
+import BoxButton from '../utils/BoxButton';
 
 interface TopNavButtonProps {
   children: React.ReactNode;
