@@ -14,5 +14,9 @@ interface NavigationIconProp {
  * @returns Icon button component
  */
 export default function TopNavigationIcon({icon, onClick}: NavigationIconProp) {
-  return <RoundButton onClick={onClick}>{icon}</RoundButton>;
+  return (
+    <RoundButton className="mr-2" onClick={onClick}>
+      {icon}
+    </RoundButton>
+  );
 }

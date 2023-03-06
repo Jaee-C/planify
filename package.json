@@ -22,11 +22,15 @@
     "test"
   ],
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.11",
     "axios": "^1.2.4",
     "next": "13.1.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "^4.7.1"
+    "react-icons": "^4.7.1",
+    "react-pro-sidebar": "^1.0.0"
   },
   "devDependencies": {
     "@next/font": "13.1.2",
