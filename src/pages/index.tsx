@@ -3,6 +3,7 @@ import {ProSidebarProvider} from 'react-pro-sidebar';
 import BaseSidebar from '../components/Sidebar/BaseSidebar';
 
 import TopNavigation from '../components/TopNavigation/TopNavigation';
+import IssueTable from '../components/IssueTable/IssueTable';
 
 /**
  * Entrypoint page for the application.
@@ -13,7 +14,16 @@ export default function Home() {
     <>
       <TopNavigation />
       <ProSidebarProvider>
-        <BaseSidebar />
+        <div
+          style={{
+            display: 'flex',
+            height: '95vh',
+            minHeight: '400px',
+          }}
+        >
+          <BaseSidebar />
+          <IssueTable />
+        </div>
       </ProSidebarProvider>
     </>
   );

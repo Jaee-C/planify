@@ -22,6 +22,9 @@
     "test"
   ],
   "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@mui/material": "^5.11.11",
     "axios": "^1.2.4",
     "next": "13.1.2",
     "react": "18.2.0",
