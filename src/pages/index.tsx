@@ -19,10 +19,13 @@ export default function Home() {
             display: 'flex',
             height: '95vh',
             minHeight: '400px',
+            width: '100%',
           }}
         >
           <BaseSidebar />
-          <IssueTable />
+          <div className="p-5 flex-grow">
+            <IssueTable />
+          </div>
         </div>
       </ProSidebarProvider>
     </>

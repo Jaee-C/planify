@@ -21,43 +21,33 @@ import {visuallyHidden} from '@mui/utils';
 import RoundButton from '../utils/RoundButton';
 
 interface Data {
-  calories: number;
-  carbs: number;
-  fat: number;
-  name: string;
-  protein: number;
+  key: string;
+  title: string;
+  assignee: string;
+  status: string;
 }
 
 function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
+  key: string,
+  title: string,
+  assignee: string,
+  status: string
 ): Data {
   return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    key,
+    title,
+    assignee,
+    status,
   };
 }
 
 const rows = [
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Donut', 452, 25.0, 51, 4.9),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-  createData('Honeycomb', 408, 3.2, 87, 6.5),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Jelly Bean', 375, 0.0, 94, 0.0),
-  createData('KitKat', 518, 26.0, 65, 7.0),
-  createData('Lollipop', 392, 0.2, 98, 0.0),
-  createData('Marshmallow', 318, 0, 81, 2.0),
-  createData('Nougat', 360, 19.0, 9, 37.0),
-  createData('Oreo', 437, 18.0, 63, 4.0),
+  createData('PRJ-1', 'Create PoC', 'Daniel', 'In Progress'),
+  createData('PRJ-2', 'Raise Issues', 'Daniel', 'To Do'),
+  createData('PRJ-3', 'Update Progress on Issues', 'Daniel', 'To Do'),
+  createData('PRJ-4', 'Record all issues', 'Daniel', 'To Do'),
+  createData('PRJ-5', 'Manage Issues', 'Daniel', 'To Do'),
+  createData('PRJ-6', 'Notify users', 'Daniel', 'To Do'),
 ];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -107,44 +97,32 @@ interface HeadCell {
   disablePadding: boolean;
   id: keyof Data;
   label: string;
-  numeric: boolean;
   sortable: boolean;
 }
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'name',
-    numeric: false,
+    id: 'key',
     disablePadding: true,
-    label: 'Dessert (100g serving)',
+    label: 'Key',
     sortable: true,
   },
   {
-    id: 'calories',
-    numeric: true,
+    id: 'title',
     disablePadding: false,
-    label: 'Calories',
+    label: 'Title',
     sortable: true,
   },
   {
-    id: 'fat',
-    numeric: true,
+    id: 'assignee',
     disablePadding: false,
-    label: 'Fat (g)',
+    label: 'Assignee',
     sortable: true,
   },
   {
-    id: 'carbs',
-    numeric: true,
+    id: 'status',
     disablePadding: false,
-    label: 'Carbs (g)',
-    sortable: true,
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
+    label: 'Status',
     sortable: true,
   },
 ];
@@ -174,7 +152,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         {headCells.map(headCell => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.id === 'key' ? 'center' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -212,7 +190,7 @@ function EnhancedTableToolbar() {
         id="tableTitle"
         component="div"
       >
-        Nutrition
+        Backlog
       </Typography>
       <Tooltip title="Filter list">
         <IconButton>
@@ -225,7 +203,7 @@ function EnhancedTableToolbar() {
 
 export default function IssueTable() {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('calories');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('key');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -278,7 +256,10 @@ export default function IssueTable() {
   return (
     <IconContext.Provider value={{size: '16px'}}>
       <Box sx={{width: '100%'}}>
-        <Paper sx={{width: '100%', mb: 2}}>
+        <Paper
+          sx={{width: '100%', mb: 2}}
+          className="bg-transparent shadow-none"
+        >
           <EnhancedTableToolbar />
           <TableContainer>
             <Table
@@ -300,23 +281,23 @@ export default function IssueTable() {
                     return (
                       <TableRow
                         hover
-                        onClick={event => handleClick(event, row.name)}
+                        onClick={event => handleClick(event, row.key)}
                         role="button"
                         tabIndex={-1}
-                        key={row.name}
+                        key={row.key}
                       >
                         <TableCell
                           component="th"
                           id={labelId}
                           scope="row"
                           padding="none"
+                          align="center"
                         >
-                          {row.name}
+                          {row.key}
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
+                        <TableCell align="left">{row.title}</TableCell>
+                        <TableCell align="left">{row.assignee}</TableCell>
+                        <TableCell align="left">{row.status}</TableCell>
                         <TableCell align="center">
                           <RoundButton onClick={() => {}}>
                             <MdDelete className="inline" />
