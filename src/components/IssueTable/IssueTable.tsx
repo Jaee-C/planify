@@ -16,13 +16,13 @@ import {
   Tooltip,
   Button,
   Dialog,
-  DialogTitle,
-  TextField,
 } from '@mui/material';
 import {MdFilterList, MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
 import {visuallyHidden} from '@mui/utils';
-import RoundButton from '../utils/RoundButton';
+
+import RoundButton from 'components/utils/RoundButton';
+import CreateIssueForm from 'components/CreateIssueForm/CreateIssueForm';
 
 interface Data {
   key: string;
@@ -210,62 +210,9 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         variant="contained"
         onClick={props.openForm}
       >
-        Create Issue
+        Create&nbsp;Issue
       </Button>
     </Toolbar>
-  );
-}
-
-interface NewIssueFormProps {
-  open: boolean;
-  closeForm: () => void;
-}
-
-function NewIssueForm(props: NewIssueFormProps) {
-  return (
-    <Dialog open={props.open} onClose={props.closeForm} className="p-10">
-      <DialogTitle>Create Issue</DialogTitle>
-      <form className="px-10 pb-10">
-        <TextField
-          style={{width: '200px', margin: '5px'}}
-          type="text"
-          label="Issue Title"
-          variant="outlined"
-        />
-        <br />
-        <TextField
-          style={{width: '200px', margin: '5px'}}
-          type="text"
-          multiline
-          rows={4}
-          label="Description"
-          variant="outlined"
-        />
-        <br />
-        <TextField
-          style={{width: '200px', margin: '5px'}}
-          type="text"
-          label="Assignee"
-          variant="outlined"
-        />
-        <br />
-        <TextField
-          style={{width: '200px', margin: '5px'}}
-          type="text"
-          label="Status"
-          variant="outlined"
-        />
-        <br />
-        <Button
-          variant="contained"
-          color="primary"
-          className="bg-blue-600"
-          onClick={props.closeForm}
-        >
-          save
-        </Button>
-      </form>
-    </Dialog>
   );
 }
 
@@ -406,7 +353,9 @@ export default function IssueTable() {
           />
         </Paper>
       </Box>
-      <NewIssueForm open={formOpen} closeForm={handleFormClose} />
+      <Dialog open={formOpen} scroll="body" fullWidth onClose={handleFormClose}>
+        <CreateIssueForm closeForm={handleFormClose} />
+      </Dialog>
     </IconContext.Provider>
   );
 }
