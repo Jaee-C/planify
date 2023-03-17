@@ -15,6 +15,36 @@ import {MdClose} from 'react-icons/md';
 import FormTextField from '@/components/CreateIssueForm/FormTextField';
 import FormSelectField from '@/components/CreateIssueForm/FormSelectField';
 
+const ISSUE_STATUSES = [
+  {
+    label: 'Done',
+    value: 'done',
+  },
+  {
+    label: 'In Progress',
+    value: 'in_progress',
+  },
+  {
+    label: 'To Do',
+    value: 'todo',
+  },
+];
+
+const ISSUE_PRIORITIES = [
+  {
+    label: 'High',
+    value: 'high',
+  },
+  {
+    label: 'Medium',
+    value: 'medium',
+  },
+  {
+    label: 'Low',
+    value: 'Low',
+  },
+];
+
 interface CreateIssueFormProps {
   formOpen: boolean;
   closeForm: () => void;
@@ -24,6 +54,7 @@ const issueValidation = yup.object({
   title: yup.string().required('Enter a title'),
   description: yup.string().optional(),
   assignee: yup.string().optional(),
+  reporter: yup.string().optional(),
   status: yup.string().oneOf(['todo', 'in_progress', 'done']).required(),
   priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
 });
@@ -34,6 +65,7 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
       title: undefined,
       description: undefined,
       assignee: undefined,
+      reporter: undefined,
       status: 'todo',
       priority: undefined,
     },
@@ -97,6 +129,14 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
           error={formik.touched.assignee && Boolean(formik.errors.assignee)}
           helperText={formik.touched.assignee && formik.errors.assignee}
         />
+        <FormTextField
+          name="reporter"
+          label="Reporter"
+          onChange={formik.handleChange}
+          value={formik.values.reporter}
+          error={formik.touched.reporter && Boolean(formik.errors.reporter)}
+          helperText={formik.touched.reporter && formik.errors.reporter}
+        />
         <FormSelectField
           name="status"
           label="Status"
@@ -104,38 +144,12 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
           value={formik.values.priority}
           error={formik.touched.priority && Boolean(formik.errors.priority)}
           helperText={formik.touched.priority && formik.errors.priority}
-          options={[
-            {
-              label: 'Done',
-              value: 'done',
-            },
-            {
-              label: 'In Progress',
-              value: 'in_progress',
-            },
-            {
-              label: 'To Do',
-              value: 'todo',
-            },
-          ]}
+          options={ISSUE_STATUSES}
         />
         <FormSelectField
           name="priority"
           label="Priority"
-          options={[
-            {
-              label: 'High',
-              value: 'high',
-            },
-            {
-              label: 'Medium',
-              value: 'medium',
-            },
-            {
-              label: 'Low',
-              value: 'Low',
-            },
-          ]}
+          options={ISSUE_PRIORITIES}
         />
         <DialogActions className="flex items-center justify-between m-0 p-4">
           <Button onClick={handleFormClose}>Close</Button>
