@@ -1,11 +1,13 @@
 import React from 'react';
 import {
   FormControl,
+  FormHelperText,
   Input,
   InputLabel,
   ListItem,
   MenuItem,
   Select,
+  SelectChangeEvent,
 } from '@mui/material';
 
 interface Options {
@@ -19,8 +21,12 @@ interface FormSelectFieldProps {
   placeholder?: string;
   disabled?: boolean;
   multiselect?: boolean;
-  defaultValue?: Options;
+  defaultValue?: string;
   options: Options[];
+  onChange?: (a: SelectChangeEvent) => void;
+  value?: string;
+  error?: boolean;
+  helperText?: string | false;
 }
 
 export default function FormSelectField({
@@ -30,6 +36,10 @@ export default function FormSelectField({
   multiselect,
   defaultValue,
   options,
+  onChange,
+  value,
+  error,
+  helperText,
 }: FormSelectFieldProps) {
   return (
     <ListItem className="pr-4">
@@ -40,6 +50,9 @@ export default function FormSelectField({
           multiple={multiselect}
           disabled={disabled}
           defaultValue={defaultValue}
+          onChange={onChange}
+          value={value}
+          error={error}
         >
           {options.map((o: Options) => (
             <MenuItem key={o.value} value={o.value}>
@@ -47,6 +60,7 @@ export default function FormSelectField({
             </MenuItem>
           ))}
         </Select>
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     </ListItem>
   );

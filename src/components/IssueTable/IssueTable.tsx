@@ -15,7 +15,6 @@ import {
   IconButton,
   Tooltip,
   Button,
-  Dialog,
 } from '@mui/material';
 import {MdFilterList, MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
@@ -221,7 +220,7 @@ export default function IssueTable() {
   const [orderBy, setOrderBy] = React.useState<keyof Data>('key');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [formOpen, setFormOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = React.useState(false);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -233,11 +232,11 @@ export default function IssueTable() {
   };
 
   const handleFormOpen = () => {
-    setFormOpen(true);
+    setDialogOpen(true);
   };
 
-  const handleFormClose = () => {
-    setFormOpen(false);
+  const handleDialogClose = () => {
+    setDialogOpen(false);
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
@@ -353,9 +352,7 @@ export default function IssueTable() {
           />
         </Paper>
       </Box>
-      <Dialog open={formOpen} scroll="body" fullWidth onClose={handleFormClose}>
-        <CreateIssueForm closeForm={handleFormClose} />
-      </Dialog>
+      <CreateIssueForm formOpen={dialogOpen} closeForm={handleDialogClose} />
     </IconContext.Provider>
   );
 }

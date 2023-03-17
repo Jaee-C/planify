@@ -12,6 +12,9 @@ interface FormTextFieldProps {
   rows?: string | number;
   value?: Array<string | number | boolean> | string | number | boolean;
   size?: 'small' | 'medium';
+  onChange?: (a: React.ChangeEvent) => void;
+  error?: boolean;
+  helperText?: string | false;
 }
 
 export default function FormTextField({
@@ -23,6 +26,9 @@ export default function FormTextField({
   rows,
   value,
   size,
+  onChange,
+  error,
+  helperText,
 }: FormTextFieldProps) {
   const lowerlabel = label.toLowerCase();
   placeholder = placeholder || `Please insert the ${lowerlabel} here...`;
@@ -41,6 +47,9 @@ export default function FormTextField({
         disabled={disabled}
         name={name}
         size={size}
+        onChange={onChange}
+        error={error}
+        helperText={helperText}
         variant="standard"
         InputProps={{
           endAdornment: (
