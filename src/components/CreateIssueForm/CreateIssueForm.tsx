@@ -5,11 +5,12 @@ import {
   Typography,
   IconButton,
   Divider,
-  ListItem,
+  DialogActions,
 } from '@mui/material';
 import {MdClose} from 'react-icons/md';
 
 import FormTextField from '@/components/CreateIssueForm/FormTextField';
+import FormSelectField from '@/components/CreateIssueForm/FormSelectField';
 
 interface CreateIssueFormProps {
   closeForm: () => void;
@@ -29,23 +30,36 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
           </IconButton>
         </DialogTitle>
         <Divider />
-        <ListItem className="pr-4">
-          <FormTextField name="title" label="Issue Title" />
-        </ListItem>
-        <ListItem className="pr-4">
-          <FormTextField
-            name="description"
-            label="Description"
-            multiline={true}
-          />
-        </ListItem>
-        <ListItem className="pr-4">
-          <FormTextField name="assignee" label="Assignee" />
-        </ListItem>
-        <ListItem className="pr-4">
-          <FormTextField name="status" label="Status" />
-        </ListItem>
-        <ListItem className="pr-4">
+        <FormTextField name="title" label="Issue Title" size="medium" />
+        <br />
+        <Divider />
+        <br />
+        <FormTextField
+          name="description"
+          label="Description"
+          multiline={true}
+        />
+        <FormTextField name="assignee" label="Assignee" />
+        <FormSelectField
+          name="status"
+          label="Status"
+          options={[
+            {
+              label: 'Done',
+              value: 'done',
+            },
+            {
+              label: 'In Progress',
+              value: 'in_progress',
+            },
+            {
+              label: 'To Do',
+              value: 'todo',
+            },
+          ]}
+        />
+        <DialogActions className="flex items-center justify-between m-0 p-4">
+          <Button>Close</Button>
           <Button
             variant="contained"
             color="primary"
@@ -54,7 +68,7 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
           >
             save
           </Button>
-        </ListItem>
+        </DialogActions>
       </form>
     </>
   );
