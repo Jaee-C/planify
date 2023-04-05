@@ -11,7 +11,7 @@ import {
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {MdClose} from 'react-icons/md';
-import {addTodo} from '@/components/IssueTable/TodoSlice';
+import {addTodo} from '@/components/IssueTable/TodosSlice';
 
 import FormTextField from '@/components/CreateIssueForm/FormTextField';
 import FormSelectField from '@/components/CreateIssueForm/FormSelectField';

@@ -19,17 +19,14 @@ import {
 import {MdFilterList, MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
 import {visuallyHidden} from '@mui/utils';
+import useSwr from 'swr';
 
 import RoundButton from 'components/utils/RoundButton';
 import CreateIssueForm from 'components/CreateIssueForm/CreateIssueForm';
-import {useAppSelector} from '@/hooks';
-
-interface Data {
-  key: string;
-  title: string;
-  assignee: string;
-  status: string;
-}
+import {useAppSelector, useAppDispatch} from '@/hooks';
+import {setTodos} from '@/components/IssueTable/TodosSlice';
+import type {Data} from '@/interfaces';
+import {useEffect} from 'react';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -200,6 +197,15 @@ export default function IssueTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const rows = useAppSelector(state => state.todo.todos);
+  const dispatcher = useAppDispatch();
+  const fetcher = (url: string) => fetch(url).then(r => r.json());
+  const {data, error, isLoading} = useSwr<Data[]>('/api/issues', fetcher);
+
+  useEffect(() => {
+    if (data && !error && !isLoading) {
+      dispatcher(setTodos(data));
+    }
+  }, [data]);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
