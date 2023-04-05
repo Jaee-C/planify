@@ -22,6 +22,7 @@ import {visuallyHidden} from '@mui/utils';
 
 import RoundButton from 'components/utils/RoundButton';
 import CreateIssueForm from 'components/CreateIssueForm/CreateIssueForm';
+import {useAppSelector} from '@/hooks';
 
 interface Data {
   key: string;
@@ -29,29 +30,6 @@ interface Data {
   assignee: string;
   status: string;
 }
-
-function createData(
-  key: string,
-  title: string,
-  assignee: string,
-  status: string
-): Data {
-  return {
-    key,
-    title,
-    assignee,
-    status,
-  };
-}
-
-const rows = [
-  createData('PRJ-1', 'Create PoC', 'Daniel', 'In Progress'),
-  createData('PRJ-2', 'Raise Issues', 'Daniel', 'To Do'),
-  createData('PRJ-3', 'Update Progress on Issues', 'Daniel', 'To Do'),
-  createData('PRJ-4', 'Record all issues', 'Daniel', 'To Do'),
-  createData('PRJ-5', 'Manage Issues', 'Daniel', 'To Do'),
-  createData('PRJ-6', 'Notify users', 'Daniel', 'To Do'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -221,6 +199,7 @@ export default function IssueTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const rows = useAppSelector(state => state.todo.todos);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -298,7 +277,7 @@ export default function IssueTable() {
               <TableBody>
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
+                  .map((row: Data, index) => {
                     const labelId = `issue-table-entry-${index}`;
 
                     return (
