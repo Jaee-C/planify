@@ -1,9 +1,11 @@
 import React from 'react';
 import {ProSidebarProvider} from 'react-pro-sidebar';
-import BaseSidebar from '../components/Sidebar/BaseSidebar';
+import {Provider} from 'react-redux';
 
-import TopNavigation from '../components/TopNavigation/TopNavigation';
-import IssueTable from '../components/IssueTable/IssueTable';
+import store from '@/store';
+import BaseSidebar from '@/components/Sidebar/BaseSidebar';
+import TopNavigation from '@/components/TopNavigation/TopNavigation';
+import IssueTable from '@/components/IssueTable/IssueTable';
 
 /**
  * Entrypoint page for the application.
@@ -11,7 +13,7 @@ import IssueTable from '../components/IssueTable/IssueTable';
  */
 export default function Home() {
   return (
-    <>
+    <Provider store={store}>
       <TopNavigation />
       <ProSidebarProvider>
         <div
@@ -28,6 +30,6 @@ export default function Home() {
           </div>
         </div>
       </ProSidebarProvider>
-    </>
+    </Provider>
   );
 }
