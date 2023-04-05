@@ -11,11 +11,11 @@ import {
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {MdClose} from 'react-icons/md';
-import {addIssue} from '@/components/IssueTable/IssuesSlice';
+import {useMutation, useQueryClient} from 'react-query';
 
 import FormTextField from '@/components/CreateIssueForm/FormTextField';
 import FormSelectField from '@/components/CreateIssueForm/FormSelectField';
-import {useAppDispatch} from '@/hooks';
+import {Data} from '@/interfaces';
 
 const ISSUE_STATUSES = [
   {
@@ -62,8 +62,24 @@ const issueValidation = yup.object({
   priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
 });
 
+function addIssue(data: Data) {
+  return fetch('/api/issues', {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+}
+
 export default function CreateIssueForm(props: CreateIssueFormProps) {
-  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: addIssue,
+    onSuccess: () => {
+      queryClient.invalidateQueries('issues');
+    },
+  });
   const formik = useFormik({
     initialValues: {
       key: 'IT-69',
@@ -81,7 +97,8 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
       if (!values.assignee) {
         values.assignee = 'Daniel';
       }
-      dispatch(addIssue(values));
+      mutation.mutate(values);
+
       handleFormClose();
     },
   });
