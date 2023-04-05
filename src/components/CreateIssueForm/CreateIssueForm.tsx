@@ -11,7 +11,7 @@ import {
 import {useFormik} from 'formik';
 import * as yup from 'yup';
 import {MdClose} from 'react-icons/md';
-import {addTodo} from '@/components/IssueTable/TodosSlice';
+import {addIssue} from '@/components/IssueTable/IssuesSlice';
 
 import FormTextField from '@/components/CreateIssueForm/FormTextField';
 import FormSelectField from '@/components/CreateIssueForm/FormSelectField';
@@ -81,7 +81,7 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
       if (!values.assignee) {
         values.assignee = 'Daniel';
       }
-      dispatch(addTodo(values));
+      dispatch(addIssue(values));
       handleFormClose();
     },
   });

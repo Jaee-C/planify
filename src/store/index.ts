@@ -1,6 +1,6 @@
 import {configureStore} from '@reduxjs/toolkit';
 
-import TodoSlice from '@/components/IssueTable/TodosSlice';
+import TodoSlice from '@/components/IssueTable/IssuesSlice';
 
 const store = configureStore({
   reducer: {

@@ -11,24 +11,24 @@ const initialState: State = {
   todos: [],
 };
 
-const todosSlice = createSlice({
+const issuesSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addTodo: (state, action: PayloadAction<Data>) => {
+    addIssue: (state, action: PayloadAction<Data>) => {
       state.todos.push(action.payload);
       state.count += 1;
     },
-    removeTodo: (state, action: PayloadAction<string>) => {
+    removeIssue: (state, action: PayloadAction<string>) => {
       state.todos = state.todos.filter(todo => todo.key !== action.payload);
       state.count -= 1;
     },
-    setTodos: (state, action: PayloadAction<Data[]>) => {
+    setIssues: (state, action: PayloadAction<Data[]>) => {
       state.todos = action.payload;
       state.count = action.payload.length;
     },
   },
 });
 
-export const {addTodo, removeTodo, setTodos} = todosSlice.actions;
-export default todosSlice.reducer;
+export const {addIssue, removeIssue, setIssues} = issuesSlice.actions;
+export default issuesSlice.reducer;

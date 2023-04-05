@@ -9,22 +9,18 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
-  Toolbar,
-  Typography,
   Paper,
-  IconButton,
-  Tooltip,
-  Button,
 } from '@mui/material';
-import {MdFilterList, MdDelete} from 'react-icons/md';
+import {MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
 import {visuallyHidden} from '@mui/utils';
 import useSwr from 'swr';
 
+import TableToolbar from '@/components/IssueTable/TableToolbar';
 import RoundButton from 'components/utils/RoundButton';
 import CreateIssueForm from 'components/CreateIssueForm/CreateIssueForm';
 import {useAppSelector, useAppDispatch} from '@/hooks';
-import {setTodos} from '@/components/IssueTable/TodosSlice';
+import {setIssues} from '@/components/IssueTable/IssuesSlice';
 import type {Data} from '@/interfaces';
 import {useEffect} from 'react';
 
@@ -154,42 +150,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  openForm: () => void;
-}
-
-function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-  return (
-    <Toolbar
-      sx={{
-        pl: {sm: 2},
-        pr: {xs: 1, sm: 1},
-      }}
-    >
-      <Typography
-        sx={{flex: '1 1 100%'}}
-        variant="h6"
-        id="tableTitle"
-        component="div"
-      >
-        Backlog
-      </Typography>
-      <Tooltip title="Filter list">
-        <IconButton className="mr-3">
-          <MdFilterList />
-        </IconButton>
-      </Tooltip>
-      <Button
-        className="bg-blue-600 text-xs"
-        variant="contained"
-        onClick={props.openForm}
-      >
-        Create&nbsp;Issue
-      </Button>
-    </Toolbar>
-  );
-}
-
 export default function IssueTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('key');
@@ -203,7 +163,7 @@ export default function IssueTable() {
 
   useEffect(() => {
     if (data && !error && !isLoading) {
-      dispatcher(setTodos(data));
+      dispatcher(setIssues(data));
     }
   }, [data]);
 
@@ -268,7 +228,7 @@ export default function IssueTable() {
           sx={{width: '100%', mb: 2}}
           className="bg-transparent shadow-none"
         >
-          <EnhancedTableToolbar openForm={handleFormOpen} />
+          <TableToolbar openForm={handleFormOpen} />
           <TableContainer>
             <Table
               sx={{minWidth: 750}}
