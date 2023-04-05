@@ -14,7 +14,6 @@ import {
 import {MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
 import {visuallyHidden} from '@mui/utils';
-import useSwr from 'swr';
 
 import TableToolbar from '@/components/IssueTable/TableToolbar';
 import RoundButton from 'components/utils/RoundButton';
@@ -158,14 +157,20 @@ export default function IssueTable() {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const rows = useAppSelector(state => state.todo.todos);
   const dispatcher = useAppDispatch();
-  const fetcher = (url: string) => fetch(url).then(r => r.json());
-  const {data, error, isLoading} = useSwr<Data[]>('/api/issues', fetcher);
 
   useEffect(() => {
-    if (data && !error && !isLoading) {
-      dispatcher(setIssues(data));
-    }
-  }, [data]);
+    fetch('/api/issues', {
+      method: 'GET',
+    })
+      .then(res => {
+        if (res.ok) {
+          return res.json();
+        }
+      })
+      .then(data => {
+        dispatcher(setIssues(data));
+      });
+  }, []);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,

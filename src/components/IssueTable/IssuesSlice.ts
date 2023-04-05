@@ -17,6 +17,17 @@ const issuesSlice = createSlice({
   reducers: {
     addIssue: (state, action: PayloadAction<Data>) => {
       state.todos.push(action.payload);
+      fetch('/api/issues', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json',
+        },
+        body: JSON.stringify(action.payload),
+      }).then(res => {
+        if (res.status === 200) {
+          console.log('Added issue successfully.');
+        }
+      });
       state.count += 1;
     },
     removeIssue: (state, action: PayloadAction<string>) => {

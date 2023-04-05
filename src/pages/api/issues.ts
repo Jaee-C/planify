@@ -27,7 +27,14 @@ const DEFAULT_TODOS = [
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data[]>
+  res: NextApiResponse<Data[] | string>
 ) {
-  res.status(200).json(DEFAULT_TODOS);
+  if (req.method === 'GET') {
+    res.status(200).json(DEFAULT_TODOS);
+  } else if (req.method === 'POST') {
+    const {key, title, assignee, status} = req.body;
+    const newTodo = createData(key, title, assignee, status);
+    DEFAULT_TODOS.push(newTodo);
+    res.status(200).send('DONE.');
+  }
 }
