@@ -14,14 +14,12 @@ import {
 import {MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
 import {visuallyHidden} from '@mui/utils';
+import {useQuery} from 'react-query';
 
 import TableToolbar from '@/components/IssueTable/TableToolbar';
 import RoundButton from 'components/utils/RoundButton';
 import CreateIssueForm from 'components/CreateIssueForm/CreateIssueForm';
-import {useAppSelector, useAppDispatch} from '@/hooks';
-import {setIssues} from '@/components/IssueTable/IssuesSlice';
 import type {Data} from '@/interfaces';
-import {useEffect} from 'react';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -149,28 +147,21 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
+async function fetchIssueList() {
+  const response = await fetch('/api/issues', {method: 'GET'});
+  if (!response.ok) {
+    throw new Error('Failed to fetch issues');
+  }
+  return response.json();
+}
+
 export default function IssueTable() {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('key');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const rows = useAppSelector(state => state.todo.todos);
-  const dispatcher = useAppDispatch();
-
-  useEffect(() => {
-    fetch('/api/issues', {
-      method: 'GET',
-    })
-      .then(res => {
-        if (res.ok) {
-          return res.json();
-        }
-      })
-      .then(data => {
-        dispatcher(setIssues(data));
-      });
-  }, []);
+  const {data: rows, isLoading} = useQuery<Data[]>('issues', fetchIssueList);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -224,7 +215,9 @@ export default function IssueTable() {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    rows !== undefined && page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - rows.length)
+      : 0;
 
   return (
     <IconContext.Provider value={{size: '16px'}}>
@@ -246,39 +239,41 @@ export default function IssueTable() {
                 onRequestSort={handleRequestSort}
               />
               <TableBody>
-                {stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row: Data, index) => {
-                    const labelId = `issue-table-entry-${index}`;
+                {!isLoading &&
+                  rows !== undefined &&
+                  stableSort(rows, getComparator(order, orderBy))
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row: Data, index) => {
+                      const labelId = `issue-table-entry-${index}`;
 
-                    return (
-                      <TableRow
-                        hover
-                        onClick={event => handleClick(event, row.key)}
-                        role="button"
-                        tabIndex={-1}
-                        key={row.key}
-                      >
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
-                          align="center"
+                      return (
+                        <TableRow
+                          hover
+                          onClick={event => handleClick(event, row.key)}
+                          role="button"
+                          tabIndex={-1}
+                          key={row.key}
                         >
-                          {row.key}
-                        </TableCell>
-                        <TableCell align="left">{row.title}</TableCell>
-                        <TableCell align="left">{row.assignee}</TableCell>
-                        <TableCell align="left">{row.status}</TableCell>
-                        <TableCell align="center">
-                          <RoundButton onClick={() => {}}>
-                            <MdDelete className="inline" />
-                          </RoundButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                          <TableCell
+                            component="th"
+                            id={labelId}
+                            scope="row"
+                            padding="none"
+                            align="center"
+                          >
+                            {row.key}
+                          </TableCell>
+                          <TableCell align="left">{row.title}</TableCell>
+                          <TableCell align="left">{row.assignee}</TableCell>
+                          <TableCell align="left">{row.status}</TableCell>
+                          <TableCell align="center">
+                            <RoundButton onClick={() => {}}>
+                              <MdDelete className="inline" />
+                            </RoundButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 {emptyRows > 0 && (
                   <TableRow
                     style={{
@@ -294,7 +289,7 @@ export default function IssueTable() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={rows.length}
+            count={isLoading || !rows ? 0 : rows.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
