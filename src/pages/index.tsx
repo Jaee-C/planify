@@ -4,7 +4,7 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 
 import BaseSidebar from '@/components/Sidebar/BaseSidebar';
 import TopNavigation from '@/components/TopNavigation/TopNavigation';
-import IssueTable from '@/components/IssueTable/IssueTable';
+import IssueTable from '@/components/IssueTable';
 
 const queryClient = new QueryClient();
 

@@ -16,11 +16,12 @@ import {IconContext} from 'react-icons';
 import {visuallyHidden} from '@mui/utils';
 import {useQuery} from 'react-query';
 
-import TableToolbar from '@/components/IssueTable/TableToolbar';
-import RoundButton from 'components/utils/RoundButton';
-import CreateIssueForm from 'components/CreateIssueForm/CreateIssueForm';
+import TableToolbar from '@/components/Table/TableToolbar';
+import RoundButton from '@/components/utils/RoundButton';
+import CreateIssueForm from '@/components/CreateIssueForm';
 import type {Data} from '@/interfaces';
 
+// Comparator for use in sorting the table rows
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -33,6 +34,7 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
+// Get the comparator based on the current order and column to sort by
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
@@ -45,22 +47,24 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
+// Stable sort function that works in non-modern browsers
 function stableSort<T>(
   array: readonly T[],
   comparator: (a: T, b: T) => number
 ) {
+  // Add an index to each element of the array to preserve its original position
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
+    // Compare the elements using the provided comparator function
     const order = comparator(a[0], b[0]);
+    // If the order is not equal to 0, return it
     if (order !== 0) {
       return order;
     }
+    // If the order is equal to 0, sort the elements based on their original position
     return a[1] - b[1];
   });
+  // Return the sorted array without the added index
   return stabilizedThis.map(el => el[0]);
 }
 
@@ -161,6 +165,9 @@ export default function IssueTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [editingRow, setEditingRow] = React.useState<Data | undefined>(
+    undefined
+  );
   const {data: rows, isLoading} = useQuery<Data[]>('issues', fetchIssueList);
 
   const handleRequestSort = (
@@ -173,14 +180,16 @@ export default function IssueTable() {
   };
 
   const handleFormOpen = () => {
+    setEditingRow(undefined);
     setDialogOpen(true);
   };
 
   const handleDialogClose = () => {
+    setEditingRow(undefined);
     setDialogOpen(false);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+  const handleClick = (event: React.MouseEvent<unknown>, data: Data) => {
     // const selectedIndex = selected.indexOf(name);
     // let newSelected: readonly string[] = [];
     //
@@ -198,6 +207,8 @@ export default function IssueTable() {
     // }
     //
     // setSelected(newSelected);
+    setEditingRow(data);
+    setDialogOpen(true);
 
     console.log(`Selected entry ${name}`);
   };
@@ -249,7 +260,7 @@ export default function IssueTable() {
                       return (
                         <TableRow
                           hover
-                          onClick={event => handleClick(event, row.key)}
+                          onClick={event => handleClick(event, row)}
                           role="button"
                           tabIndex={-1}
                           key={row.key}
@@ -289,7 +300,7 @@ export default function IssueTable() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={isLoading || !rows ? 0 : rows.length}
+            count={rows?.length ?? 0}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -297,7 +308,11 @@ export default function IssueTable() {
           />
         </Paper>
       </Box>
-      <CreateIssueForm formOpen={dialogOpen} closeForm={handleDialogClose} />
+      <CreateIssueForm
+        formOpen={dialogOpen}
+        closeForm={handleDialogClose}
+        editingIssue={editingRow}
+      />
     </IconContext.Provider>
   );
 }
