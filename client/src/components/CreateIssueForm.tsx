@@ -13,22 +13,22 @@ import * as yup from 'yup';
 import {MdClose} from 'react-icons/md';
 import {useMutation, useQueryClient} from 'react-query';
 
-import FormTextField from '@/components/CreateIssueForm/FormTextField';
-import FormSelectField from '@/components/CreateIssueForm/FormSelectField';
+import FormTextField from '@/components/Form/FormTextField';
+import FormSelectField from '@/components/Form/FormSelectField';
 import {Data} from '@/interfaces';
 
 const ISSUE_STATUSES = [
   {
     label: 'Done',
-    value: 'done',
+    value: 'Done',
   },
   {
     label: 'In Progress',
-    value: 'in_progress',
+    value: 'In Progress',
   },
   {
     label: 'To Do',
-    value: 'todo',
+    value: 'To Do',
   },
 ];
 
@@ -47,9 +47,20 @@ const ISSUE_PRIORITIES = [
   },
 ];
 
+const EMPTY_FORM = {
+  key: 'IT-69',
+  title: '',
+  description: '',
+  assignee: '',
+  reporter: '',
+  status: 'To Do',
+  priority: 'low',
+};
+
 interface CreateIssueFormProps {
   formOpen: boolean;
   closeForm: () => void;
+  editingIssue?: Data;
 }
 
 const issueValidation = yup.object({
@@ -58,7 +69,7 @@ const issueValidation = yup.object({
   description: yup.string().optional(),
   assignee: yup.string().optional(),
   reporter: yup.string().optional(),
-  status: yup.string().oneOf(['todo', 'in_progress', 'done']).required(),
+  status: yup.string().oneOf(['To Do', 'In Progress', 'Done']).required(),
   priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
 });
 
@@ -80,16 +91,22 @@ export default function CreateIssueForm(props: CreateIssueFormProps) {
       queryClient.invalidateQueries('issues');
     },
   });
+
+  const baseForm = EMPTY_FORM;
+  if (props.editingIssue !== undefined) {
+    baseForm.key = props.editingIssue.key;
+    baseForm.title = props.editingIssue.title;
+    baseForm.assignee = props.editingIssue.assignee;
+    baseForm.status = props.editingIssue.status;
+  } else {
+    baseForm.key = 'IT-69';
+    baseForm.title = '';
+    baseForm.assignee = 'Daniel';
+    baseForm.status = 'To Do';
+  }
+
   const formik = useFormik({
-    initialValues: {
-      key: 'IT-69',
-      title: '',
-      description: '',
-      assignee: '',
-      reporter: '',
-      status: 'todo',
-      priority: 'low',
-    },
+    initialValues: baseForm,
     validationSchema: issueValidation,
     onSubmit: values => {
       alert(JSON.stringify(values, null, 2));

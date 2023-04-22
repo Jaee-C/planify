@@ -55,7 +55,11 @@ export default function FormSelectField({
           error={error}
         >
           {options.map((o: Options) => (
-            <MenuItem key={o.value} value={o.value}>
+            <MenuItem
+              key={o.value}
+              value={o.value}
+              selected={o.value === value}
+            >
               {o.label}
             </MenuItem>
           ))}
