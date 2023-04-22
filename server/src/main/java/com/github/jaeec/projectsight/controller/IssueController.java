@@ -1,19 +1,18 @@
 package com.github.jaeec.projectsight.controller;
 
 import com.github.jaeec.projectsight.model.Issue;
-import com.github.jaeec.projectsight.repository.IssueRepository;
-import com.github.jaeec.projectsight.repository.LocalIssueRepository;
+import com.github.jaeec.projectsight.service.IssueService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Collection;
 
 @RestController
 public class IssueController {
-    private final IssueRepository issueRepository = new LocalIssueRepository();
+    private final IssueService issueService = new IssueService();
 
     @GetMapping("/issues")
-    public List<Issue> getIssues() {
-        return issueRepository.findAllIssues();
+    public Collection<Issue> getIssues() {
+        return issueService.getAll();
     }
 }

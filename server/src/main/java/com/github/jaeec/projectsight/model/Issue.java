@@ -1,10 +1,12 @@
 package com.github.jaeec.projectsight.model;
 
+import jakarta.persistence.Table;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Table(name="ISSUE")
 public class Issue {
     @Id
     private String id;
@@ -20,6 +22,15 @@ public class Issue {
         this.title = "Issue 1";
         this.description = "This is issue 1";
         this.status = "open";
+        this.assignee = allowedUsers.get(0);
+    }
+
+    public Issue(String id, String title, String description, String status) {
+        this.allowedUsers.add(new User());
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
         this.assignee = allowedUsers.get(0);
     }
 
