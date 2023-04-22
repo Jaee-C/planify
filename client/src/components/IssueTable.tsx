@@ -170,6 +170,11 @@ export default function IssueTable() {
   );
   const {data: rows, isLoading} = useQuery<Data[]>('issues', fetchIssueList);
 
+  const deleteEntry = (e: React.MouseEvent, key: string) => {
+    console.log('deleting ' + key);
+    if (e.stopPropagation) e.stopPropagation();
+  };
+
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data
@@ -190,23 +195,6 @@ export default function IssueTable() {
   };
 
   const handleClick = (event: React.MouseEvent<unknown>, data: Data) => {
-    // const selectedIndex = selected.indexOf(name);
-    // let newSelected: readonly string[] = [];
-    //
-    // if (selectedIndex === -1) {
-    //   newSelected = newSelected.concat(selected, name);
-    // } else if (selectedIndex === 0) {
-    //   newSelected = newSelected.concat(selected.slice(1));
-    // } else if (selectedIndex === selected.length - 1) {
-    //   newSelected = newSelected.concat(selected.slice(0, -1));
-    // } else if (selectedIndex > 0) {
-    //   newSelected = newSelected.concat(
-    //     selected.slice(0, selectedIndex),
-    //     selected.slice(selectedIndex + 1)
-    //   );
-    // }
-    //
-    // setSelected(newSelected);
     setEditingRow(data);
     setDialogOpen(true);
 
@@ -278,7 +266,7 @@ export default function IssueTable() {
                           <TableCell align="left">{row.assignee}</TableCell>
                           <TableCell align="left">{row.status}</TableCell>
                           <TableCell align="center">
-                            <RoundButton onClick={() => {}}>
+                            <RoundButton onClick={e => deleteEntry(e, row.key)}>
                               <MdDelete className="inline" />
                             </RoundButton>
                           </TableCell>

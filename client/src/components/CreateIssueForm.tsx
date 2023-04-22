@@ -69,7 +69,7 @@ const issueValidation = yup.object({
   description: yup.string().optional(),
   assignee: yup.string().optional(),
   reporter: yup.string().optional(),
-  status: yup.string().oneOf(['todo', 'in_progress', 'done']).required(),
+  status: yup.string().oneOf(['To Do', 'In Progress', 'Done']).required(),
   priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
 });
 
