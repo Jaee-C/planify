@@ -10,6 +10,8 @@ import {
   TableRow,
   TableSortLabel,
   Paper,
+  styled,
+  TableCellProps,
 } from '@mui/material';
 import {MdDelete} from 'react-icons/md';
 import {IconContext} from 'react-icons';
@@ -20,6 +22,21 @@ import TableToolbar from '@/components/Table/TableToolbar';
 import RoundButton from '@/components/utils/RoundButton';
 import CreateIssueForm from '@/components/CreateIssueForm';
 import type {Data} from '@/interfaces';
+
+const IssueTableCell = styled(TableCell)<TableCellProps>(() => ({
+  '&.MuiTableCell-root': {
+    color: 'rgb(54, 65, 82)',
+    fontWeight: 400,
+    lineHeight: '1.75rem',
+  },
+}));
+
+const IssueHeaderCell = styled(TableCell)<TableCellProps>(() => ({
+  '&.MuiTableCell-root': {
+    color: 'rgb(18, 25, 38)',
+    fontWeight: 600,
+  },
+}));
 
 // Comparator for use in sorting the table rows
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -125,7 +142,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     <TableHead>
       <TableRow>
         {headCells.map(headCell => (
-          <TableCell
+          <IssueHeaderCell
             key={headCell.id}
             align={headCell.id === 'key' ? 'center' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
@@ -143,9 +160,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                 </Box>
               ) : null}
             </TableSortLabel>
-          </TableCell>
+          </IssueHeaderCell>
         ))}
-        <TableCell size="small"></TableCell>
+        <IssueHeaderCell size="small">Priority</IssueHeaderCell>
+        <IssueHeaderCell size="small"></IssueHeaderCell>
       </TableRow>
     </TableHead>
   );
@@ -230,7 +248,7 @@ export default function IssueTable() {
             <Table
               sx={{minWidth: 750}}
               aria-labelledby="tableTitle"
-              size="medium"
+              size="small"
             >
               <EnhancedTableHead
                 order={order}
@@ -253,7 +271,7 @@ export default function IssueTable() {
                           tabIndex={-1}
                           key={row.key}
                         >
-                          <TableCell
+                          <IssueTableCell
                             component="th"
                             id={labelId}
                             scope="row"
@@ -261,15 +279,22 @@ export default function IssueTable() {
                             align="center"
                           >
                             {row.key}
-                          </TableCell>
-                          <TableCell align="left">{row.title}</TableCell>
-                          <TableCell align="left">{row.assignee}</TableCell>
-                          <TableCell align="left">{row.status}</TableCell>
-                          <TableCell align="center">
+                          </IssueTableCell>
+                          <IssueTableCell>
+                            <a className="hover:underline">{row.title}</a>
+                          </IssueTableCell>
+                          <IssueTableCell className="w-32">
+                            {row.assignee}
+                          </IssueTableCell>
+                          <IssueTableCell className="w-28">
+                            {row.status}
+                          </IssueTableCell>
+                          <IssueTableCell className="w-24">low</IssueTableCell>
+                          <IssueTableCell className="w-10">
                             <RoundButton onClick={e => deleteEntry(e, row.key)}>
                               <MdDelete className="inline" />
                             </RoundButton>
-                          </TableCell>
+                          </IssueTableCell>
                         </TableRow>
                       );
                     })}

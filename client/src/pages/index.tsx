@@ -4,7 +4,7 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 
 import BaseSidebar from '@/components/Sidebar/BaseSidebar';
 import TopNavigation from '@/components/TopNavigation/TopNavigation';
-import IssueTable from '@/components/IssueTable';
+import BacklogWrapper from '@/components/BacklogWrapper';
 
 const queryClient = new QueryClient();
 
@@ -27,8 +27,8 @@ export default function Home() {
         >
           <BaseSidebar />
           <QueryClientProvider client={queryClient}>
-            <div className="p-5 flex-grow">
-              <IssueTable />
+            <div className="p-5 flex-grow bg-slate-100">
+              <BacklogWrapper />
             </div>
           </QueryClientProvider>
         </div>
