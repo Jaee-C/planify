@@ -12,7 +12,7 @@ public class Issue {
     private String id;
     private String title;
     private String description;
-    private String status;
+    private IssueStatus status;
     private User assignee;
     private List<User> allowedUsers = new ArrayList<>();
 
@@ -21,16 +21,16 @@ public class Issue {
         this.id = "1";
         this.title = "Issue 1";
         this.description = "This is issue 1";
-        this.status = "open";
+        this.status = IssueStatus.OPEN;
         this.assignee = allowedUsers.get(0);
     }
 
-    public Issue(String id, String title, String description, String status) {
+    public Issue(String id, String title, String description, int statusId) {
         this.allowedUsers.add(new User());
         this.id = id;
         this.title = title;
         this.description = description;
-        this.status = status;
+        this.status = IssueStatus.fromInt(statusId);;
         this.assignee = allowedUsers.get(0);
     }
 
@@ -58,12 +58,12 @@ public class Issue {
         this.description = description;
     }
 
-    public String getStatus() {
+    public IssueStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatus(int statusId) {
+        this.status = IssueStatus.fromInt(statusId);;
     }
 
     public String getAssignee() {

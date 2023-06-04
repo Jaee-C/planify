@@ -2,6 +2,7 @@ package com.github.jaeec.projectsight.service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -21,13 +22,13 @@ public class IssueService {
         return issueDb.get(id);
     }
 
-    public Collection<Issue> getAll() {
-        return issueDb.values();
+    public List<Issue> getAll() {
+        return issueDb.values().stream().toList();
     }
 
-    public void save(String title, String description, String status) {
+    public void save(String title, String description, int statusId) {
         String newId = Integer.toString(issueDb.size() + 1);
-        Issue temp = new Issue(newId, title, description, status);
+        Issue temp = new Issue(newId, title, description, statusId);
         issueDb.put(temp.getId(), temp);
     }
 }
