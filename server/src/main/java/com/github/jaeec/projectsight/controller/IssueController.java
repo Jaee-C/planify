@@ -1,7 +1,11 @@
 package com.github.jaeec.projectsight.controller;
 
-import com.github.jaeec.projectsight.model.*;
-import com.github.jaeec.projectsight.service.IssueService;
+import com.github.jaeec.projectsight.exceptions.NotFoundException;
+import com.github.jaeec.projectsight.exceptions.PermissionNotAllowedException;
+import com.github.jaeec.projectsight.repository.IssueRepository;
+import com.github.jaeec.projectsight.service.Issue;
+import com.github.jaeec.projectsight.service.IssueRequest;
+import com.github.jaeec.projectsight.service.Project;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +16,7 @@ import java.util.List;
 @RestController
 @ResponseStatus(code = HttpStatus.OK)
 public class IssueController {
-    private final IssueService issueService = new IssueService();
+    private final IssueRepository issueRepository = new IssueRepository();
     private final Project project = new Project("1");
 
     @GetMapping("/issues")

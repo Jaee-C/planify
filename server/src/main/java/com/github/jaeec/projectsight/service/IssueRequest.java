@@ -1,4 +1,4 @@
-package com.github.jaeec.projectsight.model;
+package com.github.jaeec.projectsight.service;
 
 public class IssueRequest {
   public String title;

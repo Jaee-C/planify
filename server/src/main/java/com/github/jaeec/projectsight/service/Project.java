@@ -1,14 +1,18 @@
-package com.github.jaeec.projectsight.model;
+package com.github.jaeec.projectsight.service;
 
-import com.github.jaeec.projectsight.service.IssueService;
+import com.github.jaeec.projectsight.exceptions.NotFoundException;
+import com.github.jaeec.projectsight.exceptions.PermissionNotAllowedException;
+import com.github.jaeec.projectsight.repository.IssueRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class Project {
   private String id;
   private List<Issue> issues = new ArrayList<>();
-  private final IssueService issueService = new IssueService();
+  private final IssueRepository issueRepository = new IssueRepository();
 
   public Project(String id) {
     this.id = id;
@@ -51,7 +55,7 @@ public class Project {
   }
 
   public List<Issue> getAllIssues() {
-    issues = issueService.getAll();
+    issues = issueRepository.getAll();
     return issues;
   }
 

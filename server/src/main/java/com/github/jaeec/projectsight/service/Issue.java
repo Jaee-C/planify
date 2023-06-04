@@ -1,14 +1,14 @@
-package com.github.jaeec.projectsight.model;
+package com.github.jaeec.projectsight.service;
 
 import jakarta.persistence.Table;
 import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name="ISSUE")
+@Service
 public class Issue {
-    @Id
     private String id;
     private String title;
     private String description;
@@ -17,21 +17,19 @@ public class Issue {
     private List<User> allowedUsers = new ArrayList<>();
 
     public Issue() {
-        this.allowedUsers.add(new User());
         this.id = "1";
-        this.title = "Issue 1";
-        this.description = "This is issue 1";
+        this.title = "";
+        this.description = "";
         this.status = IssueStatus.OPEN;
-        this.assignee = allowedUsers.get(0);
+        this.assignee = null;
     }
 
     public Issue(String id, String title, String description, int statusId) {
-        this.allowedUsers.add(new User());
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = IssueStatus.fromInt(statusId);;
-        this.assignee = allowedUsers.get(0);
+        this.assignee = null;
     }
 
     public String getId() {
@@ -66,13 +64,13 @@ public class Issue {
         this.status = IssueStatus.fromInt(statusId);;
     }
 
-    public String getAssignee() {
-        return assignee.getName();
+    public User getAssignee() {
+        return assignee;
     }
 
-    public void setAssignee(String assigneeId) {
+    public void setAssignee(User assignee) {
         for (User user : allowedUsers) {
-            if (user.getId().equals(assigneeId)) {
+            if (user.equals(assignee)) {
                 this.assignee = user;
             }
         }
