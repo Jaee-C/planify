@@ -12,7 +12,7 @@ import java.util.List;
 public class Project {
   private String id;
   private List<Issue> issues = new ArrayList<>();
-  private final IssueRepository issueRepository = new IssueRepository();
+  private IssueRepository issueRepository = new IssueRepository();
 
   public Project(String id) {
     this.id = id;
@@ -21,6 +21,7 @@ public class Project {
 
   public void addIssue(Issue issue) {
     issues.add(issue);
+    issueRepository.save(issue);
   }
 
   public Issue findIssue(String id) {
@@ -34,24 +35,43 @@ public class Project {
 
   public void editIssue(String id, IssueRequest request) throws NotFoundException, PermissionNotAllowedException {
     Issue issue = findIssue(id);
-
     if (issue == null) {
       throw new NotFoundException("Issue not found");
     }
 
+    createIssue(request, issue);
+    issueRepository.save(issue);
+  }
+
+  public void addIssue(IssueRequest request) {
+    String newId = Integer.toString(issues.size() + 1);
+    Issue newIssue = new Issue();
+    createIssue(request, newIssue);
+    newIssue.setId(newId);
+    issueRepository.save(newIssue);
+  }
+
+  private void createIssue(IssueRequest request, Issue newIssue) {
     if (request.title != null) {
-      issue.setTitle(request.title);
+      newIssue.setTitle(request.title);
     }
     if (request.description != null) {
-      issue.setDescription(request.description);
+      newIssue.setDescription(request.description);
     }
     if (request.status != 0) {
-      issue.setStatus(request.status);
+      newIssue.setStatus(request.status);
     }
     if (request.assigneeId != 0) {
       // set assignee
     }
+  }
 
+  public void deleteIssue(String id) throws NotFoundException, PermissionNotAllowedException {
+    Issue issue = findIssue(id);
+    if (issue == null) {
+      throw new NotFoundException("Issue not found");
+    }
+    issues.remove(issue);
   }
 
   public List<Issue> getAllIssues() {

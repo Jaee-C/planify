@@ -16,7 +16,6 @@ import java.util.List;
 @RestController
 @ResponseStatus(code = HttpStatus.OK)
 public class IssueController {
-    private final IssueRepository issueRepository = new IssueRepository();
     private final Project project = new Project("1");
 
     @GetMapping("/issues")
@@ -41,6 +40,38 @@ public class IssueController {
 
         try {
             project.editIssue(issueId, updatedIssue);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Issue not found", e
+            );
+        } catch (PermissionNotAllowedException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "Permission not allowed", e
+            );
+        }
+    }
+
+    @PostMapping("/issues")
+    public void newIssue(@RequestBody JSONObject issue) {
+        IssueRequest newIssue = new IssueRequest();
+
+        // Parse JSON request
+        if (issue.containsKey("title"))
+            newIssue.title = (String) issue.get("title");
+        if (issue.containsKey("description"))
+            newIssue.description = (String) issue.get("description");
+        if (issue.containsKey("status"))
+            newIssue.status = Integer.parseInt((String) issue.get("status"));
+        if (issue.containsKey("assignee"))
+            newIssue.assigneeId = Integer.parseInt((String) issue.get("assignee"));
+
+        project.addIssue(newIssue);
+    }
+
+    @DeleteMapping("/issues/{issueId}")
+    public void deleteIssue(@PathVariable(value="issueId") String issueId) {
+        try {
+            project.deleteIssue(issueId);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST, "Issue not found", e

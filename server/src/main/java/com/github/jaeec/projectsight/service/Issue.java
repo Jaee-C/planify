@@ -1,7 +1,5 @@
 package com.github.jaeec.projectsight.service;
 
-import jakarta.persistence.Table;
-import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
