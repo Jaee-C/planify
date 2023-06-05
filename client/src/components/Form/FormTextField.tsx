@@ -1,11 +1,30 @@
 import React from 'react';
-import {InputAdornment, TextField, ListItem} from '@mui/material';
+import {TextField, styled} from '@mui/material';
 
-import {MdCreate} from 'react-icons/md';
+const StyledFormField = styled(TextField)(() => ({
+  '& .MuiOutlinedInput-root': {
+    color: 'rgb(54, 65, 82)',
+    background: 'rgb(248, 250, 252)',
+    borderRadius: 8,
+    fontSize: '0.875rem',
+    padding: 0,
+  },
+  '& .MuiOutlinedInput-input': {
+    padding: '15.5px 14px',
+    color: 'rgb(18, 25, 38)',
+    fontWeight: 500,
+  },
+  '& .MuiInputLabel-root': {
+    fontSize: '0.875rem',
+  },
+  '&.Mui-focused': {
+    color: 'rgb(33, 150, 243)',
+  },
+}));
 
-interface FormTextFieldProps {
+export interface FormTextFieldProps {
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   disabled?: boolean;
   multiline?: boolean;
@@ -20,7 +39,7 @@ interface FormTextFieldProps {
 export default function FormTextField({
   name,
   label,
-  placeholder,
+  placeholder = undefined,
   disabled,
   multiline,
   rows,
@@ -30,19 +49,15 @@ export default function FormTextField({
   error,
   helperText,
 }: FormTextFieldProps) {
-  const lowerlabel = label.toLowerCase();
-  placeholder = placeholder || `Please insert the ${lowerlabel} here...`;
-
   return (
-    <ListItem className="pr-4">
-      <TextField
+    <>
+      <StyledFormField
         fullWidth
         placeholder={placeholder}
         type="text"
         multiline={multiline}
         rows={rows}
         label={label}
-        InputLabelProps={{shrink: true}}
         value={value}
         disabled={disabled}
         name={name}
@@ -50,22 +65,9 @@ export default function FormTextField({
         onChange={onChange}
         error={error}
         helperText={helperText}
-        variant="standard"
-        InputProps={{
-          endAdornment: (
-            <InputAdornment
-              position="end"
-              className="self-center cursor-pointer"
-            >
-              <MdCreate
-                fontSize="small"
-                style={{color: '#757575', alignSelf: 'center'}}
-              />
-            </InputAdornment>
-          ),
-        }}
+        variant="outlined"
       />
-    </ListItem>
+    </>
   );
 }
 

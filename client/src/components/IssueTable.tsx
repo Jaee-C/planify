@@ -20,7 +20,7 @@ import {useQuery} from 'react-query';
 
 import TableToolbar from '@/components/Table/TableToolbar';
 import RoundButton from '@/components/utils/RoundButton';
-import CreateIssueForm from '@/components/CreateIssueForm';
+import IssueEditDialog from '@/components/IssueEditDialog';
 import type {Data} from '@/interfaces';
 
 const IssueTableCell = styled(TableCell)<TableCellProps>(() => ({
@@ -188,7 +188,7 @@ export default function IssueTable() {
   );
   const {data: rows, isLoading} = useQuery<Data[]>('issues', fetchIssueList);
 
-  const deleteEntry = (e: React.MouseEvent, key: string) => {
+  const deleteEntry = (e: React.MouseEvent, key: string|undefined) => {
     console.log('deleting ' + key);
     if (e.stopPropagation) e.stopPropagation();
   };
@@ -277,6 +277,7 @@ export default function IssueTable() {
                             scope="row"
                             padding="none"
                             align="center"
+                            className="w-14"
                           >
                             {row.key}
                           </IssueTableCell>
@@ -321,7 +322,7 @@ export default function IssueTable() {
           />
         </Paper>
       </Box>
-      <CreateIssueForm
+      <IssueEditDialog
         formOpen={dialogOpen}
         closeForm={handleDialogClose}
         editingIssue={editingRow}

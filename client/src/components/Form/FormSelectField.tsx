@@ -2,18 +2,38 @@ import React from 'react';
 import {
   FormControl,
   FormHelperText,
-  Input,
   InputLabel,
   ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
+  styled,
 } from '@mui/material';
 
 interface Options {
   label: any;
   value: string;
 }
+
+const StyledFormField = styled(Select)(() => ({
+  '& .MuiInputBase-input': {
+    padding: '15.5px 14px',
+    color: 'rgb(18, 25, 38)',
+    backgroundColor: 'rgb(248, 250, 252)',
+    fontWeight: 500,
+    borderRadius: 8,
+    fontSize: '0.875rem',
+  },
+  '&.MuiInputBase-root': {
+    borderRadius: '8px',
+  },
+  '& .MuiInputLabel-root': {
+    fontSize: '0.875rem',
+  },
+  '&.Mui-focused': {
+    color: 'rgb(33, 150, 243)',
+  },
+}));
 
 interface FormSelectFieldProps {
   name: string;
@@ -42,31 +62,33 @@ export default function FormSelectField({
   helperText,
 }: FormSelectFieldProps) {
   return (
-    <ListItem className="pr-4">
-      <FormControl className="w-full">
-        <InputLabel shrink>{label}</InputLabel>
-        <Select
-          input={<Input name={name} />}
-          multiple={multiselect}
-          disabled={disabled}
-          defaultValue={defaultValue}
-          onChange={onChange}
-          value={value}
-          error={error}
-        >
-          {options.map((o: Options) => (
-            <MenuItem
-              key={o.value}
-              value={o.value}
-              selected={o.value === value}
-            >
-              {o.label}
-            </MenuItem>
-          ))}
-        </Select>
-        {helperText && <FormHelperText>{helperText}</FormHelperText>}
-      </FormControl>
-    </ListItem>
+    <FormControl variant="outlined" fullWidth className="rounded-lg">
+      <InputLabel id={`form-${label}-label`} shrink>
+        {label}
+      </InputLabel>
+      <StyledFormField
+        labelId={`form-${label}-label`}
+        name={name}
+        multiple={multiselect}
+        disabled={disabled}
+        defaultValue={defaultValue}
+        onChange={onChange}
+        value={value}
+        error={error}
+        label={label}
+      >
+        {options.map((o: Options) => (
+          <MenuItem
+            key={o.value}
+            value={o.value}
+            selected={o.value === value}
+          >
+            {o.label}
+          </MenuItem>
+        ))}
+      </StyledFormField>
+      {helperText && <FormHelperText>{helperText}</FormHelperText>}
+    </FormControl>
   );
 }
 
