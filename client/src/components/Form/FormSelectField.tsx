@@ -1,9 +1,8 @@
-import React from 'react';
+import React from "react";
 import {
   FormControl,
   FormHelperText,
   InputLabel,
-  ListItem,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -43,7 +42,7 @@ interface FormSelectFieldProps {
   multiselect?: boolean;
   defaultValue?: string;
   options: Options[];
-  onChange?: (a: SelectChangeEvent) => void;
+  onChange?: (a: SelectChangeEvent<unknown>, child: React.ReactNode) => void;
   value?: string;
   error?: boolean;
   helperText?: string | false;
@@ -78,11 +77,7 @@ export default function FormSelectField({
         label={label}
       >
         {options.map((o: Options) => (
-          <MenuItem
-            key={o.value}
-            value={o.value}
-            selected={o.value === value}
-          >
+          <MenuItem key={o.value} value={o.value} selected={o.value === value}>
             {o.label}
           </MenuItem>
         ))}

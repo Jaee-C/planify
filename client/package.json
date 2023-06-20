@@ -25,6 +25,7 @@
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@mui/material": "^5.11.11",
+    "@mui/x-data-grid": "^6.8.0",
     "axios": "^1.2.4",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
@@ -37,6 +38,7 @@
     "yup": "^1.0.2"
   },
   "devDependencies": {
+    "@mui/x-data-grid-generator": "^6.8.0",
     "@next/font": "13.1.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",

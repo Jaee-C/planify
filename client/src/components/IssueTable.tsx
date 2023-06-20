@@ -1,174 +1,67 @@
 import * as React from 'react';
+import {Box, Paper} from '@mui/material';
 import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TableSortLabel,
-  Paper,
-  styled,
-  TableCellProps,
-} from '@mui/material';
-import {MdDelete} from 'react-icons/md';
+  DataGrid,
+  GridActionsCellItem,
+  GridColDef,
+  GridRowId,
+  GridRowParams,
+  GridRowsProp,
+} from '@mui/x-data-grid';
+import {MdDelete, MdEdit} from 'react-icons/md';
 import {IconContext} from 'react-icons';
-import {visuallyHidden} from '@mui/utils';
-import {useQuery} from 'react-query';
 
 import TableToolbar from '@/components/Table/TableToolbar';
-import RoundButton from '@/components/utils/RoundButton';
 import IssueEditDialog from '@/components/IssueEditDialog';
 import type {Data} from '@/interfaces';
 
-const IssueTableCell = styled(TableCell)<TableCellProps>(() => ({
-  '&.MuiTableCell-root': {
-    color: 'rgb(54, 65, 82)',
-    fontWeight: 400,
-    lineHeight: '1.75rem',
-  },
-}));
-
-const IssueHeaderCell = styled(TableCell)<TableCellProps>(() => ({
-  '&.MuiTableCell-root': {
-    color: 'rgb(18, 25, 38)',
-    fontWeight: 600,
-  },
-}));
-
-// Comparator for use in sorting the table rows
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-type Order = 'asc' | 'desc';
-
-// Get the comparator based on the current order and column to sort by
-function getComparator<Key extends keyof any>(
-  order: Order,
-  orderBy: Key
-): (
-  a: {[key in Key]: number | string},
-  b: {[key in Key]: number | string}
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// Stable sort function that works in non-modern browsers
-function stableSort<T>(
-  array: readonly T[],
-  comparator: (a: T, b: T) => number
-) {
-  // Add an index to each element of the array to preserve its original position
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    // Compare the elements using the provided comparator function
-    const order = comparator(a[0], b[0]);
-    // If the order is not equal to 0, return it
-    if (order !== 0) {
-      return order;
-    }
-    // If the order is equal to 0, sort the elements based on their original position
-    return a[1] - b[1];
-  });
-  // Return the sorted array without the added index
-  return stabilizedThis.map(el => el[0]);
-}
-
-interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  sortable: boolean;
-}
-
-const headCells: readonly HeadCell[] = [
+const rows: GridRowsProp = [
   {
-    id: 'key',
-    disablePadding: true,
-    label: 'Key',
-    sortable: true,
+    id: 0,
+    key: 'PRJ-1',
+    title: 'Create PoC',
+    assignee: 'Daniel',
+    status: 'In Progress',
+    priority: 'low',
   },
   {
-    id: 'title',
-    disablePadding: false,
-    label: 'Title',
-    sortable: true,
+    id: 1,
+    key: 'IT-2',
+    title: 'Raise Issues',
+    assignee: 'Daniel',
+    status: 'In Progress',
+    priority: 'low',
   },
   {
-    id: 'assignee',
-    disablePadding: false,
-    label: 'Assignee',
-    sortable: true,
-  },
-  {
-    id: 'status',
-    disablePadding: false,
-    label: 'Status',
-    sortable: true,
+    id: 2,
+    key: 'IT-69',
+    title: 'Update Progress on Issues',
+    assignee: 'Daniel',
+    status: 'In Progress',
+    priority: 'low',
   },
 ];
 
-interface EnhancedTableProps {
-  onRequestSort: (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => void;
-  order: Order;
-  orderBy: string;
-}
-
-function EnhancedTableHead(props: EnhancedTableProps) {
-  const {order, orderBy, onRequestSort} = props;
-  const createSortHandler =
-    (property: keyof Data, sortable: boolean) =>
-    (event: React.MouseEvent<unknown>) => {
-      if (sortable) {
-        onRequestSort(event, property);
-      }
-    };
-
-  return (
-    <TableHead>
-      <TableRow>
-        {headCells.map(headCell => (
-          <IssueHeaderCell
-            key={headCell.id}
-            align={headCell.id === 'key' ? 'center' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id, headCell.sortable)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-          </IssueHeaderCell>
-        ))}
-        <IssueHeaderCell size="small">Priority</IssueHeaderCell>
-        <IssueHeaderCell size="small"></IssueHeaderCell>
-      </TableRow>
-    </TableHead>
-  );
-}
-
+const data: Data[] = [
+  {
+    key: 'PRJ-1',
+    title: 'Create PoC',
+    assignee: 'Daniel',
+    status: 'In Progress',
+  },
+  {
+    key: 'PRJ-2',
+    title: 'Raise Issues',
+    assignee: 'Daniel',
+    status: 'In Progress',
+  },
+  {
+    key: 'IT-69',
+    title: 'Update Progress on Issues',
+    assignee: 'Daniel',
+    status: 'In Progress',
+  },
+];
 async function fetchIssueList() {
   const response = await fetch('/api/issues', {method: 'GET'});
   if (!response.ok) {
@@ -178,30 +71,10 @@ async function fetchIssueList() {
 }
 
 export default function IssueTable() {
-  const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('key');
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [editingRow, setEditingRow] = React.useState<Data | undefined>(
     undefined
   );
-  const {data: rows, isLoading} = useQuery<Data[]>('issues', fetchIssueList);
-
-  const deleteEntry = (e: React.MouseEvent, key: string|undefined) => {
-    console.log('deleting ' + key);
-    if (e.stopPropagation) e.stopPropagation();
-  };
-
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data
-  ) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
   const handleFormOpen = () => {
     setEditingRow(undefined);
     setDialogOpen(true);
@@ -212,29 +85,59 @@ export default function IssueTable() {
     setDialogOpen(false);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, data: Data) => {
-    setEditingRow(data);
-    setDialogOpen(true);
+  const handleEdit = React.useCallback(
+    (id: GridRowId) => () => {
+      const row = data[id];
+      setEditingRow(row);
+      setDialogOpen(true);
+    },
+    []
+  );
 
-    console.log(`Selected entry ${name}`);
-  };
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    rows !== undefined && page > 0
-      ? Math.max(0, (1 + page) * rowsPerPage - rows.length)
-      : 0;
+  const columns: GridColDef[] = [
+    {field: 'key', headerName: 'Key', width: 100},
+    {
+      field: 'title',
+      headerName: 'Title',
+      editable: true,
+      align: 'left',
+      flex: 1,
+      minWidth: 125,
+    },
+    {
+      field: 'assignee',
+      headerName: 'Assignee',
+      editable: true,
+      align: 'left',
+      width: 150,
+    },
+    {
+      field: 'status',
+      headerName: 'Status',
+      editable: true,
+      align: 'left',
+      width: 150,
+    },
+    {
+      field: 'priority',
+      headerName: 'Priority',
+      editable: true,
+      width: 100,
+    },
+    {
+      field: 'actions',
+      type: 'actions',
+      width: 100,
+      getActions: (params: GridRowParams) => [
+        <GridActionsCellItem label="Delete" icon={<MdDelete />} />,
+        <GridActionsCellItem
+          label="Edit"
+          icon={<MdEdit />}
+          onClick={handleEdit(params.id)}
+        />,
+      ],
+    },
+  ];
 
   return (
     <IconContext.Provider value={{size: '16px'}}>
@@ -244,81 +147,14 @@ export default function IssueTable() {
           className="bg-transparent shadow-none"
         >
           <TableToolbar openForm={handleFormOpen} />
-          <TableContainer>
-            <Table
-              sx={{minWidth: 750}}
-              aria-labelledby="tableTitle"
-              size="small"
-            >
-              <EnhancedTableHead
-                order={order}
-                orderBy={orderBy}
-                onRequestSort={handleRequestSort}
-              />
-              <TableBody>
-                {!isLoading &&
-                  rows !== undefined &&
-                  stableSort(rows, getComparator(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row: Data, index) => {
-                      const labelId = `issue-table-entry-${index}`;
-
-                      return (
-                        <TableRow
-                          hover
-                          onClick={event => handleClick(event, row)}
-                          role="button"
-                          tabIndex={-1}
-                          key={row.key}
-                        >
-                          <IssueTableCell
-                            component="th"
-                            id={labelId}
-                            scope="row"
-                            padding="none"
-                            align="center"
-                            className="w-14"
-                          >
-                            {row.key}
-                          </IssueTableCell>
-                          <IssueTableCell>
-                            <a className="hover:underline">{row.title}</a>
-                          </IssueTableCell>
-                          <IssueTableCell className="w-32">
-                            {row.assignee}
-                          </IssueTableCell>
-                          <IssueTableCell className="w-28">
-                            {row.status}
-                          </IssueTableCell>
-                          <IssueTableCell className="w-24">low</IssueTableCell>
-                          <IssueTableCell className="w-10">
-                            <RoundButton onClick={e => deleteEntry(e, row.key)}>
-                              <MdDelete className="inline" />
-                            </RoundButton>
-                          </IssueTableCell>
-                        </TableRow>
-                      );
-                    })}
-                {emptyRows > 0 && (
-                  <TableRow
-                    style={{
-                      height: 53 * emptyRows,
-                    }}
-                  >
-                    <TableCell colSpan={6} />
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={rows?.length ?? 0}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
+          <DataGrid
+            sx={{
+              '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+                outline: 'none !important',
+              },
+            }}
+            columns={columns}
+            rows={rows}
           />
         </Paper>
       </Box>

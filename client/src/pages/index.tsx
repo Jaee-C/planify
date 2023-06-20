@@ -22,12 +22,12 @@ export default function Home() {
             display: 'flex',
             height: '95vh',
             minHeight: '400px',
-            width: '100%',
+            maxWidth: '100%',
           }}
         >
           <BaseSidebar />
           <QueryClientProvider client={queryClient}>
-            <div className="p-5 flex-grow bg-slate-100">
+            <div className="p-5 flex-grow bg-slate-100 w-28">
               <BacklogWrapper />
             </div>
           </QueryClientProvider>
