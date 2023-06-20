@@ -1,6 +1,7 @@
 export interface Data {
-  key?: string;
-  title?: string;
-  assignee?: string;
-  status?: string;
+  id: number;
+  project: string;
+  title: string;
+  assignee: string;
+  status: string;
 }
