@@ -24,19 +24,9 @@ public class IssueController {
     }
 
     @PostMapping("/issues/{issueId}")
-    public void updateIssue(@PathVariable(value="issueId") String issueId,
+    public void updateIssue(@PathVariable(value="issueId") int issueId,
                                            @RequestBody JSONObject issue) {
-        IssueRequest updatedIssue = new IssueRequest();
-
-        // Parse JSON request
-        if (issue.containsKey("title"))
-            updatedIssue.title = (String) issue.get("title");
-        if (issue.containsKey("description"))
-            updatedIssue.description = (String) issue.get("description");
-        if (issue.containsKey("status"))
-            updatedIssue.status = Integer.parseInt((String) issue.get("status"));
-        if (issue.containsKey("assignee"))
-            updatedIssue.assigneeId = Integer.parseInt((String) issue.get("assignee"));
+        IssueRequest updatedIssue = new IssueRequest(issue);
 
         try {
             project.editIssue(issueId, updatedIssue);
@@ -53,23 +43,13 @@ public class IssueController {
 
     @PostMapping("/issues")
     public void newIssue(@RequestBody JSONObject issue) {
-        IssueRequest newIssue = new IssueRequest();
-
-        // Parse JSON request
-        if (issue.containsKey("title"))
-            newIssue.title = (String) issue.get("title");
-        if (issue.containsKey("description"))
-            newIssue.description = (String) issue.get("description");
-        if (issue.containsKey("status"))
-            newIssue.status = Integer.parseInt((String) issue.get("status"));
-        if (issue.containsKey("assignee"))
-            newIssue.assigneeId = Integer.parseInt((String) issue.get("assignee"));
+        IssueRequest newIssue = new IssueRequest(issue);
 
         project.addIssue(newIssue);
     }
 
     @DeleteMapping("/issues/{issueId}")
-    public void deleteIssue(@PathVariable(value="issueId") String issueId) {
+    public void deleteIssue(@PathVariable(value="issueId") int issueId) {
         try {
             project.deleteIssue(issueId);
         } catch (NotFoundException e) {

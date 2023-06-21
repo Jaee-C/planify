@@ -1,13 +1,14 @@
 package com.github.jaeec.projectsight.service;
 
+import org.springframework.data.annotation.Id;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class Issue {
-    private String id;
+    @Id
+    private int id;
     private String title;
     private String description;
     private IssueStatus status;
@@ -15,14 +16,14 @@ public class Issue {
     private List<User> allowedUsers = new ArrayList<>();
 
     public Issue() {
-        this.id = "1";
+        this.id = 0;
         this.title = "";
         this.description = "";
         this.status = IssueStatus.OPEN;
         this.assignee = null;
     }
 
-    public Issue(String id, String title, String description, int statusId) {
+    public Issue(int id, String title, String description, int statusId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -30,11 +31,11 @@ public class Issue {
         this.assignee = null;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

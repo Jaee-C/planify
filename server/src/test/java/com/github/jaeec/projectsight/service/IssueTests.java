@@ -23,7 +23,7 @@ public class IssueTests {
 
   @Test
   void newCustomIssueStatusId() {
-    Issue newIssue = new Issue("1", "title", "description", 1);
+    Issue newIssue = new Issue(1, "title", "description", 1);
 
     assertEquals(newIssue.getTitle(), "title");
     assertEquals(newIssue.getDescription(), "description");

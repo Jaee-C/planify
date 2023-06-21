@@ -10,14 +10,19 @@ import java.util.Map;
 
 @Repository
 public class IssueRepository {
-  private List<Issue> issueDb = new ArrayList<>();
+  private final List<Issue> issueDb = new ArrayList<>();
 
   public IssueRepository() {
+    issueDb.add(new Issue(1, "Create PoC", "PoC", 1));
+    issueDb.add(new Issue(2, "Raise Issues", "PoC", 1));
+    issueDb.add(new Issue(3, "Record all issues", "PoC", 1));
+    issueDb.add(new Issue(4, "Manage Issues", "PoC", 1));
+    issueDb.add(new Issue(5, "Notify Users", "PoC", 1));
   }
 
-  public Issue get(String id) {
+  public Issue get(int id) {
     for (Issue issue : issueDb) {
-      if (issue.getId().equals(id)) {
+      if (issue.getId() == id) {
         return issue;
       }
     }
@@ -29,19 +34,19 @@ public class IssueRepository {
   }
 
   public void save(String title, String description, int statusId) {
-    String newId = Integer.toString(issueDb.size() + 1);
+    int newId = issueDb.size() + 1;
     Issue temp = new Issue(newId, title, description, statusId);
     issueDb.add(temp);
   }
 
   public void save(Issue issue) {
-    String newId = Integer.toString(issueDb.size() + 1);
+    int newId = issueDb.size() + 1;
     issue.setId(newId);
     issueDb.add(issue);
   }
 
-  public void delete(Issue issue) {
+  public void delete(int id) {
+    Issue issue = get(id);
     issueDb.remove(issue);
-    return;
   }
 }

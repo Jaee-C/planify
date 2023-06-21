@@ -8,14 +8,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
 public class Project {
-  private String id;
-  private List<Issue> issues = new ArrayList<>();
+  private String projectId;
+  private List<Issue> issues;
   private IssueRepository issueRepository = new IssueRepository();
 
-  public Project(String id) {
-    this.id = id;
+  public Project(String projectId) {
+    this.projectId = projectId;
     this.issues = new ArrayList<>();   // Fetch issues from database given project id
   }
 
@@ -24,16 +23,16 @@ public class Project {
     issueRepository.save(issue);
   }
 
-  public Issue findIssue(String id) {
+  public Issue findIssue(int id) {
     for (Issue issue : issues) {
-      if (issue.getId().equals(id)) {
+      if (issue.getId() == id) {
         return issue;
       }
     }
     return null;
   }
 
-  public void editIssue(String id, IssueRequest request) throws NotFoundException, PermissionNotAllowedException {
+  public void editIssue(int id, IssueRequest request) throws NotFoundException, PermissionNotAllowedException {
     Issue issue = findIssue(id);
     if (issue == null) {
       throw new NotFoundException("Issue not found");
@@ -44,7 +43,7 @@ public class Project {
   }
 
   public void addIssue(IssueRequest request) {
-    String newId = Integer.toString(issues.size() + 1);
+    int newId = issues.size() + 1;
     Issue newIssue = new Issue();
     createIssue(request, newIssue);
     newIssue.setId(newId);
@@ -66,12 +65,8 @@ public class Project {
     }
   }
 
-  public void deleteIssue(String id) throws NotFoundException, PermissionNotAllowedException {
-    Issue issue = findIssue(id);
-    if (issue == null) {
-      throw new NotFoundException("Issue not found");
-    }
-    issues.remove(issue);
+  public void deleteIssue(int id) throws NotFoundException, PermissionNotAllowedException {
+    issueRepository.delete(id);
   }
 
   public List<Issue> getAllIssues() {

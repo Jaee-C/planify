@@ -1,14 +1,19 @@
 package com.github.jaeec.projectsight.service;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Service;
+
 import java.util.Objects;
 
+@Service
 public class User {
-    private String id;
+    @Id
+    private int id;
     private String name;
     private String email;
     private String role;
     public User() {
-        this.id = "1";
+        this.id = 1;
         this.name = "Daniel Chin";
         this.email = "cheche@daniel.org";
         this.role = "owner";
@@ -18,7 +23,7 @@ public class User {
         return name;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 

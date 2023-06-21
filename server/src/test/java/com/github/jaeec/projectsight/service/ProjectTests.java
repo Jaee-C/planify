@@ -17,7 +17,7 @@ public class ProjectTests {
   @Test
   void addIssueToProject() {
     Project newProject = new Project("1");
-    Issue newIssue = new Issue("1", "title", "description", 1);
+    Issue newIssue = new Issue(1, "title", "description", 1);
     newProject.addIssue(newIssue);
 
     // Empty Project
@@ -27,7 +27,7 @@ public class ProjectTests {
   @Test
   void editValidIssueInProject() {
     Project newProject = new Project("1");
-    Issue newIssue = new Issue("1", "title", "description", 1);
+    Issue newIssue = new Issue(1, "title", "description", 1);
     newProject.addIssue(newIssue);
     IssueRequest request = new IssueRequest();
     request.title = "new title";
@@ -35,10 +35,10 @@ public class ProjectTests {
     request.status = IssueStatus.IN_PROGRESS.toInt();
     request.assigneeId = 1;
 
-    assertAll(() ->newProject.editIssue("1", request));
+    assertAll(() ->newProject.editIssue(1, request));
     assertEquals(newProject.getAllIssues().size(), 1);
 
-    Issue editedIssue = newProject.findIssue("1");
+    Issue editedIssue = newProject.findIssue(1);
     assertEquals(editedIssue.getTitle(), "new title");
     assertEquals(editedIssue.getDescription(), "new description");
     assertEquals(editedIssue.getStatus(), IssueStatus.IN_PROGRESS);
