@@ -7,7 +7,7 @@ import React from 'react';
 import * as yup from 'yup';
 import {useMutation, useQueryClient} from 'react-query';
 import {useFormik} from 'formik';
-import {Data} from '@/interfaces';
+import {UIIssue} from '@/interfaces';
 import {EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES} from './FormConstants';
 
 const FormRow = styled(Grid)(() => ({
@@ -27,7 +27,7 @@ const issueValidation = yup.object({
   priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
 });
 
-function addIssue(data: Data) {
+function addIssue(data: UIIssue) {
   return fetch('/api/issues', {
     method: 'POST',
     headers: {
@@ -40,7 +40,7 @@ function addIssue(data: Data) {
 export interface IssueFormProps {
   formOpen: boolean;
   closeForm: () => void;
-  editingIssue?: Data;
+  editingIssue?: UIIssue;
 }
 
 export default function IssueForm(props: IssueFormProps) {

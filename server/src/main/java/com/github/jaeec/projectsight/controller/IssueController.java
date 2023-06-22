@@ -18,6 +18,11 @@ import java.util.List;
 public class IssueController {
     private final Project project = new Project("1");
 
+    @GetMapping("/projectId")
+    public String getProjectId() {
+        return "IT";
+    }
+
     @GetMapping("/issues")
     public List<Issue> getIssues() {
         return project.getAllIssues();

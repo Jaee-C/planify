@@ -29,7 +29,8 @@
       "requireReturnDescription": false,
       "requireReturnType": false
     }],
-    "require-jsdoc": "off"
+    "require-jsdoc": "off",
+    "no-case-declarations": "off"
   },
   "ignorePatterns": ["*.config.*", "*.test.*", "coverage/*"]
 }

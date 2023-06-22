@@ -13,17 +13,18 @@ import {IconContext} from 'react-icons';
 
 import TableToolbar from '@/components/Table/TableToolbar';
 import IssueEditDialog from '@/components/IssueEditDialog';
-import type {Data} from '@/interfaces';
-import {useQuery} from 'react-query';
+import type {UIIssue} from '@/interfaces';
+import {QueryClient, useMutation, useQuery, useQueryClient} from 'react-query';
 import {fetchIssueList} from '@/data/issues';
 
 export default function IssueTable() {
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [editingRow, setEditingRow] = React.useState<Data | undefined>(
+  const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
+  const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
     undefined
   );
-  const {data, isLoading} = useQuery<Data[]>('issues', fetchIssueList);
+  const {data, isLoading} = useQuery<UIIssue[]>('issues', fetchIssueList);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
+  const queryClient: QueryClient = useQueryClient();
 
   React.useEffect(() => {
     if (!isLoading && data && data.length > 0) {
@@ -64,6 +65,18 @@ export default function IssueTable() {
     [data]
   );
 
+  const deleteIssue = useMutation((id: GridRowId) => {
+    return fetch(`/api/issue/${id}`, {
+      method: 'DELETE',
+    });
+  });
+
+  const handleDelete = (id: GridRowId) => {
+    deleteIssue.mutate(id);
+    queryClient.invalidateQueries('issues');
+    setRows(rows.filter(row => row.id !== id));
+  };
+
   const columns: GridColDef[] = [
     {field: 'key', headerName: 'Key', width: 100},
     {
@@ -98,7 +111,11 @@ export default function IssueTable() {
       type: 'actions',
       width: 100,
       getActions: (params: GridRowParams) => [
-        <GridActionsCellItem label="Delete" icon={<MdDelete />} />,
+        <GridActionsCellItem
+          label="Delete"
+          icon={<MdDelete />}
+          onClick={() => handleDelete(params.id)}
+        />,
         <GridActionsCellItem
           label="Edit"
           icon={<MdEdit />}
