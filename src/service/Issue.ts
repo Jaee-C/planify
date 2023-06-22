@@ -14,7 +14,8 @@ export function createIssueRequest(req: NextApiRequest): IssueRequest {
 
   if (req.body.title) res.title = req.body.title;
   if (req.body.description) res.description = req.body.description;
-  if (req.body.status) res.status = req.body.status;
+  if (req.body.status && verifyStatus(req.body.status))
+    res.status = req.body.status;
   if (req.body.assignee) res.assignee = req.body.assignee;
 
   return res;
@@ -41,4 +42,15 @@ export function deleteIssue(id: number): void {
 
 export function getAllIssues(): ServerIssue[] | string {
   return IssueDAO.fetchAllIssues();
+}
+
+function verifyStatus(req: string): boolean {
+  const status: number = parseInt(req);
+
+  if (Number.isNaN(status)) {
+    console.log('Status is not a number.');
+    return false;
+  }
+
+  return status == 1 || status == 2 || status == 3;
 }

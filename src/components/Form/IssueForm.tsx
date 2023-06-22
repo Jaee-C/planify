@@ -8,7 +8,13 @@ import * as yup from 'yup';
 import {useMutation, useQueryClient} from 'react-query';
 import {useFormik} from 'formik';
 import {UIIssue} from '@/interfaces';
-import {EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES} from './FormConstants';
+import {
+  EMPTY_FORM,
+  formValues,
+  ISSUE_PRIORITIES,
+  ISSUE_STATUSES,
+} from './FormConstants';
+import {addIssue, convertStatusToNum} from '@/components/data/issues';
 
 const FormRow = styled(Grid)(() => ({
   '&.MuiGrid-item': {
@@ -18,24 +24,13 @@ const FormRow = styled(Grid)(() => ({
 }));
 
 const issueValidation = yup.object({
-  key: yup.string(),
   title: yup.string().required('Enter a title'),
   description: yup.string().optional(),
   assignee: yup.string().optional(),
   reporter: yup.string().optional(),
-  status: yup.string().oneOf(['To Do', 'In Progress', 'Done']).required(),
+  status: yup.number().oneOf([1, 2, 3]).required(),
   priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
 });
-
-function addIssue(data: UIIssue) {
-  return fetch('/api/issues', {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-}
 
 export interface IssueFormProps {
   formOpen: boolean;
@@ -45,31 +40,31 @@ export interface IssueFormProps {
 
 export default function IssueForm(props: IssueFormProps) {
   const queryClient = useQueryClient();
-  const mutation = useMutation({
+  const newIssueMutation = useMutation({
     mutationFn: addIssue,
     onSuccess: () => {
       queryClient.invalidateQueries('issues');
     },
   });
 
-  const baseForm = EMPTY_FORM;
+  const baseForm: formValues = EMPTY_FORM;
   if (props.editingIssue !== undefined) {
-    baseForm.key = props.editingIssue.key;
+    baseForm.id = props.editingIssue.id;
+    baseForm.project = props.editingIssue.project;
     baseForm.title = props.editingIssue.title;
     baseForm.assignee = props.editingIssue.assignee;
-    baseForm.status = props.editingIssue.status;
+    baseForm.status = convertStatusToNum(props.editingIssue.status);
   }
 
   const formik = useFormik({
     initialValues: baseForm,
     validationSchema: issueValidation,
-    onSubmit: values => {
+    onSubmit: (values: formValues) => {
       alert(JSON.stringify(values, null, 2));
-      values.key = 'IT-69';
       if (!values.assignee) {
         values.assignee = 'Daniel';
       }
-      mutation.mutate(values);
+      newIssueMutation.mutate(values);
 
       handleFormClose();
     },

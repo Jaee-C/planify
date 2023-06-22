@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   FormControl,
   FormHelperText,
@@ -11,7 +11,7 @@ import {
 
 interface Options {
   label: any;
-  value: string;
+  value: string | number;
 }
 
 const StyledFormField = styled(Select)(() => ({
@@ -43,7 +43,7 @@ interface FormSelectFieldProps {
   defaultValue?: string;
   options: Options[];
   onChange?: (a: SelectChangeEvent<unknown>, child: React.ReactNode) => void;
-  value?: string;
+  value?: string | number;
   error?: boolean;
   helperText?: string | false;
 }

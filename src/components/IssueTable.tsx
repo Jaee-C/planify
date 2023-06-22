@@ -15,7 +15,7 @@ import TableToolbar from '@/components/Table/TableToolbar';
 import IssueEditDialog from '@/components/IssueEditDialog';
 import type {UIIssue} from '@/interfaces';
 import {QueryClient, useMutation, useQuery, useQueryClient} from 'react-query';
-import {fetchIssueList} from '@/data/issues';
+import {fetchIssueList} from '@/components/data/issues';
 
 export default function IssueTable() {
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);

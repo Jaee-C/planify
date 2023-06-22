@@ -1,15 +1,15 @@
 export const ISSUE_STATUSES = [
   {
     label: 'Done',
-    value: 'Done',
+    value: 3,
   },
   {
     label: 'In Progress',
-    value: 'In Progress',
+    value: 2,
   },
   {
     label: 'To Do',
-    value: 'To Do',
+    value: 1,
   },
 ];
 
@@ -28,22 +28,26 @@ export const ISSUE_PRIORITIES = [
   },
 ];
 
-interface formValues {
-  key?: string;
+export interface formValues {
+  id?: number;
+  project?: string;
   title?: string;
   description?: string;
   assignee?: string;
   reporter?: string;
-  status?: string;
+  status?: StatusType;
   priority?: string;
 }
 
 export const EMPTY_FORM: formValues = {
-  key: undefined,
+  id: undefined,
+  project: undefined,
   title: undefined,
   description: undefined,
   assignee: undefined,
   reporter: undefined,
-  status: 'To Do',
+  status: 1,
   priority: 'low',
 };
+
+export type StatusType = 1 | 2 | 3;

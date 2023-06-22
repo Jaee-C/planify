@@ -1,7 +1,7 @@
 export interface UIIssue {
-  id: number;
-  project: string;
-  title: string;
+  id?: number;
+  project?: string;
+  title?: string;
   assignee: string;
   status: string;
 }
