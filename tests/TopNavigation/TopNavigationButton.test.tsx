@@ -4,8 +4,7 @@ import '@testing-library/react';
 
 import TopNavigationButton, {
   borderClassNames,
-} from '../../src/components/TopNavigation/TopNavigationButton';
-
+} from '@/components/TopNavigation/TopNavigationButton';
 
 const handleClick = jest.fn();
 
@@ -17,7 +16,7 @@ test('adds bottom border when active', async () => {
   const {container} = render(
     <TopNavigationButton onClick={handleClick} active={true}>
       Button
-    </TopNavigationButton>,
+    </TopNavigationButton>
   );
 
   expect(container.firstChild).toHaveClass(borderClassNames);
@@ -27,7 +26,7 @@ test('no bottom border when not active', async () => {
   const {container} = render(
     <TopNavigationButton onClick={handleClick} active={false}>
       Button
-    </TopNavigationButton>,
+    </TopNavigationButton>
   );
 
   expect(container.firstChild).not.toHaveClass(borderClassNames);
@@ -37,7 +36,7 @@ test('Click event is handled', async () => {
   const {getByText} = render(
     <TopNavigationButton onClick={handleClick} active={false}>
       Button
-    </TopNavigationButton>,
+    </TopNavigationButton>
   );
 
   fireEvent.click(getByText('Button'));
@@ -48,7 +47,7 @@ test('multiple clicks', async () => {
   const {getByText} = render(
     <TopNavigationButton onClick={handleClick} active={false}>
       Button
-    </TopNavigationButton>,
+    </TopNavigationButton>
   );
 
   fireEvent.click(getByText('Button'));
