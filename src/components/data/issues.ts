@@ -1,5 +1,6 @@
 import { UIIssue } from "@/interfaces";
 import { formValues, StatusType } from "@/components/Form/FormConstants";
+import { GridRowId } from "@mui/x-data-grid";
 
 function convertNumtoStatus(num: string): string {
   const status: number = parseInt(num);
@@ -16,9 +17,18 @@ function convertNumtoStatus(num: string): string {
   }
 }
 
-export async function fetchIssueList(): Promise<UIIssue[]> {
-  const httpResponse = await fetch("/api/issues", { method: "GET" });
-  const projectResponse = await fetch("/api/projectId", { method: "GET" });
+export async function serverDeleteIssue(
+  pid: number,
+  issueId: number | string
+): Promise<void> {
+  fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
+}
+
+export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
+  const httpResponse = await fetch(`/api/${pid}/issues`, { method: "GET" });
+  const projectResponse = await fetch(`/api/${pid}/key`, {
+    method: "GET",
+  });
 
   if (!httpResponse.ok) {
     throw new Error(httpResponse.statusText);

@@ -4,8 +4,8 @@ import { deleteIssue } from "@/service/Issue";
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
-) {
-  const { id } = req.query;
+): void {
+  const { pid, id } = req.query;
   switch (req.method) {
     case "DELETE":
       deleteIssue(Number(id));

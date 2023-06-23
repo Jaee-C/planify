@@ -20,14 +20,19 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { fetchIssueList } from "@/components/data/issues";
+import { fetchIssueList, serverDeleteIssue } from "@/components/data/issues";
+import { useContext } from "react";
+import { ProjectContext } from "@/components/Backlog/ProjectContext";
 
 export default function BacklogTable(): JSX.Element {
+  const project: number = useContext(ProjectContext);
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
   const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
     undefined
   );
-  const { data, isLoading } = useQuery<UIIssue[]>("issues", fetchIssueList);
+  const { data, isLoading } = useQuery<UIIssue[]>("issues", () =>
+    fetchIssueList(project)
+  );
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
@@ -70,11 +75,9 @@ export default function BacklogTable(): JSX.Element {
     [data]
   );
 
-  const deleteIssue = useMutation((id: GridRowId) => {
-    return fetch(`/api/issue/${id}`, {
-      method: "DELETE",
-    });
-  });
+  const deleteIssue = useMutation((id: GridRowId) =>
+    serverDeleteIssue(project, id)
+  );
 
   const handleDelete = (id: GridRowId): void => {
     deleteIssue.mutate(id);
