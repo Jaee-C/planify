@@ -1,4 +1,4 @@
-import React, {MouseEventHandler} from 'react';
+import React, { MouseEventHandler } from "react";
 
 interface ButtonProp {
   children: React.ReactNode;
@@ -11,7 +11,7 @@ interface ButtonProp {
  * @param onClick - event handler on mouse click
  * @constructor
  */
-export default function Button({children, onClick}: ButtonProp) {
+export default function Button({ children, onClick }: ButtonProp): JSX.Element {
   return (
     <a href="#" onClick={onClick}>
       {children}

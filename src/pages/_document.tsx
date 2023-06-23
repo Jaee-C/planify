@@ -1,4 +1,4 @@
-import {Html, Head, Main, NextScript} from 'next/document';
+import { Html, Head, Main, NextScript } from "next/document";
 
 /**
  * This function is used to create a custom document for the Next.js app. It allows
@@ -7,7 +7,7 @@ import {Html, Head, Main, NextScript} from 'next/document';
  *
  * @return {ReactElement} - Returns a React element that represents the custom document
  */
-export default function Document() {
+export default function Document(): JSX.Element {
   return (
     <Html lang="en">
       <Head />

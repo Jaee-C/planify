@@ -1,30 +1,32 @@
+export type StatusType = 1 | 2 | 3;
+
 export const ISSUE_STATUSES = [
   {
-    label: 'Done',
+    label: "Done",
     value: 3,
   },
   {
-    label: 'In Progress',
+    label: "In Progress",
     value: 2,
   },
   {
-    label: 'To Do',
+    label: "To Do",
     value: 1,
   },
 ];
 
 export const ISSUE_PRIORITIES = [
   {
-    label: 'High',
-    value: 'high',
+    label: "High",
+    value: "high",
   },
   {
-    label: 'Medium',
-    value: 'medium',
+    label: "Medium",
+    value: "medium",
   },
   {
-    label: 'Low',
-    value: 'low',
+    label: "Low",
+    value: "low",
   },
 ];
 
@@ -47,7 +49,5 @@ export const EMPTY_FORM: formValues = {
   assignee: undefined,
   reporter: undefined,
   status: 1,
-  priority: 'low',
+  priority: "low",
 };
-
-export type StatusType = 1 | 2 | 3;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   FormControl,
   FormHelperText,
@@ -7,7 +7,7 @@ import {
   Select,
   SelectChangeEvent,
   styled,
-} from '@mui/material';
+} from "@mui/material";
 
 interface Options {
   label: any;
@@ -15,22 +15,22 @@ interface Options {
 }
 
 const StyledFormField = styled(Select)(() => ({
-  '& .MuiInputBase-input': {
-    padding: '15.5px 14px',
-    color: 'rgb(18, 25, 38)',
-    backgroundColor: 'rgb(248, 250, 252)',
+  "& .MuiInputBase-input": {
+    padding: "15.5px 14px",
+    color: "rgb(18, 25, 38)",
+    backgroundColor: "rgb(248, 250, 252)",
     fontWeight: 500,
     borderRadius: 8,
-    fontSize: '0.875rem',
+    fontSize: "0.875rem",
   },
-  '&.MuiInputBase-root': {
-    borderRadius: '8px',
+  "&.MuiInputBase-root": {
+    borderRadius: "8px",
   },
-  '& .MuiInputLabel-root': {
-    fontSize: '0.875rem',
+  "& .MuiInputLabel-root": {
+    fontSize: "0.875rem",
   },
-  '&.Mui-focused': {
-    color: 'rgb(33, 150, 243)',
+  "&.Mui-focused": {
+    color: "rgb(33, 150, 243)",
   },
 }));
 
@@ -59,7 +59,7 @@ export default function FormSelectField({
   value,
   error,
   helperText,
-}: FormSelectFieldProps) {
+}: FormSelectFieldProps): JSX.Element {
   return (
     <FormControl variant="outlined" fullWidth className="rounded-lg">
       <InputLabel id={`form-${label}-label`} shrink>
@@ -74,8 +74,7 @@ export default function FormSelectField({
         onChange={onChange}
         value={value}
         error={error}
-        label={label}
-      >
+        label={label}>
         {options.map((o: Options) => (
           <MenuItem key={o.value} value={o.value} selected={o.value === value}>
             {o.label}

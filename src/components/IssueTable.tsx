@@ -1,5 +1,5 @@
-import * as React from 'react';
-import {Box, Paper} from '@mui/material';
+import * as React from "react";
+import { Box, Paper } from "@mui/material";
 import {
   DataGrid,
   GridActionsCellItem,
@@ -7,22 +7,27 @@ import {
   GridRowId,
   GridRowParams,
   GridRowsProp,
-} from '@mui/x-data-grid';
-import {MdDelete, MdEdit} from 'react-icons/md';
-import {IconContext} from 'react-icons';
+} from "@mui/x-data-grid";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { IconContext } from "react-icons";
 
-import TableToolbar from '@/components/Table/TableToolbar';
-import IssueEditDialog from '@/components/IssueEditDialog';
-import type {UIIssue} from '@/interfaces';
-import {QueryClient, useMutation, useQuery, useQueryClient} from 'react-query';
-import {fetchIssueList} from '@/components/data/issues';
+import TableToolbar from "@/components/Table/TableToolbar";
+import IssueEditDialog from "@/components/IssueEditDialog";
+import type { UIIssue } from "@/interfaces";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "react-query";
+import { fetchIssueList } from "@/components/data/issues";
 
-export default function IssueTable() {
+export default function IssueTable(): JSX.Element {
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
   const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
     undefined
   );
-  const {data, isLoading} = useQuery<UIIssue[]>('issues', fetchIssueList);
+  const { data, isLoading } = useQuery<UIIssue[]>("issues", fetchIssueList);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
@@ -35,7 +40,7 @@ export default function IssueTable() {
           title: row.title,
           assignee: row.assignee,
           status: row.status,
-          priority: 'low',
+          priority: "low",
         };
       });
       setRows(newRows);
@@ -67,48 +72,48 @@ export default function IssueTable() {
 
   const deleteIssue = useMutation((id: GridRowId) => {
     return fetch(`/api/issue/${id}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   });
 
   const handleDelete = (id: GridRowId) => {
     deleteIssue.mutate(id);
-    queryClient.invalidateQueries('issues');
+    queryClient.invalidateQueries("issues");
     setRows(rows.filter(row => row.id !== id));
   };
 
   const columns: GridColDef[] = [
-    {field: 'key', headerName: 'Key', width: 100},
+    { field: "key", headerName: "Key", width: 100 },
     {
-      field: 'title',
-      headerName: 'Title',
+      field: "title",
+      headerName: "Title",
       editable: true,
-      align: 'left',
+      align: "left",
       flex: 1,
       minWidth: 125,
     },
     {
-      field: 'assignee',
-      headerName: 'Assignee',
-      align: 'left',
+      field: "assignee",
+      headerName: "Assignee",
+      align: "left",
       width: 150,
     },
     {
-      field: 'status',
-      headerName: 'Status',
+      field: "status",
+      headerName: "Status",
       editable: true,
-      align: 'left',
+      align: "left",
       width: 125,
     },
     {
-      field: 'priority',
-      headerName: 'Priority',
+      field: "priority",
+      headerName: "Priority",
       editable: true,
       width: 75,
     },
     {
-      field: 'actions',
-      type: 'actions',
+      field: "actions",
+      type: "actions",
       width: 100,
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
@@ -126,17 +131,16 @@ export default function IssueTable() {
   ];
 
   return (
-    <IconContext.Provider value={{size: '16px'}}>
-      <Box sx={{width: '100%'}}>
+    <IconContext.Provider value={{ size: "16px" }}>
+      <Box sx={{ width: "100%" }}>
         <Paper
-          sx={{width: '100%', mb: 2}}
-          className="bg-transparent shadow-none"
-        >
+          sx={{ width: "100%", mb: 2 }}
+          className="bg-transparent shadow-none">
           <TableToolbar openForm={handleFormOpen} />
           <DataGrid
             sx={{
-              '&.MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
-                outline: 'none !important',
+              "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+                outline: "none !important",
               },
             }}
             columns={columns}

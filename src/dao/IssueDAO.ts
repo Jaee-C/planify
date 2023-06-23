@@ -1,12 +1,12 @@
-import {ServerIssue} from '@/interfaces';
+import { ServerIssue } from "@/interfaces";
 
 const AllIssues: ServerIssue[] = [
-  createData(1, 'PRJ', 'Create PoC', 'Daniel', 3),
-  createData(2, 'PRJ', 'Raise Issues', 'Daniel', 1),
-  createData(3, 'PRJ', 'Update Progress on Issues', 'Daniel', 2),
-  createData(4, 'PRJ', 'Record all issues', 'Daniel', 1),
-  createData(5, 'PRJ', 'Manage Issues', 'Daniel', 1),
-  createData(6, 'PRJ', 'Notify users', 'Daniel', 1),
+  createData(1, "PRJ", "Create PoC", "Daniel", 3),
+  createData(2, "PRJ", "Raise Issues", "Daniel", 1),
+  createData(3, "PRJ", "Update Progress on Issues", "Daniel", 2),
+  createData(4, "PRJ", "Record all issues", "Daniel", 1),
+  createData(5, "PRJ", "Manage Issues", "Daniel", 1),
+  createData(6, "PRJ", "Notify users", "Daniel", 1),
 ];
 
 export default {
@@ -36,5 +36,5 @@ function createData(
   assignee: string,
   status: number
 ): ServerIssue {
-  return {id, project, title, assignee, status};
+  return { id, project, title, assignee, status };
 }

@@ -1,5 +1,5 @@
-import React, {MouseEventHandler} from 'react';
-import RoundButton from '../utils/RoundButton';
+import React, { MouseEventHandler } from "react";
+import RoundButton from "../utils/RoundButton";
 
 interface NavigationIconProp {
   icon: React.ReactNode;
@@ -13,7 +13,10 @@ interface NavigationIconProp {
  * @param onClick - event handler for a mouse click on the button
  * @returns Icon button component
  */
-export default function TopNavigationIcon({icon, onClick}: NavigationIconProp) {
+export default function TopNavigationIcon({
+  icon,
+  onClick,
+}: NavigationIconProp): JSX.Element {
   return (
     <RoundButton className="mr-2" onClick={onClick}>
       {icon}

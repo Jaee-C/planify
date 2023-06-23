@@ -1,5 +1,5 @@
-import React, {useState, useReducer} from 'react';
-import axios from 'axios';
+import React, { useState, useReducer } from "react";
+import axios from "axios";
 
 interface GreetingState {
   error?: number | null;
@@ -19,15 +19,18 @@ interface FetchProps {
   url: string;
 }
 
-function greetingReducer(state: GreetingState, action: GreetingAction) {
+function greetingReducer(
+  state: GreetingState,
+  action: GreetingAction
+): GreetingState {
   switch (action.type) {
-    case 'SUCCESS': {
+    case "SUCCESS": {
       return {
         error: null,
         greeting: action.greeting,
       };
     }
-    case 'ERROR': {
+    case "ERROR": {
       return {
         error: action.error,
         greeting: null,
@@ -39,36 +42,38 @@ function greetingReducer(state: GreetingState, action: GreetingAction) {
   }
 }
 
-export default function Fetch({url}: FetchProps) {
-  const [{error, greeting}, dispatch] = useReducer(
+export default function Fetch({ url }: FetchProps): JSX.Element {
+  const [{ error, greeting }, dispatch] = useReducer(
     greetingReducer,
     initialState
   );
 
   const [buttonClicked, setButtonClicked] = useState(false);
 
-  const fetchGreeting = async (url: string) =>
+  const fetchGreeting = async (url: string): Promise<void> =>
     axios
       .get<GreetingState>(url)
       .then(response => {
-        const {data} = response;
-        const {greeting} = data;
-        dispatch({type: 'SUCCESS', greeting});
+        const { data } = response;
+        const { greeting } = data;
+        dispatch({ type: "SUCCESS", greeting });
         setButtonClicked(true);
       })
       .catch(error => {
-        dispatch({type: 'ERROR', error});
+        dispatch({ type: "ERROR", error });
       });
 
-  const buttonText = buttonClicked ? 'OK' : 'Load Greeting';
+  const buttonText = buttonClicked ? "OK" : "Load Greeting";
 
   return (
     <div>
-      <button onClick={() => fetchGreeting(url)} disabled={buttonClicked}>
+      <button
+        onClick={(): Promise<void> => fetchGreeting(url)}
+        disabled={buttonClicked}>
         {buttonText}
       </button>
       {greeting && <h1>{greeting}</h1>}
-      {error && <p role={'alert'}>Oops, failed to fetch!</p>}
+      {error && <p role={"alert"}>Oops, failed to fetch!</p>}
     </div>
   );
 }

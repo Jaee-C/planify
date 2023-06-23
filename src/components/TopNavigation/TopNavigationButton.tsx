@@ -1,5 +1,5 @@
-import React, {MouseEventHandler} from 'react';
-import BoxButton from '../utils/BoxButton';
+import React, { MouseEventHandler } from "react";
+import BoxButton from "../utils/BoxButton";
 
 interface TopNavButtonProps {
   children: React.ReactNode;
@@ -7,7 +7,7 @@ interface TopNavButtonProps {
   active: boolean;
 }
 
-export const borderClassNames = 'border-b-black';
+export const borderClassNames = "border-b-black";
 
 /**
  * React component for a button in the top navigation bar
@@ -20,15 +20,14 @@ export default function TopNavigationButton({
   children,
   onClick,
   active,
-}: TopNavButtonProps) {
+}: TopNavButtonProps): JSX.Element {
   return (
     <div
       className={
-        'mx-1 flex items-center justify-center flex-col h-full' +
-        ' border-4 border-transparent ' +
-        (active ? borderClassNames : '')
-      }
-    >
+        "mx-1 flex items-center justify-center flex-col h-full" +
+        " border-4 border-transparent " +
+        (active ? borderClassNames : "")
+      }>
       <BoxButton onClick={onClick}>{children}</BoxButton>
     </div>
   );

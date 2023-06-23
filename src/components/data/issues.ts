@@ -1,9 +1,24 @@
-import {UIIssue} from '@/interfaces';
-import {formValues, StatusType} from '@/components/Form/FormConstants';
+import { UIIssue } from "@/interfaces";
+import { formValues, StatusType } from "@/components/Form/FormConstants";
 
-export async function fetchIssueList() {
-  const httpResponse = await fetch('/api/issues', {method: 'GET'});
-  const projectResponse = await fetch('/api/projectId', {method: 'GET'});
+function convertNumtoStatus(num: string): string {
+  const status: number = parseInt(num);
+
+  switch (status) {
+    case 1:
+      return "To Do";
+    case 2:
+      return "In Progress";
+    case 3:
+      return "Done";
+    default:
+      return "Invalid";
+  }
+}
+
+export async function fetchIssueList(): Promise<UIIssue[]> {
+  const httpResponse = await fetch("/api/issues", { method: "GET" });
+  const projectResponse = await fetch("/api/projectId", { method: "GET" });
 
   if (!httpResponse.ok) {
     throw new Error(httpResponse.statusText);
@@ -27,11 +42,11 @@ export async function fetchIssueList() {
   return result;
 }
 
-export async function addIssue(data: formValues) {
-  const httpResponse: Response = await fetch('/api/issues', {
-    method: 'POST',
+export async function addIssue(data: formValues): Promise<any> {
+  const httpResponse: Response = await fetch("/api/issues", {
+    method: "POST",
     headers: {
-      'Content-type': 'application/json',
+      "Content-type": "application/json",
     },
     body: JSON.stringify(data),
   });
@@ -45,28 +60,13 @@ export async function addIssue(data: formValues) {
 
 export function convertStatusToNum(status: string): StatusType | undefined {
   switch (status) {
-    case 'To Do':
+    case "To Do":
       return 1;
-    case 'In Progress':
+    case "In Progress":
       return 2;
-    case 'Done':
+    case "Done":
       return 3;
     default:
       return undefined;
-  }
-}
-
-function convertNumtoStatus(num: string): string {
-  const status: number = parseInt(num);
-
-  switch (status) {
-    case 1:
-      return 'To Do';
-    case 2:
-      return 'In Progress';
-    case 3:
-      return 'Done';
-    default:
-      return 'Invalid';
   }
 }

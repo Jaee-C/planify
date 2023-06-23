@@ -1,6 +1,6 @@
-import {NextApiRequest} from 'next';
-import {ServerIssue} from '@/interfaces';
-import IssueDAO from '@/dao/IssueDAO';
+import { NextApiRequest } from "next";
+import { ServerIssue } from "@/interfaces";
+import IssueDAO from "@/dao/IssueDAO";
 
 export interface IssueRequest {
   title?: string;
@@ -24,9 +24,9 @@ export function createIssueRequest(req: NextApiRequest): IssueRequest {
 function createIssue(req: IssueRequest): ServerIssue {
   return {
     id: 0,
-    project: 'PRJ',
-    title: req.title || 'New Issue',
-    assignee: req.assignee || 'Daniel',
+    project: "PRJ",
+    title: req.title || "New Issue",
+    assignee: req.assignee || "Daniel",
     status: req.status || 1,
   };
 }
@@ -48,7 +48,7 @@ function verifyStatus(req: string): boolean {
   const status: number = parseInt(req);
 
   if (Number.isNaN(status)) {
-    console.log('Status is not a number.');
+    console.log("Status is not a number.");
     return false;
   }
 

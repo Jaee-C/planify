@@ -1,12 +1,12 @@
-import 'react';
-import {Grid, GridProps, styled, Typography} from '@mui/material';
-import React from 'react';
+import "react";
+import { Grid, GridProps, styled, Typography } from "@mui/material";
+import React from "react";
 
 const FormEntry = styled(Grid)<GridProps>(() => ({
-  '&.MuiGrid-container': {
-    alignItems: 'center',
+  "&.MuiGrid-container": {
+    alignItems: "center",
   },
-  '&.MuiGrid-item': {
+  "&.MuiGrid-item": {
     fontWeight: 500,
   },
 }));
@@ -16,8 +16,10 @@ interface TextLabelFieldProps {
   children: React.ReactNode;
 }
 
-export default function TextFieldLabel(props: TextLabelFieldProps) {
-  const {textLabel} = props;
+export default function TextFieldLabel(
+  props: TextLabelFieldProps
+): JSX.Element {
+  const { textLabel } = props;
 
   return (
     <FormEntry container spacing={2}>

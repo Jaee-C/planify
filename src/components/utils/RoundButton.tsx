@@ -1,5 +1,5 @@
-import React, {MouseEventHandler} from 'react';
-import Button from './Button';
+import React, { MouseEventHandler } from "react";
+import Button from "./Button";
 
 interface RoundButtonProp {
   children: React.ReactNode;
@@ -19,9 +19,9 @@ export default function RoundButton({
   children,
   onClick,
   className,
-}: RoundButtonProp) {
+}: RoundButtonProp): JSX.Element {
   const allClasses: string =
-    'px-1 py-1 rounded-full hover:bg-neutral-500/30 ' + className;
+    "px-1 py-1 rounded-full hover:bg-neutral-500/30 " + className;
   return (
     <div className={allClasses}>
       <Button onClick={onClick}>{children}</Button>
