@@ -3,7 +3,7 @@ import Button from "./Button";
 
 interface RoundButtonProp {
   children: React.ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
   className?: string;
 }
 

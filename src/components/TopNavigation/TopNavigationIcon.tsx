@@ -3,7 +3,7 @@ import RoundButton from "../utils/RoundButton";
 
 interface NavigationIconProp {
   icon: React.ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
 /**

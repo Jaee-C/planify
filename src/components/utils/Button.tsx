@@ -2,7 +2,7 @@ import React, { MouseEventHandler } from "react";
 
 interface ButtonProp {
   children: React.ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
 /**
@@ -12,9 +12,5 @@ interface ButtonProp {
  * @constructor
  */
 export default function Button({ children, onClick }: ButtonProp): JSX.Element {
-  return (
-    <a href="#" onClick={onClick}>
-      {children}
-    </a>
-  );
+  return <a href="#">{children}</a>;
 }

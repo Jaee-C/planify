@@ -1,9 +1,10 @@
 import React, { MouseEventHandler } from "react";
 import BoxButton from "../utils/BoxButton";
+import Link from "next/link";
 
 interface TopNavButtonProps {
   children: React.ReactNode;
-  onClick: MouseEventHandler;
+  href: string;
   active: boolean;
 }
 
@@ -18,7 +19,7 @@ export const borderClassNames = "border-b-black";
  */
 export default function TopNavigationButton({
   children,
-  onClick,
+  href,
   active,
 }: TopNavButtonProps): JSX.Element {
   return (
@@ -28,7 +29,9 @@ export default function TopNavigationButton({
         " border-4 border-transparent " +
         (active ? borderClassNames : "")
       }>
-      <BoxButton onClick={onClick}>{children}</BoxButton>
+      <div className="px-2 py-1.5 rounded-md hover:bg-neutral-500/30">
+        <Link href={href}>{children}</Link>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import Button from "./Button";
 
 interface BoxButtonProp {
   children: React.ReactNode;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
 }
 
 /**
