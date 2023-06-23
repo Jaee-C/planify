@@ -13,6 +13,6 @@ import type { AppProps } from "next/app";
  * @param pageProps - Props passed from the page component
  * @returns - The rendered root component
  */
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps): JSX.Element {
   return <Component {...pageProps} />;
 }

@@ -1,18 +1,12 @@
 import React from "react";
-import { ProSidebarProvider } from "react-pro-sidebar";
-import { QueryClient, QueryClientProvider } from "react-query";
 
-import BaseSidebar from "@/components/Sidebar/BaseSidebar";
+import ProjectsPage from "@/components/Projects";
 import TopNavigation from "@/components/TopNavigation/TopNavigation";
-import BacklogWrapper from "@/components/BacklogWrapper";
+import { ProSidebarProvider } from "react-pro-sidebar";
+import BaseSidebar from "@/components/Sidebar/BaseSidebar";
+import Backlog from "@/components/Backlog";
 
-const queryClient: QueryClient = new QueryClient();
-
-/**
- * Entrypoint page for the application.
- * @constructor
- */
-export default function Home(): JSX.Element {
+export default function Projects(): JSX.Element {
   return (
     <>
       <TopNavigation />
@@ -25,11 +19,7 @@ export default function Home(): JSX.Element {
             maxWidth: "100%",
           }}>
           <BaseSidebar />
-          <QueryClientProvider client={queryClient}>
-            <div className="p-5 flex-grow bg-slate-100 w-28">
-              <BacklogWrapper />
-            </div>
-          </QueryClientProvider>
+          <ProjectsPage />
         </div>
       </ProSidebarProvider>
     </>

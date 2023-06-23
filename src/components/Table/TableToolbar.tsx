@@ -6,13 +6,15 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { MdFilterList } from "react-icons/md";
+import { PropsWithChildren } from "react";
 
 interface TableToolbarProps {
-  openForm: () => void;
+  title: string;
 }
 
-function TableToolbar(props: TableToolbarProps): JSX.Element {
+function TableToolbar(
+  props: PropsWithChildren<TableToolbarProps>
+): JSX.Element {
   return (
     <Toolbar
       sx={{
@@ -24,20 +26,9 @@ function TableToolbar(props: TableToolbarProps): JSX.Element {
         variant="h6"
         id="tableTitle"
         component="div">
-        Backlog
-        <a href={"/api/issues"}>tt</a>
+        {props.title}
       </Typography>
-      <Tooltip title="Filter list">
-        <IconButton className="mr-3">
-          <MdFilterList />
-        </IconButton>
-      </Tooltip>
-      <Button
-        className="bg-blue-600 text-xs"
-        variant="contained"
-        onClick={props.openForm}>
-        Create&nbsp;Issue
-      </Button>
+      {props.children}
     </Toolbar>
   );
 }

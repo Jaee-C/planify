@@ -16,11 +16,9 @@
     "prettier/prettier": ["error"],
     "no-unused-vars": "warn",
     "use-isnan": "error",
-    "no-use-before-define": "error",
     "no-unreachable": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/explicit-function-return-type": "error",
-    "@typescript-eslint/no-use-before-define": "error",
     "require-jsdoc": "off",
     "no-case-declarations": "off"
   },

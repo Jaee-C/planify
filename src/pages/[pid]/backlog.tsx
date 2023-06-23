@@ -1,11 +1,16 @@
 import React from "react";
-
-import ProjectsPage from "@/components/Projects";
-import TopNavigation from "@/components/TopNavigation/TopNavigation";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import BaseSidebar from "@/components/Sidebar/BaseSidebar";
 
-export default function Projects(): JSX.Element {
+import BaseSidebar from "@/components/Sidebar/BaseSidebar";
+import TopNavigation from "@/components/TopNavigation/TopNavigation";
+import Backlog from "@/components/Backlog";
+import ProjectsPage from "@/components/Projects";
+
+/**
+ * Entrypoint page for the application.
+ * @constructor
+ */
+export default function Home(): JSX.Element {
   return (
     <>
       <TopNavigation />
@@ -18,7 +23,7 @@ export default function Projects(): JSX.Element {
             maxWidth: "100%",
           }}>
           <BaseSidebar />
-          <ProjectsPage />
+          <Backlog />
         </div>
       </ProSidebarProvider>
     </>

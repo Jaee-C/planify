@@ -9,12 +9,6 @@ const AllIssues: ServerIssue[] = [
   createData(6, "PRJ", "Notify users", "Daniel", 1),
 ];
 
-export default {
-  fetchAllIssues,
-  deleteIssue,
-  saveIssue,
-};
-
 export function saveIssue(req: ServerIssue): void {
   req.id = AllIssues.length + 1;
   AllIssues.push(req);
@@ -38,3 +32,9 @@ function createData(
 ): ServerIssue {
   return { id, project, title, assignee, status };
 }
+
+export default {
+  fetchAllIssues,
+  deleteIssue,
+  saveIssue,
+};

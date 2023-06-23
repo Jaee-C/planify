@@ -1,17 +1,17 @@
 import * as React from "react";
-import { Box, Paper } from "@mui/material";
+import { Box, Button, IconButton, Paper, Tooltip } from "@mui/material";
 import {
-  DataGrid,
   GridActionsCellItem,
   GridColDef,
   GridRowId,
   GridRowParams,
   GridRowsProp,
 } from "@mui/x-data-grid";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdFilterList } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 import TableToolbar from "@/components/Table/TableToolbar";
+import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
 import type { UIIssue } from "@/interfaces";
 import {
@@ -22,7 +22,7 @@ import {
 } from "react-query";
 import { fetchIssueList } from "@/components/data/issues";
 
-export default function IssueTable(): JSX.Element {
+export default function BacklogTable(): JSX.Element {
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
   const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
     undefined
@@ -47,12 +47,12 @@ export default function IssueTable(): JSX.Element {
     }
   }, [data]);
 
-  const handleFormOpen = () => {
+  const handleFormOpen = (): void => {
     setEditingRow(undefined);
     setDialogOpen(true);
   };
 
-  const handleDialogClose = () => {
+  const handleDialogClose = (): void => {
     setEditingRow(undefined);
     setDialogOpen(false);
   };
@@ -76,7 +76,7 @@ export default function IssueTable(): JSX.Element {
     });
   });
 
-  const handleDelete = (id: GridRowId) => {
+  const handleDelete = (id: GridRowId): void => {
     deleteIssue.mutate(id);
     queryClient.invalidateQueries("issues");
     setRows(rows.filter(row => row.id !== id));
@@ -119,7 +119,7 @@ export default function IssueTable(): JSX.Element {
         <GridActionsCellItem
           label="Delete"
           icon={<MdDelete />}
-          onClick={() => handleDelete(params.id)}
+          onClick={(): void => handleDelete(params.id)}
         />,
         <GridActionsCellItem
           label="Edit"
@@ -136,7 +136,19 @@ export default function IssueTable(): JSX.Element {
         <Paper
           sx={{ width: "100%", mb: 2 }}
           className="bg-transparent shadow-none">
-          <TableToolbar openForm={handleFormOpen} />
+          <TableToolbar title="Backlog">
+            <Tooltip title="Filter list">
+              <IconButton className="mr-3">
+                <MdFilterList />
+              </IconButton>
+            </Tooltip>
+            <Button
+              className="bg-blue-600 text-xs"
+              variant="contained"
+              onClick={handleFormOpen}>
+              Create&nbsp;Issue
+            </Button>
+          </TableToolbar>
           <DataGrid
             sx={{
               "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
