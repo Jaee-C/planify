@@ -1,6 +1,5 @@
 import { UIIssue } from "@/interfaces";
 import { formValues, StatusType } from "@/components/Form/FormConstants";
-import { GridRowId } from "@mui/x-data-grid";
 
 function convertNumtoStatus(num: string): string {
   const status: number = parseInt(num);
@@ -21,12 +20,14 @@ export async function serverDeleteIssue(
   pid: number,
   issueId: number | string
 ): Promise<void> {
-  fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
+  await fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
 }
 
 export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
-  const httpResponse = await fetch(`/api/${pid}/issues`, { method: "GET" });
-  const projectResponse = await fetch(`/api/${pid}/key`, {
+  const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
+    method: "GET",
+  });
+  const projectResponse: Response = await fetch(`/api/${pid}/key`, {
     method: "GET",
   });
 
@@ -37,19 +38,16 @@ export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
     throw new Error(projectResponse.statusText);
   }
 
-  const projectId: string = await projectResponse.text();
   const json = await httpResponse.json();
-  const result: UIIssue[] = json.map((item: any) => {
+  return json.map((item: any): UIIssue => {
     return {
       id: item.id,
-      project: projectId,
+      key: item.key,
       title: item.title,
       assignee: item.assignee,
-      status: convertNumtoStatus(item.status),
+      status: parseInt(item.status),
     };
   });
-
-  return result;
 }
 
 export async function addIssue(data: formValues): Promise<any> {

@@ -1,13 +1,7 @@
 import * as React from "react";
 import { Box, Button, IconButton, Paper, Tooltip } from "@mui/material";
-import {
-  GridActionsCellItem,
-  GridColDef,
-  GridRowId,
-  GridRowParams,
-  GridRowsProp,
-} from "@mui/x-data-grid";
-import { MdDelete, MdEdit, MdFilterList } from "react-icons/md";
+import { GridColDef, GridRowId, GridRowsProp } from "@mui/x-data-grid";
+import { MdFilterList } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 import TableToolbar from "@/components/Table/TableToolbar";
@@ -22,10 +16,11 @@ import {
 } from "react-query";
 import { fetchIssueList, serverDeleteIssue } from "@/components/data/issues";
 import { useContext } from "react";
-import { ProjectContext } from "@/components/Backlog/ProjectContext";
+import { BacklogContext } from "@/components/Backlog/BacklogContext";
+import { createBacklogColumns } from "@/components/Backlog/BacklogColumns";
 
 export default function BacklogTable(): JSX.Element {
-  const project: number = useContext(ProjectContext);
+  const project: number = useContext(BacklogContext);
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
   const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
     undefined
@@ -36,12 +31,12 @@ export default function BacklogTable(): JSX.Element {
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     if (!isLoading && data && data.length > 0) {
-      const newRows: GridRowsProp = data.map(row => {
+      const newRows: GridRowsProp = data.map((row: UIIssue) => {
         return {
           id: row.id,
-          key: `${row.project}-${row.id}`,
+          key: row.key,
           title: row.title,
           assignee: row.assignee,
           status: row.status,
@@ -85,53 +80,7 @@ export default function BacklogTable(): JSX.Element {
     setRows(rows.filter(row => row.id !== id));
   };
 
-  const columns: GridColDef[] = [
-    { field: "key", headerName: "Key", width: 100 },
-    {
-      field: "title",
-      headerName: "Title",
-      editable: true,
-      align: "left",
-      flex: 1,
-      minWidth: 125,
-    },
-    {
-      field: "assignee",
-      headerName: "Assignee",
-      align: "left",
-      width: 150,
-    },
-    {
-      field: "status",
-      headerName: "Status",
-      editable: true,
-      align: "left",
-      width: 125,
-    },
-    {
-      field: "priority",
-      headerName: "Priority",
-      editable: true,
-      width: 75,
-    },
-    {
-      field: "actions",
-      type: "actions",
-      width: 100,
-      getActions: (params: GridRowParams) => [
-        <GridActionsCellItem
-          label="Delete"
-          icon={<MdDelete />}
-          onClick={(): void => handleDelete(params.id)}
-        />,
-        <GridActionsCellItem
-          label="Edit"
-          icon={<MdEdit />}
-          onClick={handleEdit(params.id)}
-        />,
-      ],
-    },
-  ];
+  const columns: GridColDef[] = createBacklogColumns(handleDelete, handleEdit);
 
   return (
     <IconContext.Provider value={{ size: "16px" }}>

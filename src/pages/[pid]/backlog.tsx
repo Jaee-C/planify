@@ -5,15 +5,15 @@ import BaseSidebar from "@/components/Sidebar/BaseSidebar";
 import TopNavigation, {
   NavigationPage,
 } from "@/components/TopNavigation/TopNavigation";
-import Backlog from "@/components/Backlog";
-import { useRouter } from "next/router";
+import BacklogContent from "@/components/Backlog";
+import { NextRouter, useRouter } from "next/router";
 
 /**
  * Entrypoint page for the application.
  * @constructor
  */
 export default function BacklogPage(): JSX.Element {
-  const router = useRouter();
+  const router: NextRouter = useRouter();
   const project: string | undefined = Array.isArray(router.query.pid)
     ? router.query.pid[0]
     : router.query.pid;
@@ -30,7 +30,7 @@ export default function BacklogPage(): JSX.Element {
             maxWidth: "100%",
           }}>
           <BaseSidebar />
-          <Backlog project={project} />
+          <BacklogContent project={project} />
         </div>
       </ProSidebarProvider>
     </>

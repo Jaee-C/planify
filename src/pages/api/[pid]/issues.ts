@@ -4,13 +4,13 @@ import {
   addIssue,
   IssueRequest,
   createIssueRequest,
-} from "@/service/Issue";
-import { ServerIssue } from "@/interfaces";
+} from "@/server/service/Issue";
+import { ServerIssue, UIIssue } from "@/interfaces";
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ServerIssue[] | string>
-) {
+  res: NextApiResponse<UIIssue[] | string | undefined>
+): void {
   switch (req.method) {
     case "GET":
       res.status(200).json(getAllIssues());
@@ -18,7 +18,7 @@ export default function handler(
     case "POST":
       const request: IssueRequest = createIssueRequest(req);
       addIssue(request);
-      res.status(200).send("DONE.");
+      res.status(200);
       break;
     default:
       res.status(405).end();

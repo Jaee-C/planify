@@ -50,10 +50,9 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   const baseForm: formValues = EMPTY_FORM;
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
-    baseForm.project = props.editingIssue.project;
     baseForm.title = props.editingIssue.title;
     baseForm.assignee = props.editingIssue.assignee;
-    baseForm.status = convertStatusToNum(props.editingIssue.status);
+    baseForm.status = props.editingIssue.status;
   }
 
   const formik = useFormik({

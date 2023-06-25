@@ -1,6 +1,7 @@
 import { NextApiRequest } from "next";
-import { ServerIssue } from "@/interfaces";
-import IssueDAO from "@/dao/IssueDAO";
+import { ServerIssue, UIIssue } from "@/interfaces";
+import IssueDAO from "@/server/dao/IssueDAO";
+import { forEach } from "lodash";
 
 export interface IssueRequest {
   title?: string;
@@ -24,14 +25,13 @@ export function createIssueRequest(req: NextApiRequest): IssueRequest {
 function createIssue(req: IssueRequest): ServerIssue {
   return {
     id: 0,
-    project: "PRJ",
     title: req.title || "New Issue",
     assignee: req.assignee || "Daniel",
     status: req.status || 1,
   };
 }
 
-export function addIssue(req: IssueRequest) {
+export function addIssue(req: IssueRequest): void {
   const newIssue: ServerIssue = createIssue(req);
   IssueDAO.saveIssue(newIssue);
 }
@@ -40,8 +40,18 @@ export function deleteIssue(id: number): void {
   IssueDAO.deleteIssue(id);
 }
 
-export function getAllIssues(): ServerIssue[] | string {
-  return IssueDAO.fetchAllIssues();
+export function getAllIssues(): UIIssue[] | string {
+  const dbIssue: ServerIssue[] = IssueDAO.fetchAllIssues();
+  const result: UIIssue[] = [];
+
+  dbIssue.forEach((issue: ServerIssue) => {
+    result.push({
+      ...issue,
+      key: "PRJ-" + issue.id,
+    });
+  });
+
+  return result;
 }
 
 function verifyStatus(req: string): boolean {

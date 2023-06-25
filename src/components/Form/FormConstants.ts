@@ -1,3 +1,5 @@
+import { UIIssue } from "@/interfaces";
+
 export type StatusType = 1 | 2 | 3;
 
 export const ISSUE_STATUSES = [
@@ -30,20 +32,14 @@ export const ISSUE_PRIORITIES = [
   },
 ];
 
-export interface formValues {
-  id?: number;
-  project?: string;
-  title?: string;
+export interface formValues extends UIIssue {
   description?: string;
-  assignee?: string;
   reporter?: string;
-  status?: StatusType;
   priority?: string;
 }
 
 export const EMPTY_FORM: formValues = {
   id: undefined,
-  project: undefined,
   title: undefined,
   description: undefined,
   assignee: undefined,
