@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { deleteIssue } from "@/server/service/Issue";
+import { deleteIssue } from "@/server/service/Index";
 
 export default function handler(
   req: NextApiRequest,

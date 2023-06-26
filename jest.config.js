@@ -1,31 +1,28 @@
 // jest.config.js
-const nextJest = require('next/jest')
+const nextJest = require("next/jest");
 
 // Providing the path to your Next.js app which will enable loading next.config.js and .env files
-const createJestConfig = nextJest({ dir: './' })
+const createJestConfig = nextJest({ dir: "./" });
 
 // Any custom config you want to pass to Jest
+/** @type {import('jest').Config} */
 const customJestConfig = {
   // The root of your source code, typically /src
   // `<rootDir>` is a token Jest substitutes
-  roots: ["<rootDir>"],
-  modulePaths: [
-    "<rootDir>",
-    "<rootDir>/src",
-  ],
-  moduleDirectories: [
-    "node_modules"
-  ],
+  roots: ["./"],
+  modulePaths: ["<rootDir>", "<rootDir>/src"],
+  moduleDirectories: ["node_modules"],
+  moduleNameMapper: {
+    "^@/(.*)$": "$1",
+  },
 
   // Jest transformations -- this adds support for TypeScript
   // using ts-jest
   transform: {
-    "^.+\\.[t|j]sx?$": "ts-jest"
+    "^.+\\.[t|j]sx?$": "ts-jest",
   },
 
-  setupFilesAfterEnv: [
-    "@testing-library/jest-dom/extend-expect"
-  ],
+  setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
 
   // Test spec file resolution pattern
   // Matches parent folder `__tests__` and filename
@@ -35,14 +32,11 @@ const customJestConfig = {
   // Module file extensions for importing
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 
-  testEnvironment: "jsdom",
+  testEnvironment: "jest-environment-jsdom",
 
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/pages/**',
-  ],
+  collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/pages/**"],
   collectCoverage: false,
-  coverageProvider: 'v8',
+  coverageProvider: "v8",
 };
 
-module.exports = createJestConfig(customJestConfig)
+module.exports = createJestConfig(customJestConfig);

@@ -5,7 +5,7 @@ import TextFieldLabel from "@/components/Form/TextFieldLabel";
 import FormSelectField from "@/components/Form/FormSelectField";
 import React from "react";
 import * as yup from "yup";
-import { useMutation, useQueryClient } from "react-query";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { useFormik } from "formik";
 import { UIIssue } from "@/interfaces";
 import {
@@ -14,7 +14,7 @@ import {
   ISSUE_PRIORITIES,
   ISSUE_STATUSES,
 } from "./FormConstants";
-import { addIssue, convertStatusToNum } from "@/components/data/issues";
+import { addIssue } from "@/components/data/issues";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -39,10 +39,10 @@ export interface IssueFormProps {
 }
 
 export default function IssueForm(props: IssueFormProps): JSX.Element {
-  const queryClient = useQueryClient();
+  const queryClient: QueryClient = useQueryClient();
   const newIssueMutation = useMutation({
     mutationFn: addIssue,
-    onSuccess: () => {
+    onSuccess: (): void => {
       queryClient.invalidateQueries("issues");
     },
   });

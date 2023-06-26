@@ -3,7 +3,7 @@ export interface UIIssue {
   key?: string;
   title?: string;
   assignee?: string;
-  status: number;
+  status?: number;
 }
 
 export interface ServerIssue {

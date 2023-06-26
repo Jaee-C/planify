@@ -27,15 +27,9 @@ export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
   const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "GET",
   });
-  const projectResponse: Response = await fetch(`/api/${pid}/key`, {
-    method: "GET",
-  });
 
   if (!httpResponse.ok) {
     throw new Error(httpResponse.statusText);
-  }
-  if (!projectResponse.ok) {
-    throw new Error(projectResponse.statusText);
   }
 
   const json = await httpResponse.json();
