@@ -1,8 +1,8 @@
 import { UIIssue } from "@/interfaces";
 import { formValues, StatusType } from "@/components/Form/FormConstants";
 
-function convertNumtoStatus(num: string): string {
-  const status: number = parseInt(num);
+export function convertNumtoStatus(status: number | undefined): string {
+  if (!status) return "Invalid";
 
   switch (status) {
     case 1:
@@ -58,17 +58,4 @@ export async function addIssue(data: formValues): Promise<any> {
   }
 
   return httpResponse.json();
-}
-
-export function convertStatusToNum(status: string): StatusType | undefined {
-  switch (status) {
-    case "To Do":
-      return 1;
-    case "In Progress":
-      return 2;
-    case "Done":
-      return 3;
-    default:
-      return undefined;
-  }
 }

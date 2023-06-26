@@ -40,6 +40,10 @@ export default class Project {
     return result;
   }
 
+  public deleteIssue(id: number): void {
+    this._store.deleteIssue(id);
+  }
+
   private setupProjectKey(): void {
     this._key = "PRJ";
   }

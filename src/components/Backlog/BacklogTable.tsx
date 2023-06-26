@@ -14,7 +14,11 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { fetchIssueList, serverDeleteIssue } from "@/components/data/issues";
+import {
+  convertNumtoStatus,
+  fetchIssueList,
+  serverDeleteIssue,
+} from "@/components/data/issues";
 import { useContext } from "react";
 import { BacklogContext } from "@/components/Backlog/BacklogContext";
 import { createBacklogColumns } from "@/components/Backlog/BacklogColumns";
@@ -39,7 +43,7 @@ export default function BacklogTable(): JSX.Element {
           key: row.key,
           title: row.title,
           assignee: row.assignee,
-          status: row.status,
+          status: convertNumtoStatus(row.status),
           priority: "low",
         };
       });
