@@ -8,10 +8,6 @@ import TopNavigation, {
 import BacklogContent from "@/components/Backlog";
 import { NextRouter, useRouter } from "next/router";
 
-/**
- * Entrypoint page for the application.
- * @constructor
- */
 export default function BacklogPage(): JSX.Element {
   const router: NextRouter = useRouter();
   const project: string | undefined = Array.isArray(router.query.pid)

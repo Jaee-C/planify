@@ -1,7 +1,13 @@
 import * as React from "react";
 import { Box, Button, IconButton, Paper, Tooltip } from "@mui/material";
-import { GridColDef, GridRowId, GridRowsProp } from "@mui/x-data-grid";
-import { MdFilterList } from "react-icons/md";
+import {
+  GridActionsCellItem,
+  GridColDef,
+  GridRowId,
+  GridRowParams,
+  GridRowsProp,
+} from "@mui/x-data-grid";
+import { MdDelete, MdEdit, MdFilterList } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 import TableToolbar from "@/components/Table/TableToolbar";
@@ -21,7 +27,6 @@ import {
 } from "@/components/data/issues";
 import { useContext } from "react";
 import { BacklogContext } from "@/components/Backlog/BacklogContext";
-import { createBacklogColumns } from "@/components/Backlog/BacklogColumns";
 
 export default function BacklogTable(): JSX.Element {
   const project: number = useContext(BacklogContext);
@@ -123,4 +128,59 @@ export default function BacklogTable(): JSX.Element {
       />
     </IconContext.Provider>
   );
+}
+
+type handler = (arg: number | string) => void;
+
+export function createBacklogColumns(
+  handleDelete: handler,
+  handleEdit: handler
+): GridColDef[] {
+  return [
+    { field: "key", headerName: "Key", width: 100 },
+    {
+      field: "title",
+      headerName: "Title",
+      editable: true,
+      align: "left",
+      flex: 1,
+      minWidth: 125,
+    },
+    {
+      field: "assignee",
+      headerName: "Assignee",
+      align: "left",
+      width: 150,
+    },
+    {
+      field: "status",
+      headerName: "Status",
+      editable: true,
+      align: "left",
+      width: 125,
+    },
+    {
+      field: "priority",
+      headerName: "Priority",
+      editable: true,
+      width: 75,
+    },
+    {
+      field: "actions",
+      type: "actions",
+      width: 100,
+      getActions: (params: GridRowParams) => [
+        <GridActionsCellItem
+          label="Delete"
+          icon={<MdDelete />}
+          onClick={(): void => handleDelete(params.id)}
+        />,
+        <GridActionsCellItem
+          label="Edit"
+          icon={<MdEdit />}
+          onClick={(): void => handleEdit(params.id)}
+        />,
+      ],
+    },
+  ];
 }
