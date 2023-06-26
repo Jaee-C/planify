@@ -10,7 +10,7 @@ import BaseSidebar from "@/components/Sidebar/BaseSidebar";
 export default function Projects(): JSX.Element {
   return (
     <>
-      <TopNavigation activePage={NavigationPage.HOME} />
+      <TopNavigation activePage={NavigationPage.PROJECTS} />
       <ProSidebarProvider>
         <div
           style={{

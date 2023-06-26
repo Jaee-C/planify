@@ -1,5 +1,5 @@
-import '../../styles/globals.css';
-import type {AppProps} from 'next/app';
+import "../../styles/globals.css";
+import type { AppProps } from "next/app";
 
 /**
  * Top level component used to initialise Nextjs pages. Sets up the
@@ -13,6 +13,6 @@ import type {AppProps} from 'next/app';
  * @param pageProps - Props passed from the page component
  * @returns - The rendered root component
  */
-export default function App({Component, pageProps}: AppProps) {
+export default function App({ Component, pageProps }: AppProps): JSX.Element {
   return <Component {...pageProps} />;
 }

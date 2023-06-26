@@ -1,13 +1,14 @@
-import React, {MouseEventHandler} from 'react';
-import BoxButton from '../utils/BoxButton';
+import React, { MouseEventHandler } from "react";
+import BoxButton from "../utils/BoxButton";
+import Link from "next/link";
 
 interface TopNavButtonProps {
   children: React.ReactNode;
-  onClick: MouseEventHandler;
+  href: string;
   active: boolean;
 }
 
-export const borderClassNames = 'border-b-black';
+export const borderClassNames = "border-b-black";
 
 /**
  * React component for a button in the top navigation bar
@@ -18,18 +19,19 @@ export const borderClassNames = 'border-b-black';
  */
 export default function TopNavigationButton({
   children,
-  onClick,
+  href,
   active,
-}: TopNavButtonProps) {
+}: TopNavButtonProps): JSX.Element {
   return (
     <div
       className={
-        'mx-1 flex items-center justify-center flex-col h-full' +
-        ' border-4 border-transparent ' +
-        (active ? borderClassNames : '')
-      }
-    >
-      <BoxButton onClick={onClick}>{children}</BoxButton>
+        "mx-1 flex items-center justify-center flex-col h-full" +
+        " border-4 border-transparent " +
+        (active ? borderClassNames : "")
+      }>
+      <div className="px-2 py-1.5 rounded-md hover:bg-neutral-500/30">
+        <Link href={href}>{children}</Link>
+      </div>
     </div>
   );
 }

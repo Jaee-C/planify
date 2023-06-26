@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,21 +6,22 @@ import {
   IconButton,
   Divider,
   DialogContent,
-} from '@mui/material';
-import {MdClose} from 'react-icons/md';
-import IssueForm, {IssueFormProps} from '@/components/Form/IssueForm';
+} from "@mui/material";
+import { MdClose } from "react-icons/md";
+import IssueForm, { IssueFormProps } from "@/components/Form/IssueForm";
 
 interface CreateIssueFormProps extends IssueFormProps {}
 
-export default function IssueEditDialog(props: CreateIssueFormProps) {
+export default function IssueEditDialog(
+  props: CreateIssueFormProps
+): JSX.Element {
   return (
     <Dialog open={props.formOpen} scroll="body" fullWidth>
       <DialogTitle className="flex items-center justify-between m-0 p-4">
         <Typography variant="h6">Create Issue</Typography>
         <IconButton
           onClick={props.closeForm}
-          className="text-gray-500 absolute right-2 top-2"
-        >
+          className="text-gray-500 absolute right-2 top-2">
           <MdClose size="24px" />
         </IconButton>
       </DialogTitle>

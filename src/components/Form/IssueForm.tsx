@@ -1,35 +1,35 @@
-import 'react';
-import {Button, Divider, Grid, styled} from '@mui/material';
-import FormTextField from '@/components/Form/FormTextField';
-import TextFieldLabel from '@/components/Form/TextFieldLabel';
-import FormSelectField from '@/components/Form/FormSelectField';
-import React from 'react';
-import * as yup from 'yup';
-import {useMutation, useQueryClient} from 'react-query';
-import {useFormik} from 'formik';
-import {UIIssue} from '@/interfaces';
+import "react";
+import { Button, Divider, Grid, styled } from "@mui/material";
+import FormTextField from "@/components/Form/FormTextField";
+import TextFieldLabel from "@/components/Form/TextFieldLabel";
+import FormSelectField from "@/components/Form/FormSelectField";
+import React from "react";
+import * as yup from "yup";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useFormik } from "formik";
+import { UIIssue } from "@/interfaces";
 import {
   EMPTY_FORM,
   formValues,
   ISSUE_PRIORITIES,
   ISSUE_STATUSES,
-} from './FormConstants';
-import {addIssue, convertStatusToNum} from '@/components/data/issues';
+} from "./FormConstants";
+import { addIssue } from "@/components/data/issues";
 
 const FormRow = styled(Grid)(() => ({
-  '&.MuiGrid-item': {
-    paddingTop: '24px',
-    fontSize: '0.875rem',
+  "&.MuiGrid-item": {
+    paddingTop: "24px",
+    fontSize: "0.875rem",
   },
 }));
 
 const issueValidation = yup.object({
-  title: yup.string().required('Enter a title'),
+  title: yup.string().required("Enter a title"),
   description: yup.string().optional(),
   assignee: yup.string().optional(),
   reporter: yup.string().optional(),
   status: yup.number().oneOf([1, 2, 3]).required(),
-  priority: yup.string().oneOf(['low', 'medium', 'high']).optional(),
+  priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
 });
 
 export interface IssueFormProps {
@@ -38,22 +38,21 @@ export interface IssueFormProps {
   editingIssue?: UIIssue;
 }
 
-export default function IssueForm(props: IssueFormProps) {
-  const queryClient = useQueryClient();
+export default function IssueForm(props: IssueFormProps): JSX.Element {
+  const queryClient: QueryClient = useQueryClient();
   const newIssueMutation = useMutation({
     mutationFn: addIssue,
-    onSuccess: () => {
-      queryClient.invalidateQueries('issues');
+    onSuccess: (): void => {
+      queryClient.invalidateQueries("issues");
     },
   });
 
   const baseForm: formValues = EMPTY_FORM;
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
-    baseForm.project = props.editingIssue.project;
     baseForm.title = props.editingIssue.title;
     baseForm.assignee = props.editingIssue.assignee;
-    baseForm.status = convertStatusToNum(props.editingIssue.status);
+    baseForm.status = props.editingIssue.status;
   }
 
   const formik = useFormik({
@@ -62,15 +61,16 @@ export default function IssueForm(props: IssueFormProps) {
     onSubmit: (values: formValues) => {
       alert(JSON.stringify(values, null, 2));
       if (!values.assignee) {
-        values.assignee = 'Daniel';
+        values.assignee = "Daniel";
       }
       newIssueMutation.mutate(values);
 
-      handleFormClose();
+      formik.resetForm();
+      props.closeForm();
     },
   });
 
-  const handleFormClose = () => {
+  const handleFormClose = (): void => {
     formik.resetForm();
     props.closeForm();
   };
@@ -170,8 +170,7 @@ export default function IssueForm(props: IssueFormProps) {
               variant="contained"
               color="primary"
               className="bg-blue-600"
-              type="submit"
-            >
+              type="submit">
               save
             </Button>
           </Grid>

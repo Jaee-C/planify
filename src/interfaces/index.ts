@@ -1,14 +1,13 @@
 export interface UIIssue {
   id?: number;
-  project?: string;
+  key?: string;
   title?: string;
-  assignee: string;
-  status: string;
+  assignee?: string;
+  status?: number;
 }
 
 export interface ServerIssue {
   id: number;
-  project: string;
   title: string;
   assignee: string;
   status: number;
