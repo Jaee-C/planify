@@ -1,10 +1,37 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import Issue from "@/server/service/Issue";
+import { prisma } from "@/server/dao/db";
+import { Prisma } from "@prisma/client";
+
+// TODO: use Adapter pattern for DAOs
+// TODO: promises might be better to be resolved in this layer, instead of
+//       passing them to the service layer
+
+const issueSelect = {
+  id: true,
+  title: true,
+  statusId: true,
+  project: {
+    select: {
+      key: true,
+    },
+  },
+} satisfies Prisma.IssueSelect;
+
+type IssuePayload = Prisma.IssueGetPayload<{ select: typeof issueSelect }>;
+
+const issueNumberSelect = {
+  numIssues: true,
+} satisfies Prisma.ProjectSelect;
+
+type IssueNumberPayload = Prisma.ProjectGetPayload<{
+  select: typeof issueNumberSelect;
+}>;
 
 export default class IssueDAO {
   private _store: Issue[];
   private _issueId: number = 0;
-  private _projectId: number;
+  private readonly _projectId: number;
 
   public constructor(pid: number) {
     this._projectId = pid;
@@ -12,11 +39,22 @@ export default class IssueDAO {
     this.setUpSample();
   }
 
-  public fetchAllIssues(): Issue[] {
-    return this._store;
+  public async fetchAllIssues(): Promise<Issue[]> {
+    const dbIssues: IssuePayload[] = await prisma.issue.findMany({
+      where: { projectId: this._projectId },
+      select: issueSelect,
+    });
+
+    return dbIssues.map((dbIssue: IssuePayload) => {
+      const issue: Issue = new Issue(dbIssue.id);
+      issue.title = dbIssue.title;
+      issue.assignee = "testuser";
+      issue.status = dbIssue.statusId;
+      return issue;
+    });
   }
 
-  public saveIssue(req: IssueRequest): void {
+  public async saveIssue(req: IssueRequest): Promise<void> {
     if (!(req.title && req.assignee && req.status)) {
       throw Error("Invalid request");
     }
@@ -26,6 +64,7 @@ export default class IssueDAO {
     newIssue.assignee = req.assignee;
     newIssue.status = req.status;
     this._store.push(newIssue);
+    await this.createIssue(req.title, req.assignee, req.status);
   }
 
   public editIssue(req: IssueRequest): void {
@@ -75,5 +114,43 @@ export default class IssueDAO {
     status: number
   ): Issue {
     return { id, title, assignee, status };
+  }
+
+  // TODO: return created issue to verify with client
+  // Note: custom `Issue` type might not be needed (incompatible with IssuePayload)
+  private async createIssue(
+    title: string,
+    assignee: string,
+    status: number
+  ): Promise<IssuePayload> {
+    const countPayload: IssueNumberPayload | null = await prisma.project.update(
+      {
+        where: {
+          id: this._projectId,
+        },
+        data: {
+          numIssues: {
+            increment: 1,
+          },
+        },
+        select: issueNumberSelect,
+      }
+    );
+
+    if (countPayload === null) {
+      throw Error("Project not found");
+    }
+
+    const issueCount: number = countPayload.numIssues;
+
+    return prisma.issue.create({
+      data: {
+        id: issueCount,
+        title,
+        statusId: status,
+        projectId: this._projectId,
+      },
+      select: issueSelect,
+    });
   }
 }

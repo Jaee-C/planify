@@ -14,7 +14,7 @@ export default class Project {
     this.setupProjectKey();
   }
 
-  public saveIssue(issue: IssueRequest): void {
+  public async saveIssue(issue: IssueRequest): Promise<void> {
     if (!issue.verifyEntries()) {
       throw new Error("Invalid request");
     }
@@ -23,11 +23,11 @@ export default class Project {
       this._store.editIssue(issue);
       return;
     }
-    this._store.saveIssue(issue);
+    await this._store.saveIssue(issue);
   }
 
-  public getAllIssues(): UIIssue[] {
-    const dbIssue: Issue[] = this._store.fetchAllIssues();
+  public async getAllIssues(): Promise<UIIssue[]> {
+    const dbIssue: Issue[] = await this._store.fetchAllIssues();
     const result: UIIssue[] = [];
 
     dbIssue.forEach((issue: UIIssue): void => {

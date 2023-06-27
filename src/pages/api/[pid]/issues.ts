@@ -16,21 +16,20 @@ export default function handler(
 
   switch (req.method) {
     case "GET":
-      res.status(200).json(project.getAllIssues());
+      project.getAllIssues().then((issues: UIIssue[]): void => {
+        res.status(200).json(issues);
+      });
       break;
     case "POST":
       const request: IssueRequest = new NextjsIssueRequest(req);
-
-      try {
-        project.saveIssue(request);
-      } catch (e: unknown) {
-        if (e instanceof Error) {
+      project
+        .saveIssue(request)
+        .then((): void => {
+          res.status(200).end();
+        })
+        .catch((e: Error): void => {
           res.status(400).json(e.message);
-          return;
-        }
-      }
-
-      res.status(200);
+        });
       break;
     default:
       res.status(405).end();
