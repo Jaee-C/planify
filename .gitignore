@@ -39,3 +39,6 @@ client/.vercel
 client/*.tsbuildinfo
 ../next-env.d.ts
 
+.env
+**/*.db
+
