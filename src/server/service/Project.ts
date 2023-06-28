@@ -1,4 +1,4 @@
-import IssueDAO from "@/server/dao/IssueDAO";
+import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { UIIssue } from "@/interfaces";
 import Issue from "@/server/service/Issue";
@@ -6,11 +6,11 @@ import Issue from "@/server/service/Issue";
 export default class Project {
   private _id: number;
   private _key: string = "";
-  private _store: IssueDAO;
+  private _store: IssueRepository;
 
   public constructor(id: number) {
     this._id = id;
-    this._store = new IssueDAO(id);
+    this._store = new IssueRepository(id);
     this.setupProjectKey();
   }
 
@@ -20,7 +20,7 @@ export default class Project {
     }
 
     if (issue.id != undefined) {
-      this._store.editIssue(issue);
+      await this._store.editIssue(issue);
       return;
     }
     await this._store.saveIssue(issue);
