@@ -6,15 +6,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Project[] | string | undefined>
 ): Promise<void> {
-  return new Promise(resolve => {
-    const projectDb: ProjectRepository = new ProjectRepository();
-    switch (req.method) {
-      case "GET":
-        projectDb.fetchAllProjects().then((projects: Project[]): void => {
-          res.status(200).json(projects);
-          resolve();
-        });
-        break;
-    }
-  });
+  const projectDb: ProjectRepository = new ProjectRepository();
+  switch (req.method) {
+    case "GET":
+      const allProjects: Project[] = await projectDb.fetchAllProjects();
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify(allProjects));
+      break;
+  }
 }

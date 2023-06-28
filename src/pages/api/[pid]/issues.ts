@@ -13,30 +13,25 @@ export default async function handler(
   }
   const project: Project = new Project(parseInt(req.query.pid));
 
-  return new Promise(resolve => {
-    switch (req.method) {
-      case "GET":
-        project.getAllIssues().then((issues: Issue[]): void => {
-          res.status(200).json(issues);
-          resolve();
+  switch (req.method) {
+    case "GET":
+      const allIssues: Issue[] = await project.getAllIssues();
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify(allIssues));
+      break;
+    case "POST":
+      const request: IssueRequest = new NextjsIssueRequest(req);
+      project
+        .saveIssue(request)
+        .then((): void => {
+          res.status(200).end();
+        })
+        .catch((e: Error): void => {
+          res.status(400).json(e.message);
         });
-        break;
-      case "POST":
-        const request: IssueRequest = new NextjsIssueRequest(req);
-        project
-          .saveIssue(request)
-          .then((): void => {
-            res.status(200).end();
-            resolve();
-          })
-          .catch((e: Error): void => {
-            res.status(400).json(e.message);
-            resolve();
-          });
-        break;
-      default:
-        res.status(405).end();
-        resolve();
-    }
-  });
+      break;
+    default:
+      res.status(405).end();
+  }
 }
