@@ -1,6 +1,6 @@
 import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { Issue, StatusType } from "@/interfaces";
+import { Issue, StatusType, PriorityType } from "@/interfaces";
 
 export default class Project {
   private readonly _id: number;
@@ -29,6 +29,10 @@ export default class Project {
 
   public async getAllStatuses(): Promise<StatusType[]> {
     return this._store.fetchStatuses();
+  }
+
+  public async getAllPriorities(): Promise<PriorityType[]> {
+    return this._store.fetchPriorities();
   }
 
   public async deleteIssue(id: number): Promise<void> {

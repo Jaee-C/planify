@@ -24,7 +24,7 @@ import {
   fetchIssueList,
   serverDeleteIssue,
 } from "@/components/data/issues";
-import { StatusType, Issue } from "@/interfaces";
+import { StatusType, Issue, PriorityType } from "@/interfaces";
 import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogTable(): JSX.Element {
@@ -42,6 +42,7 @@ export default function BacklogTable(): JSX.Element {
     undefined
   );
   const [statuses, setStatuses] = React.useState<StatusType[]>([]);
+  const [priorities, setPriorities] = React.useState<PriorityType[]>([]);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
@@ -62,6 +63,9 @@ export default function BacklogTable(): JSX.Element {
       }
       if (data.statuses.length > 0) {
         setStatuses(data.statuses);
+      }
+      if (data.priorities.length > 0) {
+        setPriorities(data.priorities);
       }
     }
   }, [data]);

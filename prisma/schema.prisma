@@ -31,6 +31,8 @@ model Issue {
   statusId    Int
   project     Project @relation(fields: [projectId], references: [id])
   projectId   Int
+  priority    PriorityType? @relation(fields: [priorityId], references: [id])
+  priorityId  Int?
 
   @@id([id, projectId])
 }
@@ -45,6 +47,12 @@ model User {
 }
 
 model StatusType {
+  id     Int    @id @default(autoincrement())
+  name   String
+  issues Issue[]
+}
+
+model PriorityType {
   id     Int    @id @default(autoincrement())
   name   String
   issues Issue[]

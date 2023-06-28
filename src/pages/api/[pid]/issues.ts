@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Issue, IssueResponse, StatusType } from "@/interfaces";
+import { Issue, IssueResponse, StatusType, PriorityType } from "@/interfaces";
 import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
 
@@ -17,7 +17,12 @@ export default async function handler(
     case "GET":
       const allIssues: Issue[] = await project.getAllIssues();
       const statuses: StatusType[] = await project.getAllStatuses();
-      const response: IssueResponse = new IssueResponse(allIssues, statuses);
+      const priorities: PriorityType[] = await project.getAllPriorities();
+      const response: IssueResponse = new IssueResponse(
+        allIssues,
+        statuses,
+        priorities
+      );
 
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");

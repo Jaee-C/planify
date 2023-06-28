@@ -1,5 +1,4 @@
-import Issue, { IssueResponse } from "@/interfaces/Issue";
-import { StatusType } from "@/interfaces";
+import { StatusType, PriorityType, Issue, IssueResponse } from "@/interfaces";
 
 export function convertNumtoStatus(status: number | undefined): string {
   if (!status) return "Invalid";
@@ -25,7 +24,7 @@ export async function serverDeleteIssue(
 
 export async function fetchIssueList(pid: number): Promise<IssueResponse> {
   if (Number.isNaN(pid) || pid < 1) {
-    return new IssueResponse([], []);
+    return new IssueResponse([], [], []);
   }
 
   const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
@@ -52,8 +51,16 @@ export async function fetchIssueList(pid: number): Promise<IssueResponse> {
 
     return newStatus;
   });
+  const priorities: PriorityType[] = json.priorities.map(
+    (item: any): PriorityType => {
+      return {
+        id: item.id,
+        value: item.value,
+      };
+    }
+  );
 
-  return new IssueResponse(issues, statuses);
+  return new IssueResponse(issues, statuses, priorities);
 }
 
 export async function addIssue(pid: number, data: Issue): Promise<any> {

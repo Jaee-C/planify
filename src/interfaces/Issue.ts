@@ -1,4 +1,5 @@
 import StatusType from "./StatusType";
+import PriorityType from "./PriorityType";
 
 export default class Issue {
   public id: number;
@@ -8,7 +9,7 @@ export default class Issue {
   public reporter: string | undefined;
   public status: number | undefined;
   public issueKey: string | undefined;
-  public priority: string | undefined;
+  public priority: number | undefined;
 
   public constructor(id: number) {
     this.id = id;
@@ -20,11 +21,17 @@ export default class Issue {
 }
 
 export class IssueResponse {
-  public data: Issue[];
-  public statuses: StatusType[];
+  public readonly data: Issue[];
+  public readonly statuses: StatusType[];
+  public readonly priorities: PriorityType[];
 
-  public constructor(data: Issue[], statuses: StatusType[]) {
+  public constructor(
+    data: Issue[],
+    statuses: StatusType[],
+    priorities: PriorityType[]
+  ) {
     this.data = data;
     this.statuses = statuses;
+    this.priorities = priorities;
   }
 }

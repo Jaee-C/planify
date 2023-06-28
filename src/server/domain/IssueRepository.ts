@@ -1,8 +1,7 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import Issue from "@/interfaces/Issue";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
-import { StatusType } from "@/interfaces";
+import { Issue, StatusType, PriorityType } from "@/interfaces";
 
 const issueSelect = {
   id: true,
@@ -32,6 +31,15 @@ const statusSelect = {
 
 type StatusPayload = Prisma.StatusTypeGetPayload<{
   select: typeof statusSelect;
+}>;
+
+const prioritySelect = {
+  id: true,
+  name: true,
+} satisfies Prisma.PriorityTypeSelect;
+
+type PriorityPayload = Prisma.PriorityTypeGetPayload<{
+  select: typeof prioritySelect;
 }>;
 
 export interface IIssueDB {
@@ -121,6 +129,19 @@ export default class IssueRepository implements IIssueDB {
       return {
         id: status.id,
         name: status.name,
+      };
+    });
+  }
+
+  public async fetchPriorities(): Promise<PriorityType[]> {
+    const payload: PriorityPayload[] = await prisma.priorityType.findMany({
+      select: prioritySelect,
+    });
+
+    return payload.map((priority: PriorityPayload) => {
+      return {
+        id: priority.id,
+        value: priority.name,
       };
     });
   }
