@@ -12,11 +12,8 @@ export default class IssueRequest {
     if (Number.isNaN(value)) {
       return;
     }
-    if (value < 1 || value > 3) {
-      return;
-    }
 
-    this.status = value;
+    this.status = 1;
   }
 
   public async verifyEntries(db: IssueRepository): Promise<boolean> {

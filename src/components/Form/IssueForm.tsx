@@ -6,15 +6,10 @@ import FormSelectField from "@/components/Form/FormSelectField";
 import React from "react";
 import * as yup from "yup";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { useFormik } from "formik";
-import { UIIssue } from "@/interfaces";
-import {
-  EMPTY_FORM,
-  formValues,
-  ISSUE_PRIORITIES,
-  ISSUE_STATUSES,
-} from "./FormConstants";
+import { FormikProps, useFormik } from "formik";
+import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
 import { addIssue } from "@/components/data/issues";
+import { Issue } from "@/interfaces";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -35,19 +30,20 @@ const issueValidation = yup.object({
 export interface IssueFormProps {
   formOpen: boolean;
   closeForm: () => void;
-  editingIssue?: UIIssue;
+  editingIssue?: Issue;
 }
 
 export default function IssueForm(props: IssueFormProps): JSX.Element {
   const queryClient: QueryClient = useQueryClient();
   const newIssueMutation = useMutation({
-    mutationFn: addIssue,
+    mutationFn: (data: Issue) => addIssue(1, data),
     onSuccess: (): void => {
+      // TODO: figure out why this is not updating the table
       queryClient.invalidateQueries("issues");
     },
   });
 
-  const baseForm: formValues = EMPTY_FORM;
+  const baseForm: Issue = EMPTY_FORM;
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
     baseForm.title = props.editingIssue.title;
@@ -55,10 +51,10 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
     baseForm.status = props.editingIssue.status;
   }
 
-  const formik = useFormik({
+  const formik: FormikProps<Issue> = useFormik<Issue>({
     initialValues: baseForm,
     validationSchema: issueValidation,
-    onSubmit: (values: formValues) => {
+    onSubmit: (values: Issue): void => {
       alert(JSON.stringify(values, null, 2));
       if (!values.assignee) {
         values.assignee = "Daniel";

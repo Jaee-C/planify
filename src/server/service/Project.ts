@@ -4,13 +4,11 @@ import { Issue, StatusType } from "@/interfaces";
 
 export default class Project {
   private readonly _id: number;
-  private _key: string = "";
   private readonly _store: IssueRepository;
 
   public constructor(id: number) {
     this._id = id;
     this._store = new IssueRepository(id);
-    this.setupProjectKey();
   }
 
   public async saveIssue(issue: IssueRequest): Promise<void> {
@@ -34,10 +32,8 @@ export default class Project {
   }
 
   public async deleteIssue(id: number): Promise<void> {
-    this._store.deleteIssue(id);
-  }
-
-  private setupProjectKey(): void {
-    this._key = "PRJ";
+    // Filter out impossible IDs
+    if (Number.isNaN(id) || id < 1) return;
+    await this._store.deleteIssue(id);
   }
 }

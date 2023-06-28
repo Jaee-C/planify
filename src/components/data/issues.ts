@@ -1,4 +1,3 @@
-import { formValues } from "@/components/Form/FormConstants";
 import Issue, { IssueResponse } from "@/interfaces/Issue";
 import { StatusType } from "@/interfaces";
 
@@ -53,8 +52,8 @@ export async function fetchIssueList(pid: number): Promise<IssueResponse> {
   return new IssueResponse(issues, statuses);
 }
 
-export async function addIssue(data: formValues): Promise<any> {
-  const httpResponse: Response = await fetch("/api/issues", {
+export async function addIssue(pid: number, data: Issue): Promise<any> {
+  const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
