@@ -1,11 +1,11 @@
 import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import Issue from "@/interfaces/Issue";
+import { Issue, StatusType } from "@/interfaces";
 
 export default class Project {
-  private _id: number;
+  private readonly _id: number;
   private _key: string = "";
-  private _store: IssueRepository;
+  private readonly _store: IssueRepository;
 
   public constructor(id: number) {
     this._id = id;
@@ -14,7 +14,7 @@ export default class Project {
   }
 
   public async saveIssue(issue: IssueRequest): Promise<void> {
-    if (!issue.verifyEntries()) {
+    if (!(await issue.verifyEntries(this._store))) {
       throw new Error("Invalid request");
     }
 
@@ -27,6 +27,10 @@ export default class Project {
 
   public async getAllIssues(): Promise<Issue[]> {
     return this._store.fetchAllIssues();
+  }
+
+  public async getAllStatuses(): Promise<StatusType[]> {
+    return this._store.fetchStatuses();
   }
 
   public async deleteIssue(id: number): Promise<void> {

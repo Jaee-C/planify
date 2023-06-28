@@ -1,3 +1,5 @@
+import StatusType from "./StatusType";
+
 export default class Issue {
   public id: number;
   public title: string | undefined;
@@ -7,5 +9,15 @@ export default class Issue {
 
   public constructor(id: number) {
     this.id = id;
+  }
+}
+
+export class IssueResponse {
+  public data: Issue[];
+  public statuses: StatusType[];
+
+  public constructor(data: Issue[], statuses: StatusType[]) {
+    this.data = data;
+    this.statuses = statuses;
   }
 }

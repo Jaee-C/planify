@@ -1,3 +1,6 @@
+import IssueRepository from "@/server/domain/IssueRepository";
+import { StatusType } from "@/interfaces";
+
 export default class IssueRequest {
   public id?: number = undefined;
   public title?: string = undefined;
@@ -16,17 +19,21 @@ export default class IssueRequest {
     this.status = value;
   }
 
-  public verifyEntries(): boolean {
-    return this.verifyStatus() && this.verifyTitle();
+  public async verifyEntries(db: IssueRepository): Promise<boolean> {
+    return (await this.verifyStatus(db)) && this.verifyTitle();
   }
 
-  private verifyStatus(): boolean {
+  private async verifyStatus(db: IssueRepository): Promise<boolean> {
     if (Number.isNaN(this.status) || this.status === undefined) {
       // console.log("Status is not a number.");
       return false;
     }
 
-    if (this.status < 1 || this.status > 3) {
+    // Status provided is not defined in database
+    const validStatuses: number[] = (await db.fetchStatuses()).map(
+      (value: StatusType): number => value.id
+    );
+    if (validStatuses.indexOf(this.status) === -1) {
       // console.log("Invalid status");
       return false;
     }

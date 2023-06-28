@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import Issue from "@/interfaces/Issue";
+import { Issue, IssueResponse, StatusType } from "@/interfaces";
 import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Issue[] | string | undefined>
+  res: NextApiResponse<IssueResponse[] | string | undefined>
 ): Promise<void> {
   if (req.query.pid === undefined || Array.isArray(req.query.pid)) {
     res.status(405).end();
@@ -16,9 +16,12 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       const allIssues: Issue[] = await project.getAllIssues();
+      const statuses: StatusType[] = await project.getAllStatuses();
+      const response: IssueResponse = new IssueResponse(allIssues, statuses);
+
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(allIssues));
+      res.end(JSON.stringify(response));
       break;
     case "POST":
       const request: IssueRequest = new NextjsIssueRequest(req);

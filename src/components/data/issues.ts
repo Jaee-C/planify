@@ -1,5 +1,6 @@
 import { formValues } from "@/components/Form/FormConstants";
-import Issue from "@/interfaces/Issue";
+import Issue, { IssueResponse } from "@/interfaces/Issue";
+import { StatusType } from "@/interfaces";
 
 export function convertNumtoStatus(status: number | undefined): string {
   if (!status) return "Invalid";
@@ -23,7 +24,7 @@ export async function serverDeleteIssue(
   await fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
 }
 
-export async function fetchIssueList(pid: number): Promise<Issue[]> {
+export async function fetchIssueList(pid: number): Promise<IssueResponse> {
   const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "GET",
   });
@@ -33,7 +34,7 @@ export async function fetchIssueList(pid: number): Promise<Issue[]> {
   }
 
   const json = await httpResponse.json();
-  return json.map((item: any): Issue => {
+  const issues: Issue[] = json.data.map((item: any): Issue => {
     const newIssue: Issue = new Issue(item.id);
 
     newIssue.title = item.title;
@@ -43,6 +44,13 @@ export async function fetchIssueList(pid: number): Promise<Issue[]> {
 
     return newIssue;
   });
+  const statuses: StatusType[] = json.statuses.map((item: any): StatusType => {
+    const newStatus: StatusType = new StatusType(item.id, item.status);
+
+    return newStatus;
+  });
+
+  return new IssueResponse(issues, statuses);
 }
 
 export async function addIssue(data: formValues): Promise<any> {

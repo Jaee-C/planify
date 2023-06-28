@@ -13,7 +13,6 @@ import { IconContext } from "react-icons";
 import TableToolbar from "@/components/Table/TableToolbar";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
-import type { Issue } from "@/interfaces";
 import {
   QueryClient,
   useMutation,
@@ -27,6 +26,7 @@ import {
 } from "@/components/data/issues";
 import { useContext } from "react";
 import { BacklogContext } from "@/components/Backlog/BacklogContext";
+import { IssueResponse, StatusType, Issue } from "@/interfaces";
 
 export default function BacklogTable(): JSX.Element {
   const project: number = useContext(BacklogContext);
@@ -34,25 +34,31 @@ export default function BacklogTable(): JSX.Element {
   const [editingRow, setEditingRow] = React.useState<Issue | undefined>(
     undefined
   );
-  const { data, isLoading } = useQuery<Issue[]>("issues", () =>
+  const [statuses, setStatuses] = React.useState<StatusType[]>([]);
+  const { data, isLoading } = useQuery<IssueResponse>("issues", () =>
     fetchIssueList(project)
   );
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
   React.useEffect((): void => {
-    if (!isLoading && data && data.length > 0) {
-      const newRows: GridRowsProp = data.map((row: Issue) => {
-        return {
-          id: row.id,
-          key: row.issueKey,
-          title: row.title,
-          assignee: row.assignee,
-          status: convertNumtoStatus(row.status),
-          priority: "low",
-        };
-      });
-      setRows(newRows);
+    if (!isLoading && data) {
+      if (data.data.length > 0) {
+        const newRows: GridRowsProp = data.data.map((row: Issue) => {
+          return {
+            id: row.id,
+            key: row.issueKey,
+            title: row.title,
+            assignee: row.assignee,
+            status: convertNumtoStatus(row.status),
+            priority: "low",
+          };
+        });
+        setRows(newRows);
+      }
+      if (data.statuses.length > 0) {
+        setStatuses(data.statuses);
+      }
     }
   }, [data]);
 
@@ -72,7 +78,7 @@ export default function BacklogTable(): JSX.Element {
         return;
       }
 
-      const row = data.find(row => row.id === id);
+      const row = data.data.find(row => row.id === id);
       setEditingRow(row);
       setDialogOpen(true);
     },
