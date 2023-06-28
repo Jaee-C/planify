@@ -24,20 +24,24 @@ import {
   fetchIssueList,
   serverDeleteIssue,
 } from "@/components/data/issues";
-import { useContext } from "react";
-import { BacklogContext } from "@/components/Backlog/BacklogContext";
-import { IssueResponse, StatusType, Issue } from "@/interfaces";
+import { StatusType, Issue } from "@/interfaces";
+import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogTable(): JSX.Element {
-  const project: number = useContext(BacklogContext);
+  const router: NextRouter = useRouter();
+  const { pid } = router.query;
+  const { data, isLoading } = useQuery(
+    ["issues", Number(pid)],
+    () => fetchIssueList(Number(pid)),
+    {
+      enabled: !!pid,
+    }
+  );
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
   const [editingRow, setEditingRow] = React.useState<Issue | undefined>(
     undefined
   );
   const [statuses, setStatuses] = React.useState<StatusType[]>([]);
-  const { data, isLoading } = useQuery<IssueResponse>("issues", () =>
-    fetchIssueList(project)
-  );
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
@@ -85,17 +89,19 @@ export default function BacklogTable(): JSX.Element {
     [data]
   );
 
-  const deleteIssue = useMutation((id: GridRowId) =>
-    serverDeleteIssue(project, id)
+  const deleteIssue = useMutation(
+    (id: GridRowId) => serverDeleteIssue(Number(pid), id),
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["issues", Number(pid)]);
+      },
+    }
   );
 
-  const handleDelete = (id: GridRowId): void => {
-    deleteIssue.mutate(id);
-    queryClient.invalidateQueries("issues");
-    setRows(rows.filter(row => row.id !== id));
-  };
-
-  const columns: GridColDef[] = createBacklogColumns(handleDelete, handleEdit);
+  const columns: GridColDef[] = createBacklogColumns(
+    deleteIssue.mutate,
+    handleEdit
+  );
 
   return (
     <IconContext.Provider value={{ size: "16px" }}>

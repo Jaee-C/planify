@@ -7,11 +7,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<IssueResponse[] | string | undefined>
 ): Promise<void> {
-  if (req.query.pid === undefined || Array.isArray(req.query.pid)) {
+  if (Array.isArray(req.query.pid) || Number.isNaN(Number(req.query.pid))) {
     res.status(405).end();
     return;
   }
-  const project: Project = new Project(parseInt(req.query.pid));
+  const project: Project = new Project(Number(req.query.pid));
 
   switch (req.method) {
     case "GET":
@@ -25,14 +25,16 @@ export default async function handler(
       break;
     case "POST":
       const request: IssueRequest = new NextjsIssueRequest(req);
-      project
-        .saveIssue(request)
-        .then((): void => {
-          res.status(200).end();
-        })
-        .catch((e: Error): void => {
-          res.status(400).json(e.message);
-        });
+      try {
+        const response = { message: "Done." };
+        await project.saveIssue(request);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(response));
+      } catch (e: any) {
+        res.statusCode = 400;
+        res.end(e.message);
+      }
       break;
     default:
       res.status(405).end();

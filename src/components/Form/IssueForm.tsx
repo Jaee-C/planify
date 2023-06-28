@@ -1,4 +1,5 @@
 import "react";
+import { NextRouter, useRouter } from "next/router";
 import { Button, Divider, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
@@ -34,16 +35,12 @@ export interface IssueFormProps {
 }
 
 export default function IssueForm(props: IssueFormProps): JSX.Element {
+  const router: NextRouter = useRouter();
+  const { pid } = router.query;
   const queryClient: QueryClient = useQueryClient();
-  const newIssueMutation = useMutation({
-    mutationFn: (data: Issue) => addIssue(1, data),
-    onSuccess: (): void => {
-      // TODO: figure out why this is not updating the table
-      queryClient.invalidateQueries("issues");
-    },
-  });
+  const newIssueMutation = useMutation((data: Issue) => addIssue(1, data));
 
-  const baseForm: Issue = EMPTY_FORM;
+  const baseForm: Issue = EMPTY_FORM();
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
     baseForm.title = props.editingIssue.title;
@@ -55,14 +52,23 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
     initialValues: baseForm,
     validationSchema: issueValidation,
     onSubmit: (values: Issue): void => {
-      alert(JSON.stringify(values, null, 2));
       if (!values.assignee) {
         values.assignee = "Daniel";
       }
-      newIssueMutation.mutate(values);
+      newIssueMutation.mutate(values, {
+        onSuccess: async () => {
+          // TODO: figure out why this is not updating the table
+          await queryClient.invalidateQueries(["issues", Number(pid)]);
+          console.log("success");
+        },
+        onSettled: () => {
+          console.log("settled");
+          formik.resetForm();
+          props.closeForm();
+        },
+      });
 
-      formik.resetForm();
-      props.closeForm();
+      console.log(Number(pid));
     },
   });
 

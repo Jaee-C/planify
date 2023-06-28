@@ -24,6 +24,11 @@ export async function serverDeleteIssue(
 }
 
 export async function fetchIssueList(pid: number): Promise<IssueResponse> {
+  if (Number.isNaN(pid) || pid < 1) {
+    console.log("aiya");
+    return new IssueResponse([], []);
+  }
+
   const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "GET",
   });
@@ -65,5 +70,7 @@ export async function addIssue(pid: number, data: Issue): Promise<any> {
     console.log(httpResponse.statusText);
   }
 
-  return httpResponse.json();
+  const json = await httpResponse.json();
+
+  return json.message;
 }
