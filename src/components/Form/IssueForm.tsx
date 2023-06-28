@@ -57,18 +57,13 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
       }
       newIssueMutation.mutate(values, {
         onSuccess: async () => {
-          // TODO: figure out why this is not updating the table
           await queryClient.invalidateQueries(["issues", Number(pid)]);
-          console.log("success");
         },
         onSettled: () => {
-          console.log("settled");
           formik.resetForm();
           props.closeForm();
         },
       });
-
-      console.log(Number(pid));
     },
   });
 

@@ -25,7 +25,6 @@ export async function serverDeleteIssue(
 
 export async function fetchIssueList(pid: number): Promise<IssueResponse> {
   if (Number.isNaN(pid) || pid < 1) {
-    console.log("aiya");
     return new IssueResponse([], []);
   }
 
