@@ -1,5 +1,5 @@
-import { UIIssue } from "@/interfaces";
-import { formValues, StatusType } from "@/components/Form/FormConstants";
+import { formValues } from "@/components/Form/FormConstants";
+import Issue from "@/interfaces/Issue";
 
 export function convertNumtoStatus(status: number | undefined): string {
   if (!status) return "Invalid";
@@ -23,7 +23,7 @@ export async function serverDeleteIssue(
   await fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
 }
 
-export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
+export async function fetchIssueList(pid: number): Promise<Issue[]> {
   const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "GET",
   });
@@ -33,14 +33,15 @@ export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
   }
 
   const json = await httpResponse.json();
-  return json.map((item: any): UIIssue => {
-    return {
-      id: item.id,
-      key: item.key,
-      title: item.title,
-      assignee: item.assignee,
-      status: parseInt(item.status),
-    };
+  return json.map((item: any): Issue => {
+    const newIssue: Issue = new Issue(item.id);
+
+    newIssue.title = item.title;
+    newIssue.assignee = item.assignee;
+    newIssue.status = item.status;
+    newIssue.issueKey = item.issueKey;
+
+    return newIssue;
   });
 }
 

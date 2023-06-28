@@ -1,5 +1,5 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import Issue from "@/server/service/Issue";
+import Issue from "@/interfaces/Issue";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
 
@@ -32,14 +32,10 @@ export interface IIssueDB {
 }
 
 export default class IssueRepository implements IIssueDB {
-  private _store: Issue[];
-  private _issueId: number = 0;
   private readonly _projectId: number;
 
   public constructor(pid: number) {
     this._projectId = pid;
-    this._store = [];
-    this.setUpSample();
   }
 
   public async fetchAllIssues(): Promise<Issue[]> {
@@ -79,12 +75,7 @@ export default class IssueRepository implements IIssueDB {
     const issueCount: number = countPayload.numIssues;
 
     const payload: IssuePayload = await prisma.issue.create({
-      data: {
-        id: issueCount,
-        title: req.title,
-        statusId: req.status,
-        projectId: this._projectId,
-      },
+      data: this.createIssue(issueCount, req.title, req.status),
       select: issueSelect,
     });
 
@@ -96,20 +87,8 @@ export default class IssueRepository implements IIssueDB {
       throw new Error("No valid issue id.");
     }
 
+    // TODO: implement updates for different cases
     const issueId: number = req.id;
-    const foundIssue: Issue | undefined = this._store.find(
-      (issue: Issue): boolean => issue.id === issueId
-    );
-
-    if (foundIssue === undefined) {
-      throw new Error("Index not found");
-    }
-
-    if (req.title && req.assignee && req.status) {
-      foundIssue.title = req.title;
-      foundIssue.assignee = req.assignee;
-      foundIssue.status = req.status;
-    }
   }
 
   public async deleteIssue(id: number): Promise<void> {
@@ -121,27 +100,6 @@ export default class IssueRepository implements IIssueDB {
         },
       },
     });
-  }
-
-  public setUpSample(): void {
-    this._store = [
-      this.createData(1, "Create PoC", "Daniel", 3),
-      this.createData(2, "Raise Issues", "Daniel", 1),
-      this.createData(3, "Update Progress on Issues", "Daniel", 2),
-      this.createData(4, "Record all issues", "Daniel", 1),
-      this.createData(5, "Manage Issues", "Daniel", 1),
-      this.createData(6, "Notify users", "Daniel", 1),
-    ];
-    this._issueId = 6;
-  }
-
-  private createData(
-    id: number,
-    title: string,
-    assignee: string,
-    status: number
-  ): Issue {
-    return { id, title, assignee, status, issueKey: `IT-${id}` };
   }
 
   /**
@@ -159,5 +117,33 @@ export default class IssueRepository implements IIssueDB {
     result.assignee = "testuser";
 
     return result;
+  }
+
+  /**
+   * Create issue payload for db
+   * @param {number} id     issue id, provided by db
+   * @param {string} title  issue title
+   * @param {number} status id of status
+   * @private
+   */
+  private createIssue(
+    id: number,
+    title: string,
+    status: number
+  ): Prisma.IssueCreateInput {
+    return Prisma.validator<Prisma.IssueCreateInput>()({
+      id,
+      title,
+      status: {
+        connect: {
+          id: status,
+        },
+      },
+      project: {
+        connect: {
+          id: this._projectId,
+        },
+      },
+    });
   }
 }

@@ -13,7 +13,7 @@ import { IconContext } from "react-icons";
 import TableToolbar from "@/components/Table/TableToolbar";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
-import type { UIIssue } from "@/interfaces";
+import type { Issue } from "@/interfaces";
 import {
   QueryClient,
   useMutation,
@@ -31,10 +31,10 @@ import { BacklogContext } from "@/components/Backlog/BacklogContext";
 export default function BacklogTable(): JSX.Element {
   const project: number = useContext(BacklogContext);
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
-  const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
+  const [editingRow, setEditingRow] = React.useState<Issue | undefined>(
     undefined
   );
-  const { data, isLoading } = useQuery<UIIssue[]>("issues", () =>
+  const { data, isLoading } = useQuery<Issue[]>("issues", () =>
     fetchIssueList(project)
   );
   const [rows, setRows] = React.useState<GridRowsProp>([]);
@@ -42,10 +42,10 @@ export default function BacklogTable(): JSX.Element {
 
   React.useEffect((): void => {
     if (!isLoading && data && data.length > 0) {
-      const newRows: GridRowsProp = data.map((row: UIIssue) => {
+      const newRows: GridRowsProp = data.map((row: Issue) => {
         return {
           id: row.id,
-          key: row.key,
+          key: row.issueKey,
           title: row.title,
           assignee: row.assignee,
           status: convertNumtoStatus(row.status),
@@ -67,7 +67,7 @@ export default function BacklogTable(): JSX.Element {
   };
 
   const handleEdit = React.useCallback(
-    (id: GridRowId) => () => {
+    (id: GridRowId) => (): void => {
       if (!data) {
         return;
       }

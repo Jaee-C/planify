@@ -1,7 +1,6 @@
 import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { UIIssue } from "@/interfaces";
-import Issue from "@/server/service/Issue";
+import Issue from "@/interfaces/Issue";
 
 export default class Project {
   private _id: number;
@@ -26,21 +25,11 @@ export default class Project {
     await this._store.saveIssue(issue);
   }
 
-  public async getAllIssues(): Promise<UIIssue[]> {
-    const dbIssue: Issue[] = await this._store.fetchAllIssues();
-    const result: UIIssue[] = [];
-
-    dbIssue.forEach((issue: UIIssue): void => {
-      result.push({
-        ...issue,
-        key: this._key + "-" + issue.id,
-      });
-    });
-
-    return result;
+  public async getAllIssues(): Promise<Issue[]> {
+    return this._store.fetchAllIssues();
   }
 
-  public deleteIssue(id: number): void {
+  public async deleteIssue(id: number): Promise<void> {
     this._store.deleteIssue(id);
   }
 
