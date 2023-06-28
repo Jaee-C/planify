@@ -1,10 +1,3 @@
-export default class Index {
-  public id: number;
-  public title: string | undefined;
-  public assignee: string | undefined;
-  public status: number | undefined;
+export { default as IssueRequest } from "./IssueRequest";
 
-  public constructor(id: number) {
-    this.id = id;
-  }
-}
+export { default as NextjsIssueRequest } from "./NextjsIssueRequest";

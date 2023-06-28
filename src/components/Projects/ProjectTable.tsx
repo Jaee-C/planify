@@ -5,9 +5,7 @@ import { IconContext } from "react-icons";
 import React from "react";
 import {
   GridActionsCellItem,
-  GridCellParams,
   GridColDef,
-  GridEventListener,
   GridRenderCellParams,
   GridRowParams,
   GridRowsProp,
@@ -15,6 +13,9 @@ import {
 import { MdDelete, MdEdit } from "react-icons/md";
 import TableToolbar from "@/components/Table/TableToolbar";
 import Link from "next/link";
+import { useQuery } from "react-query";
+import { Project } from "@/interfaces";
+import { fetchProjectList } from "@/components/data/projects";
 
 const columns: GridColDef[] = [
   { field: "key", headerName: "Key", width: 100 },
@@ -61,19 +62,24 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows: GridRowsProp = [
-  {
-    id: 1,
-    key: "PRJ",
-    name: "Projects",
-    owner: "Cheche",
-  },
-];
-
 export default function ProjectTable(): JSX.Element {
-  const handleMoveToProject: GridEventListener<"cellClick"> = (
-    params: GridCellParams<any>
-  ) => {};
+  const [rows, setRows] = React.useState<GridRowsProp>([]);
+  const { data, isLoading } = useQuery<Project[]>("projects", fetchProjectList);
+
+  React.useEffect((): void => {
+    if (!isLoading && data && data.length > 0) {
+      const newRows: GridRowsProp = data.map((row: Project) => {
+        return {
+          id: row.id,
+          key: row.key,
+          name: row.name,
+          owner: "cheche",
+        };
+      });
+      setRows(newRows);
+    }
+  }, [data]);
+
   return (
     <IconContext.Provider value={{ size: "16px" }}>
       <Box sx={{ width: "100%" }}>

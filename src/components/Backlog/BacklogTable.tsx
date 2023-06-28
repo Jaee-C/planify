@@ -13,7 +13,6 @@ import { IconContext } from "react-icons";
 import TableToolbar from "@/components/Table/TableToolbar";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
-import type { UIIssue } from "@/interfaces";
 import {
   QueryClient,
   useMutation,
@@ -25,34 +24,49 @@ import {
   fetchIssueList,
   serverDeleteIssue,
 } from "@/components/data/issues";
-import { useContext } from "react";
-import { BacklogContext } from "@/components/Backlog/BacklogContext";
+import { StatusType, Issue, PriorityType } from "@/interfaces";
+import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogTable(): JSX.Element {
-  const project: number = useContext(BacklogContext);
+  const router: NextRouter = useRouter();
+  const { pid } = router.query;
+  const { data, isLoading } = useQuery(
+    ["issues", Number(pid)],
+    () => fetchIssueList(Number(pid)),
+    {
+      enabled: !!pid,
+    }
+  );
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
-  const [editingRow, setEditingRow] = React.useState<UIIssue | undefined>(
+  const [editingRow, setEditingRow] = React.useState<Issue | undefined>(
     undefined
   );
-  const { data, isLoading } = useQuery<UIIssue[]>("issues", () =>
-    fetchIssueList(project)
-  );
+  const [statuses, setStatuses] = React.useState<StatusType[]>([]);
+  const [priorities, setPriorities] = React.useState<PriorityType[]>([]);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
 
   React.useEffect((): void => {
-    if (!isLoading && data && data.length > 0) {
-      const newRows: GridRowsProp = data.map((row: UIIssue) => {
-        return {
-          id: row.id,
-          key: row.key,
-          title: row.title,
-          assignee: row.assignee,
-          status: convertNumtoStatus(row.status),
-          priority: "low",
-        };
-      });
-      setRows(newRows);
+    if (!isLoading && data) {
+      if (data.data.length > 0) {
+        const newRows: GridRowsProp = data.data.map((row: Issue) => {
+          return {
+            id: row.id,
+            key: row.issueKey,
+            title: row.title,
+            assignee: row.assignee,
+            status: convertNumtoStatus(row.status),
+            priority: "low",
+          };
+        });
+        setRows(newRows);
+      }
+      if (data.statuses.length > 0) {
+        setStatuses(data.statuses);
+      }
+      if (data.priorities.length > 0) {
+        setPriorities(data.priorities);
+      }
     }
   }, [data]);
 
@@ -67,29 +81,31 @@ export default function BacklogTable(): JSX.Element {
   };
 
   const handleEdit = React.useCallback(
-    (id: GridRowId) => () => {
+    (id: GridRowId) => (): void => {
       if (!data) {
         return;
       }
 
-      const row = data.find(row => row.id === id);
+      const row = data.data.find(row => row.id === id);
       setEditingRow(row);
       setDialogOpen(true);
     },
     [data]
   );
 
-  const deleteIssue = useMutation((id: GridRowId) =>
-    serverDeleteIssue(project, id)
+  const deleteIssue = useMutation(
+    (id: GridRowId) => serverDeleteIssue(Number(pid), id),
+    {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries(["issues", Number(pid)]);
+      },
+    }
   );
 
-  const handleDelete = (id: GridRowId): void => {
-    deleteIssue.mutate(id);
-    queryClient.invalidateQueries("issues");
-    setRows(rows.filter(row => row.id !== id));
-  };
-
-  const columns: GridColDef[] = createBacklogColumns(handleDelete, handleEdit);
+  const columns: GridColDef[] = createBacklogColumns(
+    deleteIssue.mutate,
+    handleEdit
+  );
 
   return (
     <IconContext.Provider value={{ size: "16px" }}>

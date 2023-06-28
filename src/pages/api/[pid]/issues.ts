@@ -1,36 +1,45 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { UIIssue } from "@/interfaces";
-import IssueRequest from "@/server/service/Issue/IssueRequest";
-import NextjsIssueRequest from "@/server/service/Issue/NextjsIssueRequest";
+import { Issue, IssueResponse, StatusType, PriorityType } from "@/interfaces";
+import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<UIIssue[] | string | undefined>
-): void {
-  if (req.query.pid === undefined || Array.isArray(req.query.pid)) {
+  res: NextApiResponse<IssueResponse[] | string | undefined>
+): Promise<void> {
+  if (Array.isArray(req.query.pid) || Number.isNaN(Number(req.query.pid))) {
     res.status(405).end();
     return;
   }
-  const project: Project = new Project(parseInt(req.query.pid));
+  const project: Project = new Project(Number(req.query.pid));
 
   switch (req.method) {
     case "GET":
-      res.status(200).json(project.getAllIssues());
+      const allIssues: Issue[] = await project.getAllIssues();
+      const statuses: StatusType[] = await project.getAllStatuses();
+      const priorities: PriorityType[] = await project.getAllPriorities();
+      const response: IssueResponse = new IssueResponse(
+        allIssues,
+        statuses,
+        priorities
+      );
+
+      res.statusCode = 200;
+      res.setHeader("Content-Type", "application/json");
+      res.end(JSON.stringify(response));
       break;
     case "POST":
       const request: IssueRequest = new NextjsIssueRequest(req);
-
       try {
-        project.saveIssue(request);
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          res.status(400).json(e.message);
-          return;
-        }
+        const response = { message: "Done." };
+        await project.saveIssue(request);
+        res.statusCode = 200;
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(response));
+      } catch (e: any) {
+        res.statusCode = 400;
+        res.end(e.message);
       }
-
-      res.status(200);
       break;
     default:
       res.status(405).end();

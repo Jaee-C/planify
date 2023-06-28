@@ -1,14 +1,7 @@
-export interface UIIssue {
-  id?: number;
-  key?: string;
-  title?: string;
-  assignee?: string;
-  status?: number;
-}
+export { default as Issue, IssueResponse } from "./Issue";
 
-export interface ServerIssue {
-  id: number;
-  title: string;
-  assignee: string;
-  status: number;
-}
+export { default as Project } from "./Project";
+
+export { default as StatusType } from "./StatusType";
+
+export { default as PriorityType } from "./PriorityType";

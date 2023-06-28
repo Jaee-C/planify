@@ -1,5 +1,4 @@
-import { UIIssue } from "@/interfaces";
-import { formValues, StatusType } from "@/components/Form/FormConstants";
+import { StatusType, PriorityType, Issue, IssueResponse } from "@/interfaces";
 
 export function convertNumtoStatus(status: number | undefined): string {
   if (!status) return "Invalid";
@@ -23,7 +22,11 @@ export async function serverDeleteIssue(
   await fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
 }
 
-export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
+export async function fetchIssueList(pid: number): Promise<IssueResponse> {
+  if (Number.isNaN(pid) || pid < 1) {
+    return new IssueResponse([], [], []);
+  }
+
   const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "GET",
   });
@@ -33,19 +36,35 @@ export async function fetchIssueList(pid: number): Promise<UIIssue[]> {
   }
 
   const json = await httpResponse.json();
-  return json.map((item: any): UIIssue => {
-    return {
-      id: item.id,
-      key: item.key,
-      title: item.title,
-      assignee: item.assignee,
-      status: parseInt(item.status),
-    };
+  const issues: Issue[] = json.data.map((item: any): Issue => {
+    const newIssue: Issue = new Issue(item.id);
+
+    newIssue.title = item.title;
+    newIssue.assignee = item.assignee;
+    newIssue.status = item.status;
+    newIssue.issueKey = item.issueKey;
+
+    return newIssue;
   });
+  const statuses: StatusType[] = json.statuses.map((item: any): StatusType => {
+    const newStatus: StatusType = new StatusType(item.id, item.status);
+
+    return newStatus;
+  });
+  const priorities: PriorityType[] = json.priorities.map(
+    (item: any): PriorityType => {
+      return {
+        id: item.id,
+        value: item.value,
+      };
+    }
+  );
+
+  return new IssueResponse(issues, statuses, priorities);
 }
 
-export async function addIssue(data: formValues): Promise<any> {
-  const httpResponse: Response = await fetch("/api/issues", {
+export async function addIssue(pid: number, data: Issue): Promise<any> {
+  const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",
@@ -57,5 +76,7 @@ export async function addIssue(data: formValues): Promise<any> {
     console.log(httpResponse.statusText);
   }
 
-  return httpResponse.json();
+  const json = await httpResponse.json();
+
+  return json.message;
 }

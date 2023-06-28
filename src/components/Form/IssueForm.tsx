@@ -1,4 +1,5 @@
 import "react";
+import { NextRouter, useRouter } from "next/router";
 import { Button, Divider, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
@@ -6,15 +7,10 @@ import FormSelectField from "@/components/Form/FormSelectField";
 import React from "react";
 import * as yup from "yup";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { useFormik } from "formik";
-import { UIIssue } from "@/interfaces";
-import {
-  EMPTY_FORM,
-  formValues,
-  ISSUE_PRIORITIES,
-  ISSUE_STATUSES,
-} from "./FormConstants";
+import { FormikProps, useFormik } from "formik";
+import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
 import { addIssue } from "@/components/data/issues";
+import { Issue } from "@/interfaces";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -35,19 +31,16 @@ const issueValidation = yup.object({
 export interface IssueFormProps {
   formOpen: boolean;
   closeForm: () => void;
-  editingIssue?: UIIssue;
+  editingIssue?: Issue;
 }
 
 export default function IssueForm(props: IssueFormProps): JSX.Element {
+  const router: NextRouter = useRouter();
+  const { pid } = router.query;
   const queryClient: QueryClient = useQueryClient();
-  const newIssueMutation = useMutation({
-    mutationFn: addIssue,
-    onSuccess: (): void => {
-      queryClient.invalidateQueries("issues");
-    },
-  });
+  const newIssueMutation = useMutation((data: Issue) => addIssue(1, data));
 
-  const baseForm: formValues = EMPTY_FORM;
+  const baseForm: Issue = EMPTY_FORM();
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
     baseForm.title = props.editingIssue.title;
@@ -55,18 +48,22 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
     baseForm.status = props.editingIssue.status;
   }
 
-  const formik = useFormik({
+  const formik: FormikProps<Issue> = useFormik<Issue>({
     initialValues: baseForm,
     validationSchema: issueValidation,
-    onSubmit: (values: formValues) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: (values: Issue): void => {
       if (!values.assignee) {
         values.assignee = "Daniel";
       }
-      newIssueMutation.mutate(values);
-
-      formik.resetForm();
-      props.closeForm();
+      newIssueMutation.mutate(values, {
+        onSuccess: async () => {
+          await queryClient.invalidateQueries(["issues", Number(pid)]);
+        },
+        onSettled: () => {
+          formik.resetForm();
+          props.closeForm();
+        },
+      });
     },
   });
 

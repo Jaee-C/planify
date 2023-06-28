@@ -1,50 +1,43 @@
-import IssueDAO from "@/server/dao/IssueDAO";
+import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { UIIssue } from "@/interfaces";
-import Issue from "@/server/service/Issue";
+import { Issue, StatusType, PriorityType } from "@/interfaces";
 
 export default class Project {
-  private _id: number;
-  private _key: string = "";
-  private _store: IssueDAO;
+  private readonly _id: number;
+  private readonly _store: IssueRepository;
 
   public constructor(id: number) {
     this._id = id;
-    this._store = new IssueDAO(id);
-    this.setupProjectKey();
+    this._store = new IssueRepository(id);
   }
 
-  public saveIssue(issue: IssueRequest): void {
-    if (!issue.verifyEntries()) {
+  public async saveIssue(issue: IssueRequest): Promise<void> {
+    if (!(await issue.verifyEntries(this._store))) {
       throw new Error("Invalid request");
     }
 
     if (issue.id != undefined) {
-      this._store.editIssue(issue);
+      await this._store.editIssue(issue);
       return;
     }
-    this._store.saveIssue(issue);
+    await this._store.saveIssue(issue);
   }
 
-  public getAllIssues(): UIIssue[] {
-    const dbIssue: Issue[] = this._store.fetchAllIssues();
-    const result: UIIssue[] = [];
-
-    dbIssue.forEach((issue: UIIssue): void => {
-      result.push({
-        ...issue,
-        key: this._key + "-" + issue.id,
-      });
-    });
-
-    return result;
+  public async getAllIssues(): Promise<Issue[]> {
+    return this._store.fetchAllIssues();
   }
 
-  public deleteIssue(id: number): void {
-    this._store.deleteIssue(id);
+  public async getAllStatuses(): Promise<StatusType[]> {
+    return this._store.fetchStatuses();
   }
 
-  private setupProjectKey(): void {
-    this._key = "PRJ";
+  public async getAllPriorities(): Promise<PriorityType[]> {
+    return this._store.fetchPriorities();
+  }
+
+  public async deleteIssue(id: number): Promise<void> {
+    // Filter out impossible IDs
+    if (Number.isNaN(id) || id < 1) return;
+    await this._store.deleteIssue(id);
   }
 }
