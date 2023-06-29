@@ -4,13 +4,14 @@ import { Button, Divider, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
 import FormSelectField from "@/components/Form/FormSelectField";
-import React from "react";
+import React, { useState } from "react";
 import * as yup from "yup";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
 import { addIssue } from "@/components/data/issues";
 import { Issue } from "@/interfaces";
+import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -39,6 +40,7 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   const { pid } = router.query;
   const queryClient: QueryClient = useQueryClient();
   const newIssueMutation = useMutation((data: Issue) => addIssue(1, data));
+  const [editValue, setEditValue] = useState<string>("abcd");
 
   const baseForm: Issue = EMPTY_FORM();
   if (props.editingIssue !== undefined) {
@@ -74,6 +76,12 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
+        <InlineTextField
+          onConfirm={(value: string): void => setEditValue(value)}
+          defaultValue={editValue}
+          startWithEditViewOpen
+          readViewFitContainerWidth
+        />
         <form onSubmit={formik.handleSubmit}>
           <Grid container>
             <Grid item xs={12}>
