@@ -68,7 +68,6 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   });
 
   const handleFormClose = (): void => {
-    formik.resetForm();
     props.closeForm();
   };
 

@@ -26,6 +26,7 @@ import {
 } from "@/components/data/issues";
 import { StatusType, Issue, PriorityType } from "@/interfaces";
 import { NextRouter, useRouter } from "next/router";
+import { SidebarEditContext } from "@/components/Backlog/index";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
@@ -45,6 +46,7 @@ export default function BacklogTable(): JSX.Element {
   const [priorities, setPriorities] = React.useState<PriorityType[]>([]);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
+  const editContext = React.useContext(SidebarEditContext);
 
   React.useEffect((): void => {
     if (!isLoading && data) {
@@ -104,7 +106,7 @@ export default function BacklogTable(): JSX.Element {
 
   const columns: GridColDef[] = createBacklogColumns(
     deleteIssue.mutate,
-    handleEdit
+    editContext
   );
 
   return (
