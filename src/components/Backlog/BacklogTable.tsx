@@ -81,7 +81,7 @@ export default function BacklogTable(): JSX.Element {
   };
 
   const deleteIssue = useMutation(
-    (id: GridRowId) => serverDeleteIssue(Number(pid), id),
+    (key: string) => serverDeleteIssue(Number(pid), key),
     {
       onSuccess: async () => {
         await queryClient.invalidateQueries(["issues", Number(pid)]);
@@ -91,7 +91,7 @@ export default function BacklogTable(): JSX.Element {
 
   const columns: GridColDef[] = createBacklogColumns(
     deleteIssue.mutate,
-    editContext
+    editContext.action
   );
 
   return (
@@ -120,7 +120,7 @@ export default function BacklogTable(): JSX.Element {
   );
 }
 
-type handler = (arg: number | string) => void;
+type handler = (arg: string) => void;
 
 export function createBacklogColumns(
   handleDelete: handler,
@@ -163,12 +163,12 @@ export function createBacklogColumns(
         <GridActionsCellItem
           label="Delete"
           icon={<MdDelete />}
-          onClick={(): void => handleDelete(params.id)}
+          onClick={(): void => handleDelete(params.row.key)}
         />,
         <GridActionsCellItem
           label="Edit"
           icon={<MdEdit />}
-          onClick={(): void => handleEdit(params.id)}
+          onClick={(): void => handleEdit(params.row.key)}
         />,
       ],
     },

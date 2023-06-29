@@ -12,7 +12,6 @@ import { Form, Formik, FormikProps } from "formik";
 const inputStyles = css({
   maxWidth: "100%",
   position: "relative",
-  marginBottom: "50px",
 });
 
 const buttonStyles = css({
@@ -125,7 +124,9 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
         formRef.current
       ) {
         doNotFocusOnEditButton();
+        console.log(formRef.current);
         if (formRef.current.checkValidity()) {
+          console.log("valid");
           onSubmit();
         }
       }

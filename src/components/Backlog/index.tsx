@@ -10,9 +10,15 @@ import { IconContext } from "react-icons";
 
 const queryClient: QueryClient = new QueryClient();
 
-export const SidebarEditContext = createContext<(id: number | string) => void>(
-  (id: number | string): void => {}
-);
+interface SidebarContextProps {
+  action: (id: string) => void;
+  value: string;
+}
+
+export const SidebarEditContext = createContext<SidebarContextProps>({
+  action: (id: number | string): void => {},
+  value: "",
+});
 
 interface CreateIssueContextProps {
   action: () => void;
@@ -26,22 +32,26 @@ export const CreateIssueContext = createContext<CreateIssueContextProps>({
 
 export default function BacklogContent(): JSX.Element {
   const [isEditing, setEditing] = useState<boolean>(false);
-  const [editingId, setEditingId] = useState<number>(0);
+  const [editingKey, setEditingKey] = useState<string>("");
   const [isCreatingIssue, setCreatingIssue] = useState<boolean>(false);
 
-  const handleEdit = (id: number | string): void => {
+  const handleEdit = (key: string): void => {
+    setEditingKey(key);
+    if (key === undefined || key === "") {
+      setEditing(false);
+      return;
+    }
     setEditing(true);
-    setEditingId(Number(id));
-  };
-
-  const handleClose = (): void => {
-    setEditing(false);
-    setEditingId(0);
   };
 
   const createIssueProps = {
     action: () => setCreatingIssue(!isCreatingIssue),
     value: isCreatingIssue,
+  };
+
+  const sidebarContextProps: SidebarContextProps = {
+    action: handleEdit,
+    value: editingKey,
   };
 
   return (
@@ -66,7 +76,7 @@ export default function BacklogContent(): JSX.Element {
         </div>
         <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-row flex-shrink flex pl-10 flex-grow">
           <div className="pr-8 pb-12 basis-0 pt-0 max-h-full flex-col overflow-x-auto flex-shrink pl-0 overflow-y-scroll flex-grow">
-            <SidebarEditContext.Provider value={handleEdit}>
+            <SidebarEditContext.Provider value={sidebarContextProps}>
               <CreateIssueContext.Provider value={createIssueProps}>
                 <BacklogTable />
               </CreateIssueContext.Provider>
@@ -74,7 +84,7 @@ export default function BacklogContent(): JSX.Element {
           </div>
           {isEditing ? (
             <div className="w-[440px] min-h-full max-h-full">
-              <SidebarEditContext.Provider value={handleClose}>
+              <SidebarEditContext.Provider value={sidebarContextProps}>
                 <SideIssueViewer />
               </SidebarEditContext.Provider>
             </div>
