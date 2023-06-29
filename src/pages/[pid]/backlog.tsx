@@ -6,14 +6,8 @@ import TopNavigation, {
   NavigationPage,
 } from "@/components/TopNavigation/TopNavigation";
 import BacklogContent from "@/components/Backlog";
-import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogPage(): JSX.Element {
-  const router: NextRouter = useRouter();
-  const project: string | undefined = Array.isArray(router.query.pid)
-    ? router.query.pid[0]
-    : router.query.pid;
-
   return (
     <>
       <TopNavigation activePage={NavigationPage.BACKLOG} />
@@ -26,7 +20,7 @@ export default function BacklogPage(): JSX.Element {
             maxWidth: "100%",
           }}>
           <BaseSidebar />
-          <BacklogContent project={project} />
+          <BacklogContent />
         </div>
       </ProSidebarProvider>
     </>
