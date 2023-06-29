@@ -11,7 +11,6 @@ import { FormikProps, useFormik } from "formik";
 import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
 import { addIssue } from "@/components/data/issues";
 import { Issue } from "@/interfaces";
-import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
