@@ -8,6 +8,7 @@ import useButtonFocusHook from "./use-button-focus-hook";
 import ReadView from "./ReadView";
 import { TextField } from "@mui/material";
 import { Form, Formik, FormikProps } from "formik";
+import * as Yup from "yup";
 
 const inputStyles = css({
   maxWidth: "100%",
@@ -44,6 +45,7 @@ interface InlineEditProps {
   label?: string;
   /** Determines whether the `readView` has 100% width within its container, or whether it fits the content. */
   readViewFitContainerWidth?: boolean;
+  validate?: Yup.StringSchema;
 }
 
 const noop = (): void => {};
@@ -61,6 +63,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     onConfirm: providedOnConfirm,
     onCancel: providedOnCancel = noop,
     onEdit: providedOnEdit = noop,
+    validate = Yup.string(),
   } = props;
   const editButtonLabel: string = "Edit";
   const confirmButtonLabel: string = "Confirm";
@@ -124,9 +127,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
         formRef.current
       ) {
         doNotFocusOnEditButton();
-        console.log(formRef.current);
         if (formRef.current.checkValidity()) {
-          console.log("valid");
           onSubmit();
         }
       }
@@ -164,6 +165,10 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     [keepEditViewOpenOnBlur, tryAutoSubmitWhenBlur]
   );
 
+  const validationSchema = Yup.object().shape({
+    inlineEdit: validate,
+  });
+
   /** Gets called when focus is transferred to the editView, or action buttons
    *
    * There are three paths here the function can be called:
@@ -192,7 +197,8 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
       onSubmit={(data: { inlineEdit: string }): void => {
         onConfirm(data.inlineEdit);
       }}
-      initialValues={{ inlineEdit: defaultValue }}>
+      initialValues={{ inlineEdit: defaultValue }}
+      validationSchema={validationSchema}>
       {({
         touched,
         errors,
@@ -223,6 +229,13 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
                 helperText={
                   errors.inlineEdit && touched.inlineEdit && errors.inlineEdit
                 }
+                sx={[
+                  {
+                    "& .MuiOutlinedInput-input": {
+                      padding: "8px 6px",
+                    },
+                  },
+                ]}
                 fullWidth
               />
               {!hideActionButtons ? (

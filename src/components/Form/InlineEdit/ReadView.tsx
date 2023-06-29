@@ -19,6 +19,7 @@ const readViewContainerStyles2 = css({
   fontSize: "1rem",
   lineHeight: 1,
   wordBreak: "break-word",
+  border: "2px solid transparent",
 });
 
 const editButtonStyles: SerializedStyles = css({
@@ -119,7 +120,7 @@ const ReadView = ({
           startY.current = e.clientY;
         }}
         data-read-view-fit-container-width={readViewFitContainerWidth}>
-        <div css={readViewContainerStyles2} data-testid="read-view">
+        <div css={readViewContainerStyles2}>
           {editValue || "Click to enter a value"}
         </div>
       </div>

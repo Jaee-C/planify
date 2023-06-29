@@ -76,12 +76,6 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <InlineTextField
-          onConfirm={(value: string): void => setEditValue(value)}
-          defaultValue={editValue}
-          startWithEditViewOpen
-          readViewFitContainerWidth
-        />
         <form onSubmit={formik.handleSubmit}>
           <Grid container>
             <Grid item xs={12}>

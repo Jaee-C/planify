@@ -6,12 +6,14 @@ import { SidebarEditContext } from "@/components/Backlog/index";
 import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { getIssue, editIssue } from "@/components/data/issues";
+import * as Yup from "yup";
 
 export default function SideIssueViewer(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pid } = router.query;
   const { value: issueKey, action: handleEdit } =
     useContext(SidebarEditContext);
+  const [title, setTitle] = React.useState<string>("");
 
   const queryClient = useQueryClient();
   const { data: editingIssue, isLoading } = useQuery(
@@ -34,11 +36,15 @@ export default function SideIssueViewer(): JSX.Element {
     handleEdit("");
   };
 
+  const titleValidate: Yup.StringSchema = Yup.string().required("required");
+
   return (
     <div className="px-5">
       <InlineTextField
-        onConfirm={editIssueMutation.mutate}
-        defaultValue={editingIssue?.title}
+        onConfirm={setTitle}
+        defaultValue={title}
+        validate={titleValidate}
+        readViewFitContainerWidth
       />
       <IssueForm formOpen={true} closeForm={handleClose} />
     </div>
