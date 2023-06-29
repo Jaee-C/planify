@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Box, Button, IconButton, Paper, Tooltip } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import {
   GridActionsCellItem,
   GridColDef,
@@ -7,10 +7,9 @@ import {
   GridRowParams,
   GridRowsProp,
 } from "@mui/x-data-grid";
-import { MdDelete, MdEdit, MdFilterList } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import { IconContext } from "react-icons";
 
-import TableToolbar from "@/components/Table/TableToolbar";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
 import {
@@ -26,7 +25,10 @@ import {
 } from "@/components/data/issues";
 import { StatusType, Issue, PriorityType } from "@/interfaces";
 import { NextRouter, useRouter } from "next/router";
-import { SidebarEditContext } from "@/components/Backlog/index";
+import {
+  CreateIssueContext,
+  SidebarEditContext,
+} from "@/components/Backlog/index";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
@@ -47,6 +49,7 @@ export default function BacklogTable(): JSX.Element {
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
   const editContext = React.useContext(SidebarEditContext);
+  const createIssueContext = React.useContext(CreateIssueContext);
 
   React.useEffect((): void => {
     if (!isLoading && data) {
@@ -77,24 +80,6 @@ export default function BacklogTable(): JSX.Element {
     setDialogOpen(true);
   };
 
-  const handleDialogClose = (): void => {
-    setEditingRow(undefined);
-    setDialogOpen(false);
-  };
-
-  const handleEdit = React.useCallback(
-    (id: GridRowId) => (): void => {
-      if (!data) {
-        return;
-      }
-
-      const row = data.data.find(row => row.id === id);
-      setEditingRow(row);
-      setDialogOpen(true);
-    },
-    [data]
-  );
-
   const deleteIssue = useMutation(
     (id: GridRowId) => serverDeleteIssue(Number(pid), id),
     {
@@ -115,19 +100,6 @@ export default function BacklogTable(): JSX.Element {
         <Paper
           sx={{ width: "100%", mb: 2 }}
           className="bg-transparent shadow-none">
-          <TableToolbar title="Backlog">
-            <Tooltip title="Filter list">
-              <IconButton className="mr-3">
-                <MdFilterList />
-              </IconButton>
-            </Tooltip>
-            <Button
-              className="bg-blue-600 text-xs"
-              variant="contained"
-              onClick={handleFormOpen}>
-              Create&nbsp;Issue
-            </Button>
-          </TableToolbar>
           <DataGrid
             sx={{
               "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -140,8 +112,8 @@ export default function BacklogTable(): JSX.Element {
         </Paper>
       </Box>
       <IssueEditDialog
-        formOpen={dialogOpen}
-        closeForm={handleDialogClose}
+        formOpen={createIssueContext.value}
+        closeForm={createIssueContext.action}
         editingIssue={editingRow}
       />
     </IconContext.Provider>

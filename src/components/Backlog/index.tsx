@@ -1,21 +1,33 @@
-import "react";
+import * as React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import BacklogTable from "@/components/Backlog/BacklogTable";
-import { createContext, useState, Context } from "react";
-import InlineEditForm from "@/components/Backlog/InlineEditForm";
-import { Grid } from "@mui/material";
+import { createContext, useState } from "react";
+import SideIssueViewer from "@/components/Backlog/SideIssueViewer";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import { MdFilterList } from "react-icons/md";
+import TableToolbar from "@/components/Table/TableToolbar";
+import { IconContext } from "react-icons";
 
 const queryClient: QueryClient = new QueryClient();
 
-type SidebarEditContextTypes = (id: number | string) => void;
-
-export const SidebarEditContext = createContext<SidebarEditContextTypes>(
+export const SidebarEditContext = createContext<(id: number | string) => void>(
   (id: number | string): void => {}
 );
+
+interface CreateIssueContextProps {
+  action: () => void;
+  value: boolean;
+}
+
+export const CreateIssueContext = createContext<CreateIssueContextProps>({
+  action: () => {},
+  value: false,
+});
 
 export default function BacklogContent(): JSX.Element {
   const [isEditing, setEditing] = useState<boolean>(false);
   const [editingId, setEditingId] = useState<number>(0);
+  const [isCreatingIssue, setCreatingIssue] = useState<boolean>(false);
 
   const handleEdit = (id: number | string): void => {
     setEditing(true);
@@ -27,21 +39,47 @@ export default function BacklogContent(): JSX.Element {
     setEditingId(0);
   };
 
+  const createIssueProps = {
+    action: () => setCreatingIssue(!isCreatingIssue),
+    value: isCreatingIssue,
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-row flex-shrink flex pl-10 flex-grow">
-        <div className="pr-8 pb-12 basis-0 pt-0 max-h-full flex-col overflow-x-auto flex-shrink pl-0 overflow-y-scroll flex-grow">
-          <SidebarEditContext.Provider value={handleEdit}>
-            <BacklogTable />
-          </SidebarEditContext.Provider>
+      <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-shrink flex-grow">
+        <div className="px-8 mt-6 mb-4">
+          <IconContext.Provider value={{ size: "16px" }}>
+            <TableToolbar title="Backlog">
+              <Tooltip title="Filter list">
+                <IconButton className="mr-3">
+                  <MdFilterList />
+                </IconButton>
+              </Tooltip>
+              <Button
+                className="bg-blue-600 text-xs"
+                variant="contained"
+                onClick={createIssueProps.action}>
+                Create&nbsp;Issue
+              </Button>
+            </TableToolbar>
+          </IconContext.Provider>
         </div>
-        {isEditing ? (
-          <div className="w-[440px] min-h-full max-h-full">
-            <SidebarEditContext.Provider value={handleClose}>
-              <InlineEditForm />
+        <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-row flex-shrink flex pl-10 flex-grow">
+          <div className="pr-8 pb-12 basis-0 pt-0 max-h-full flex-col overflow-x-auto flex-shrink pl-0 overflow-y-scroll flex-grow">
+            <SidebarEditContext.Provider value={handleEdit}>
+              <CreateIssueContext.Provider value={createIssueProps}>
+                <BacklogTable />
+              </CreateIssueContext.Provider>
             </SidebarEditContext.Provider>
           </div>
-        ) : null}
+          {isEditing ? (
+            <div className="w-[440px] min-h-full max-h-full">
+              <SidebarEditContext.Provider value={handleClose}>
+                <SideIssueViewer />
+              </SidebarEditContext.Provider>
+            </div>
+          ) : null}
+        </div>
       </div>
     </QueryClientProvider>
   );

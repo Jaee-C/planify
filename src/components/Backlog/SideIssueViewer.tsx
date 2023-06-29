@@ -17,7 +17,7 @@ const issueValidation = yup.object({
   priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
 });
 
-export default function InlineEditForm(): JSX.Element {
+export default function SideIssueViewer(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pid } = router.query;
   const editContext = useContext(SidebarEditContext);
