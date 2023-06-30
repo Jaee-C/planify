@@ -23,8 +23,8 @@ import {
   convertNumtoStatus,
   fetchIssueList,
   serverDeleteIssue,
-} from "@/components/data/issues";
-import { StatusType, Issue, PriorityType } from "@/interfaces";
+} from "@/lib/data/issues";
+import { StatusType, Issue, PriorityType } from "lib/interfaces";
 import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogTable(): JSX.Element {

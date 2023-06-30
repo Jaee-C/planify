@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Project } from "@/interfaces";
+import { Project } from "lib/interfaces";
 import ProjectRepository from "@/server/domain/ProjectRepository";
 
 export default async function handler(

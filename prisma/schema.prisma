@@ -16,8 +16,8 @@ model Project {
   key         String
   description String?
   issues      Issue[]
-  owner       User     @relation(fields: [ownerId], references: [id])
-  ownerId     Int
+  owner       User?     @relation(fields: [ownerId], references: [id])
+  ownerId     Int?
   numIssues   Int      @default(0)
 
   @@unique([key, ownerId])
@@ -39,11 +39,13 @@ model Issue {
 
 model User {
   id          Int      @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  email       String   @unique
+  firstName   String?
+  lastName    String?
+  username    String   @unique
+  email       String?   @unique
   projects    Project[]
   displayName String?
+  password    String
 }
 
 model StatusType {

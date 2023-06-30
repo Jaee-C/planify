@@ -1,5 +1,5 @@
 import IssueRepository from "@/server/domain/IssueRepository";
-import { StatusType } from "@/interfaces";
+import { StatusType } from "lib/interfaces";
 
 export default class IssueRequest {
   public id?: number = undefined;

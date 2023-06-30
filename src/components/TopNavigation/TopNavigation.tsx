@@ -6,6 +6,7 @@ import { IoHelpCircle } from "react-icons/io5";
 import TopNavigationButton from "./TopNavigationButton";
 import TopNavigationIcon from "./TopNavigationIcon";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
 
 export enum NavigationPage {
   HOME,
@@ -48,6 +49,9 @@ export default function TopNavigation(props: TopNavigationProps): JSX.Element {
           <TopNavigationIcon icon={<AiTwotoneSetting />} />
         </div>
       </IconContext.Provider>
+      <TopNavigationButton href="/api/auth/signin" active={false}>
+        Sign in
+      </TopNavigationButton>
     </header>
   );
 }

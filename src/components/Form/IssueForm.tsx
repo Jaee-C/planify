@@ -9,8 +9,8 @@ import * as yup from "yup";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
-import { addIssue } from "@/components/data/issues";
-import { Issue } from "@/interfaces";
+import { addIssue } from "@/lib/data/issues";
+import { Issue } from "lib/interfaces";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
