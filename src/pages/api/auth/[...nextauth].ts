@@ -1,6 +1,7 @@
 import userAuth from "@/server/service/UserAuth";
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -24,20 +25,27 @@ export const authOptions: NextAuthOptions = {
         // (i.e., the request IP address)
         if (!credentials) return null;
 
-        const user = await userAuth.verifyUser(
+        // Error: returned User need to have Id
+        return await userAuth.verifyUser(
           credentials.username,
           credentials.password
         );
-
-        // If no error and we have user data, return it
-        if (user) {
-          return user;
-        }
-        // Return null if user data could not be retrieved
-        return null;
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }): Promise<JWT> {
+      if (user) {
+        token.id = user.id;
+        token.name = user.displayName;
+      }
+      return token;
+    },
+    async session({ session, token }): Promise<Session> {
+      session.user.name = token.name;
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);

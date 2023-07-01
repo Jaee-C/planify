@@ -1,7 +1,7 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
-import { Issue, StatusType, PriorityType } from "lib/interfaces";
+import { Issue, StatusType, PriorityType } from "lib/types";
 
 const issueSelect = {
   id: true,

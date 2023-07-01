@@ -1,6 +1,6 @@
 import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { Issue, StatusType, PriorityType } from "lib/interfaces";
+import { Issue, StatusType, PriorityType } from "lib/types";
 
 export default class Project {
   private readonly _id: number;

@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { User } from "@/lib/interfaces";
 import userRegister from "@/server/service/UserAuth";
+import { NewUser } from "@/lib/types/User";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,23 +16,30 @@ export default async function handler(
   // Validate if username is already taken
   if (await userRegister.checkUsernameExists(user.username)) {
     res.statusCode = 409;
-    res.end("Username already taken");
+    res.send("Username already taken");
+    res.end();
+    return;
   }
 
   try {
     await userRegister.saveUser(password, createUser(user));
-    res.statusCode = 200;
-    res.end("User created");
+    res.status(200).send("User created");
+    return;
   } catch (err) {
     res.statusCode = 500;
-    res.end(JSON.stringify(err));
+    res.send(JSON.stringify(err));
+    res.end();
+    return;
   }
 }
 
-function createUser(user: any): User {
-  const displayName: string = user.displayName
-    ? user.displayName
-    : user.username;
+function createUser(user: any): NewUser {
+  let displayName: string;
+
+  if (user.displayName) displayName = user.displayName;
+  else if (user.firstName && user.lastName)
+    displayName = `${user.firstName} ${user.lastName}`;
+  else displayName = user.username;
 
   return {
     username: user.username,

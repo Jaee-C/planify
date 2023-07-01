@@ -24,7 +24,7 @@ import {
   fetchIssueList,
   serverDeleteIssue,
 } from "@/lib/data/issues";
-import { StatusType, Issue, PriorityType } from "lib/interfaces";
+import { StatusType, Issue, PriorityType } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogTable(): JSX.Element {

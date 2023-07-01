@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
-import { Project } from "lib/interfaces";
+import { Project } from "lib/types";
 
 const projectSelect = {
   id: true,

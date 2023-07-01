@@ -10,7 +10,7 @@ import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
 import { addIssue } from "@/lib/data/issues";
-import { Issue } from "lib/interfaces";
+import { Issue } from "lib/types";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {

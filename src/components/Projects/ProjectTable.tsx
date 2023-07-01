@@ -14,7 +14,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import TableToolbar from "@/components/Table/TableToolbar";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { Project } from "lib/interfaces";
+import { Project } from "lib/types";
 import { fetchProjectList } from "@/lib/data/projects";
 
 const columns: GridColDef[] = [

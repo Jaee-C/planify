@@ -24,7 +24,8 @@
         "./*"
       ],
       "src/*": ["src/*"]
-    }
+    },
+    "typeRoots": ["./src/lib/types", "./node_modules/@types"]
   },
   "include": [
     "next-env.d.ts",

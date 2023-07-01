@@ -1,9 +1,4 @@
-import {
-  StatusType,
-  PriorityType,
-  Issue,
-  IssueResponse,
-} from "@/lib/interfaces";
+import { StatusType, PriorityType, Issue, IssueResponse } from "lib/types";
 
 export function convertNumtoStatus(status: number | undefined): string {
   if (!status) return "Invalid";

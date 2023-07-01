@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Issue, IssueResponse, StatusType, PriorityType } from "lib/interfaces";
+import { Issue, IssueResponse, StatusType, PriorityType } from "lib/types";
 import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
 

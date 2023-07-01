@@ -1,17 +1,16 @@
 import userRepo from "@/server/domain/UserRepository";
-import { User } from "@/lib/interfaces";
+import { User } from "lib/types";
 import bcrypt from "bcrypt";
+import { NewUser } from "@/lib/types/User";
 
 const SALT_ROUNDS: number = 10;
 
 class UserAuth {
-  public async checkUsernameExists(username: string): Promise<boolean> {
-    const userCount: number = await userRepo.getUsernameCount(username);
-
-    return userCount > 0;
+  public async checkUsernameExists(username: string): Promise<User | null> {
+    return await userRepo.getUserByUsername(username);
   }
 
-  public async saveUser(password: string, user: User): Promise<void> {
+  public async saveUser(password: string, user: NewUser): Promise<void> {
     bcrypt.hash(
       password,
       SALT_ROUNDS,
@@ -36,7 +35,7 @@ class UserAuth {
     const match: boolean = await bcrypt.compare(password, hash);
 
     if (match) {
-      return userRepo.getUser(username);
+      return userRepo.getUserByUsername(username);
     } else {
       return null;
     }
