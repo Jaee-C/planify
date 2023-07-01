@@ -25,7 +25,6 @@ export const authOptions: NextAuthOptions = {
         // (i.e., the request IP address)
         if (!credentials) return null;
 
-        // Error: returned User need to have Id
         return await userAuth.verifyUser(
           credentials.username,
           credentials.password
