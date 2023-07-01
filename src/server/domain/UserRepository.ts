@@ -23,6 +23,19 @@ class UserRepository {
     });
   }
 
+  public async getUsername(id: string): Promise<string | undefined> {
+    const dbResult = await prisma.user.findFirst({
+      select: {
+        username: true,
+      },
+      where: {
+        id: Number(id),
+      },
+    });
+
+    return dbResult?.username;
+  }
+
   public async getUserByUsername(username: string): Promise<User | null> {
     // @ts-ignore
     const dbResult: UserPayload = await prisma.user.findUnique({

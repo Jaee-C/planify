@@ -32,6 +32,15 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+
+    // Seconds - How long until an idle session expires and is no longer valid.
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+
+    // Seconds - Throttle how frequently to write to database to extend a session.
+    updateAge: 24 * 60 * 60, // 24 hours
+  },
   callbacks: {
     async jwt({ token, user }): Promise<JWT> {
       if (user) {
@@ -41,6 +50,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }): Promise<Session> {
+      session.user.id = token.id;
       session.user.name = token.name;
       return session;
     },

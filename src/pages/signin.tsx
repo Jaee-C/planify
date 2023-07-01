@@ -35,7 +35,9 @@ function Copyright(props: any): JSX.Element {
 const defaultTheme = createTheme();
 
 export default function SignIn(): JSX.Element {
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const request = {
