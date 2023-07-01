@@ -1,3 +1,4 @@
+import userAuth from "@/server/service/UserAuth";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -21,15 +22,15 @@ export const authOptions: NextAuthOptions = {
         // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
         // You can also use the `req` object to obtain additional parameters
         // (i.e., the request IP address)
-        const res = await fetch("/your/endpoint", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        });
-        const user = await res.json();
+        if (!credentials) return null;
+
+        const user = await userAuth.verifyUser(
+          credentials.username,
+          credentials.password
+        );
 
         // If no error and we have user data, return it
-        if (res.ok && user) {
+        if (user) {
           return user;
         }
         // Return null if user data could not be retrieved

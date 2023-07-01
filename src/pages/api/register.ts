@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { User } from "@/lib/interfaces";
-import userRegister from "@/server/service/UserRegister";
+import userRegister from "@/server/service/UserAuth";
 
 export default async function handler(
   req: NextApiRequest,

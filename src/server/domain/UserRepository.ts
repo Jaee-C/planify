@@ -10,6 +10,27 @@ class UserRepository {
     });
   }
 
+  public async getUser(username: string): Promise<User | null> {
+    return prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+    });
+  }
+
+  public async getUserPassword(username: string): Promise<string | undefined> {
+    const dbResult = await prisma.user.findFirst({
+      where: {
+        username: username,
+      },
+      select: {
+        password: true,
+      },
+    });
+
+    return dbResult?.password;
+  }
+
   public async saveUser(password: string, user: User): Promise<void> {
     await prisma.user.create({
       data: { password, ...user },

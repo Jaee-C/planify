@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const SALT_ROUNDS: number = 10;
 
-class UserRegister {
+class UserAuth {
   public async checkUsernameExists(username: string): Promise<boolean> {
     const userCount: number = await userRepo.getUsernameCount(username);
 
@@ -22,6 +22,25 @@ class UserRegister {
       }
     );
   }
+
+  public async verifyUser(
+    username: string,
+    password: string
+  ): Promise<User | null> {
+    const hash: string | undefined = await userRepo.getUserPassword(username);
+
+    if (!hash) {
+      return null;
+    }
+
+    const match: boolean = await bcrypt.compare(password, hash);
+
+    if (match) {
+      return userRepo.getUser(username);
+    } else {
+      return null;
+    }
+  }
 }
 
-export default new UserRegister();
+export default new UserAuth();
