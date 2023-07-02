@@ -9,7 +9,7 @@ import {
   useQuery,
   useQueryClient,
 } from "react-query";
-import { getIssue, editIssue } from "@/components/data/issues";
+import { getIssue, editIssue } from "lib/data/issues";
 import * as Yup from "yup";
 import { Button, Divider, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
@@ -19,8 +19,9 @@ import {
   ISSUE_PRIORITIES,
   ISSUE_STATUSES,
 } from "@/components/Form/FormConstants";
-import { Issue } from "@/interfaces";
+import { Issue } from "lib/types";
 import { FormikProps, useFormik } from "formik";
+import { verifyUrlParam } from "@/lib/utils";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -31,7 +32,7 @@ const FormRow = styled(Grid)(() => ({
 
 export default function SideIssueViewer(): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pid } = router.query;
+  const projectKey: string = verifyUrlParam(router.query.pKey);
   const { value: issueKey, action: handleEdit } =
     useContext(SidebarEditContext);
   const [title, setTitle] = React.useState<string>("");
@@ -43,9 +44,9 @@ export default function SideIssueViewer(): JSX.Element {
     error,
   } = useQuery(
     ["issue", issueKey],
-    async () => getIssue(Number(pid), issueKey),
+    async () => getIssue(projectKey, issueKey),
     {
-      enabled: !!pid,
+      enabled: projectKey !== "",
       onSuccess: (data: Issue | undefined): void => {
         if (data === undefined) {
           handleClose();
@@ -61,10 +62,10 @@ export default function SideIssueViewer(): JSX.Element {
   }
 
   const editIssueMutation = useMutation(
-    async (data: any) => await editIssue(Number(pid), issueKey, data),
+    async (data: any) => await editIssue(projectKey, issueKey, data),
     {
       onSuccess: async (): Promise<void> => {
-        await queryClient.invalidateQueries(["issues", Number(pid)]);
+        await queryClient.invalidateQueries(["issues", projectKey]);
       },
     }
   );

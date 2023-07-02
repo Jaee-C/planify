@@ -1,6 +1,7 @@
 import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue, StatusType, PriorityType } from "lib/types";
+import { IIssueDB } from "@/server/domain/interfaces";
 
 /**
  * Project is a service class that handles the business logic for the project.
@@ -14,10 +15,10 @@ export default class Project {
    */
   private readonly _id: string;
   /**
-   * @property {IssueRepository} _store - The database repository.
+   * @property {IIssueDB} _store - The database repository.
    * @private
    */
-  private readonly _store: IssueRepository;
+  private readonly _store: IIssueDB;
 
   /**
    * Creates a new Project instance.
@@ -46,17 +47,27 @@ export default class Project {
     return this._store.fetchAllIssues();
   }
 
-  public async getAllStatuses(): Promise<StatusType[]> {
-    return this._store.fetchStatuses();
+  public async getIssue(key: string): Promise<Issue> {
+    const issueId: number = this.getIssueId(key);
+
+    const foundIssue: Issue | null = await this._store.fetchIssue(issueId);
+
+    if (foundIssue === null) {
+      throw new Error("Issue not found");
+    }
+    return foundIssue;
   }
 
-  public async getAllPriorities(): Promise<PriorityType[]> {
-    return this._store.fetchPriorities();
+  public async deleteIssue(key: string): Promise<void> {
+    const issueId: number = this.getIssueId(key);
+    await this._store.deleteIssue(issueId);
   }
+  private getIssueId(key: string): number {
+    const splitKey: string[] = key.split("-");
 
-  public async deleteIssue(id: number): Promise<void> {
-    // Filter out impossible IDs
-    if (Number.isNaN(id) || id < 1) return;
-    await this._store.deleteIssue(id);
+    if (Number.isNaN(Number(splitKey[1]))) {
+      throw new Error("Invalid issue key");
+    }
+    return Number(splitKey[1]);
   }
 }

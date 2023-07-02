@@ -25,24 +25,6 @@ type IssueNumberPayload = Prisma.ProjectGetPayload<{
   select: typeof issueNumberSelect;
 }>;
 
-const statusSelect = {
-  id: true,
-  name: true,
-} satisfies Prisma.StatusTypeSelect;
-
-type StatusPayload = Prisma.StatusTypeGetPayload<{
-  select: typeof statusSelect;
-}>;
-
-const prioritySelect = {
-  id: true,
-  name: true,
-} satisfies Prisma.PriorityTypeSelect;
-
-type PriorityPayload = Prisma.PriorityTypeGetPayload<{
-  select: typeof prioritySelect;
-}>;
-
 export default class IssueRepository implements IIssueDB {
   private readonly _projectKey: string;
   private readonly _userId: string;
@@ -66,6 +48,25 @@ export default class IssueRepository implements IIssueDB {
     return dbIssues.map((dbIssue: IssuePayload) => {
       return this.convertToIssue(dbIssue);
     });
+  }
+
+  public async fetchIssue(id: number): Promise<Issue | null> {
+    const dbIssue: IssuePayload | null = await prisma.issue.findFirst({
+      where: {
+        project: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+        id: id,
+      },
+      select: issueSelect,
+    });
+
+    if (!dbIssue) {
+      return null;
+    }
+
+    return this.convertToIssue(dbIssue);
   }
 
   public async saveIssue(req: IssueRequest): Promise<Issue> {
@@ -137,32 +138,6 @@ export default class IssueRepository implements IIssueDB {
           projectId: pid,
         },
       },
-    });
-  }
-
-  public async fetchStatuses(): Promise<StatusType[]> {
-    const payload: StatusPayload[] = await prisma.statusType.findMany({
-      select: statusSelect,
-    });
-
-    return payload.map((status: StatusPayload) => {
-      return {
-        id: status.id,
-        name: status.name,
-      };
-    });
-  }
-
-  public async fetchPriorities(): Promise<PriorityType[]> {
-    const payload: PriorityPayload[] = await prisma.priorityType.findMany({
-      select: prioritySelect,
-    });
-
-    return payload.map((priority: PriorityPayload) => {
-      return {
-        id: priority.id,
-        value: priority.name,
-      };
     });
   }
 

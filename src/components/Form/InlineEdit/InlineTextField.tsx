@@ -206,6 +206,11 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
         handleChange,
       }: FormikProps<{ inlineEdit: string }>): JSX.Element => (
         <Form
+          onKeyDown={e => {
+            if (e.key === "Esc" || e.key === "Escape") {
+              onCancel();
+            }
+          }}
           ref={(p): void => {
             formRef.current = p;
           }}>
@@ -226,7 +231,6 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
                 onChange={handleChange}
                 onFocus={onEditViewWrapperFocus}
                 key="edit-view" // used for reset to default value
-                helperText={errors.inlineEdit && touched.inlineEdit}
                 sx={[
                   {
                     "& .MuiOutlinedInput-input": {

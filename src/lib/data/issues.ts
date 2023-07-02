@@ -1,18 +1,12 @@
 import { StatusType, PriorityType, Issue, IssueResponse } from "lib/types";
 
-export function convertNumtoStatus(status: number | undefined): string {
-  if (!status) return "Invalid";
+export function toStatusString(
+  status: number | undefined,
+  ref: StatusType[] | undefined
+): string {
+  if (!status || !ref) return "Invalid";
 
-  switch (status) {
-    case 1:
-      return "To Do";
-    case 2:
-      return "In Progress";
-    case 3:
-      return "Done";
-    default:
-      return "Invalid";
-  }
+  return ref.filter((item: StatusType): boolean => item.id === status)[0].name;
 }
 
 export async function serverDeleteIssue(
@@ -24,7 +18,7 @@ export async function serverDeleteIssue(
 
 export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
   if (pKey == undefined || Array.isArray(pKey)) {
-    return new IssueResponse([], [], []);
+    return { data: [] };
   }
 
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
@@ -46,28 +40,37 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
 
     return newIssue;
   });
-  const statuses: StatusType[] = json.statuses.map((item: any): StatusType => {
-    const newStatus: StatusType = new StatusType(item.id, item.status);
 
-    return newStatus;
-  });
-  const priorities: PriorityType[] = json.priorities.map(
-    (item: any): PriorityType => {
-      return {
-        id: item.id,
-        value: item.value,
-      };
-    }
-  );
-
-  return new IssueResponse(issues, statuses, priorities);
+  return { data: issues };
 }
 
-
-export async function getIssue(pid: number, issueId: string): Promise<Issue> {
-  const httpResponse: Response = await fetch(`/api/${pid}/issue/${issueId}`, {
+export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
+  const httpResponse: Response = await fetch(`/api/${projectKey}/statuses`, {
     method: "GET",
   });
+
+  if (!httpResponse.ok) {
+    throw new Error(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.json();
+  const statuses: StatusType[] = json.map(
+    (item: any): StatusType => new StatusType(item.id, item.name)
+  );
+
+  return statuses;
+}
+
+export async function getIssue(
+  projectKey: string,
+  issueId: string
+): Promise<Issue> {
+  const httpResponse: Response = await fetch(
+    `/api/${projectKey}/issue/${issueId}`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!httpResponse.ok) {
     throw new Error(httpResponse.statusText);
@@ -103,11 +106,11 @@ export async function addIssue(pid: number, data: Issue): Promise<any> {
 }
 
 export async function editIssue(
-  pid: number,
+  pKey: string,
   issueKey: string,
   data: any
 ): Promise<any> {
-  const httpResponse: Response = await fetch(`/api/${pid}/issue/${issueKey}`, {
+  const httpResponse: Response = await fetch(`/api/${pKey}/issue/${issueKey}`, {
     method: "PUT",
     headers: {
       "Content-type": "application/json",

@@ -12,75 +12,48 @@ import { IconContext } from "react-icons";
 
 import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "react-query";
-import {
-  convertNumtoStatus,
-  fetchIssueList,
-  serverDeleteIssue,
-} from "@/lib/data/issues";
-import { StatusType, Issue, PriorityType } from "lib/types";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { toStatusString, serverDeleteIssue } from "@/lib/data/issues";
+import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
   CreateIssueContext,
   SidebarEditContext,
 } from "@/components/Backlog/index";
 import { verifyUrlParam } from "@/lib/utils";
+import { queryIssues, queryStatuses } from "@/lib/data/query";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const { data, isLoading } = useQuery(
-    ["issues", projectKey],
-    () => fetchIssueList(projectKey),
-    {
-      enabled: !!pKey,
-    }
-  );
-  const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
+  const { data: issues, isLoading } = queryIssues(projectKey);
+  const { data: statuses } = queryStatuses(projectKey);
   const [editingRow, setEditingRow] = React.useState<Issue | undefined>(
     undefined
   );
-  const [statuses, setStatuses] = React.useState<StatusType[]>([]);
-  const [priorities, setPriorities] = React.useState<PriorityType[]>([]);
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
   const editContext = React.useContext(SidebarEditContext);
   const createIssueContext = React.useContext(CreateIssueContext);
 
   React.useEffect((): void => {
-    if (!isLoading && data) {
-      if (data.data.length > 0) {
-        const newRows: GridRowsProp = data.data.map((row: Issue) => {
+    if (!isLoading && issues) {
+      if (issues.data.length > 0) {
+        const newRows: GridRowsProp = issues.data.map((row: Issue) => {
           return {
             id: row.id,
             key: row.issueKey,
             title: row.title,
             assignee: row.assignee,
-            status: convertNumtoStatus(row.status),
+            status: toStatusString(row.status, statuses),
             priority: "low",
           };
         });
         setRows(newRows);
       }
-      if (data.statuses.length > 0) {
-        setStatuses(data.statuses);
-      }
-      if (data.priorities.length > 0) {
-        setPriorities(data.priorities);
-      }
     }
-  }, [data]);
-
-  const handleFormOpen = (): void => {
-    setEditingRow(undefined);
-    setDialogOpen(true);
-  };
+  }, [issues, statuses]);
 
   const deleteIssue = useMutation(
     (id: GridRowId) => serverDeleteIssue(projectKey, id),

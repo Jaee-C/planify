@@ -20,18 +20,6 @@ export default class Issue {
   }
 }
 
-export class IssueResponse {
-  public readonly data: Issue[];
-  public readonly statuses: StatusType[];
-  public readonly priorities: PriorityType[];
-
-  public constructor(
-    data: Issue[],
-    statuses: StatusType[],
-    priorities: PriorityType[]
-  ) {
-    this.data = data;
-    this.statuses = statuses;
-    this.priorities = priorities;
-  }
+export interface IssueResponse {
+  data: Issue[];
 }

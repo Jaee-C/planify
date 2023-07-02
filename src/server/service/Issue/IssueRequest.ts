@@ -1,5 +1,7 @@
 import IssueRepository from "@/server/domain/IssueRepository";
 import { StatusType } from "lib/types";
+import StatusRepository from "@/server/domain/StatusRepository";
+import { IIssueDB } from "@/server/domain/interfaces";
 
 export default class IssueRequest {
   public id?: number = undefined;
@@ -16,11 +18,11 @@ export default class IssueRequest {
     this.status = 1;
   }
 
-  public async verifyEntries(db: IssueRepository): Promise<boolean> {
+  public async verifyEntries(db: IIssueDB): Promise<boolean> {
     return (await this.verifyStatus(db)) && this.verifyTitle();
   }
 
-  private async verifyStatus(db: IssueRepository): Promise<boolean> {
+  private async verifyStatus(db: StatusRepository): Promise<boolean> {
     if (Number.isNaN(this.status) || this.status === undefined) {
       // console.log("Status is not a number.");
       return false;
