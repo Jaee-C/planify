@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import userRegister from "@/server/service/UserAuth";
+import userRegister from "@/lib/auth/UserAuth";
 import { NewUser } from "@/lib/types/User";
 
 export default async function handler(

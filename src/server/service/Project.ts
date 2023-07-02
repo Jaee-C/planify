@@ -3,12 +3,12 @@ import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue, StatusType, PriorityType } from "lib/types";
 
 export default class Project {
-  private readonly _id: number;
+  private readonly _id: string;
   private readonly _store: IssueRepository;
 
-  public constructor(id: number) {
-    this._id = id;
-    this._store = new IssueRepository(id);
+  public constructor(key: string, user: string) {
+    this._id = key;
+    this._store = new IssueRepository(key, user);
   }
 
   public async saveIssue(issue: IssueRequest): Promise<void> {

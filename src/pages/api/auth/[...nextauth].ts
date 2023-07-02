@@ -1,4 +1,4 @@
-import userAuth from "@/server/service/UserAuth";
+import userAuth from "@/lib/auth/UserAuth";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
@@ -50,7 +50,6 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }): Promise<Session> {
-      session.user.id = token.id;
       session.user.name = token.name;
       return session;
     },

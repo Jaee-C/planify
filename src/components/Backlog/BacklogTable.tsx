@@ -29,12 +29,12 @@ import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pid } = router.query;
+  const { pKey } = router.query;
   const { data, isLoading } = useQuery(
-    ["issues", Number(pid)],
-    () => fetchIssueList(Number(pid)),
+    ["issues", pKey],
+    () => fetchIssueList(pKey),
     {
-      enabled: !!pid,
+      enabled: !!pKey,
     }
   );
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
@@ -94,10 +94,10 @@ export default function BacklogTable(): JSX.Element {
   );
 
   const deleteIssue = useMutation(
-    (id: GridRowId) => serverDeleteIssue(Number(pid), id),
+    (id: GridRowId) => serverDeleteIssue(pKey, id),
     {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(["issues", Number(pid)]);
+        await queryClient.invalidateQueries(["issues", pKey]);
       },
     }
   );

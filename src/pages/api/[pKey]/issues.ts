@@ -2,16 +2,20 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { Issue, IssueResponse, StatusType, PriorityType } from "lib/types";
 import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
+import { JWT } from "next-auth/jwt";
+import { getUserToken } from "@/lib/auth/session";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<IssueResponse[] | string | undefined>
 ): Promise<void> {
-  if (Array.isArray(req.query.pid) || Number.isNaN(Number(req.query.pid))) {
+  if (Array.isArray(req.query.pKey) || req.query.pKey === undefined) {
     res.status(405).end();
     return;
   }
-  const project: Project = new Project(Number(req.query.pid));
+  const userToken: JWT = await getUserToken(req);
+  const userId: string = userToken.id;
+  const project: Project = new Project(req.query.pKey, userId);
 
   switch (req.method) {
     case "GET":

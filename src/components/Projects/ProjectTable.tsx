@@ -27,7 +27,7 @@ const columns: GridColDef[] = [
     minWidth: 150,
     renderCell: (params: GridRenderCellParams) => (
       <Link
-        href={`/${params.id}/backlog`}
+        href={`/${params.row.key}/backlog`}
         className="hover:underline hover:text-blue-600">
         {params.value}
       </Link>

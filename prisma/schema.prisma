@@ -16,8 +16,8 @@ model Project {
   key         String
   description String?
   issues      Issue[]
-  owner       User?     @relation(fields: [ownerId], references: [id])
-  ownerId     Int?
+  owner       User     @relation(fields: [ownerId], references: [id])
+  ownerId     Int
   numIssues   Int      @default(0)
 
   @@unique([key, ownerId])

@@ -50,15 +50,22 @@ export interface IIssueDB {
 }
 
 export default class IssueRepository implements IIssueDB {
-  private readonly _projectId: number;
+  private readonly _projectKey: string;
+  private readonly _userId: string;
 
-  public constructor(pid: number) {
-    this._projectId = pid;
+  public constructor(pKey: string, user: string) {
+    this._projectKey = pKey;
+    this._userId = user;
   }
 
   public async fetchAllIssues(): Promise<Issue[]> {
     const dbIssues: IssuePayload[] = await prisma.issue.findMany({
-      where: { projectId: this._projectId },
+      where: {
+        project: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+      },
       select: issueSelect,
     });
 
@@ -75,7 +82,10 @@ export default class IssueRepository implements IIssueDB {
     const countPayload: IssueNumberPayload | null = await prisma.project.update(
       {
         where: {
-          id: this._projectId,
+          key_ownerId: {
+            ownerId: Number(this._userId),
+            key: this._projectKey,
+          },
         },
         data: {
           numIssues: {
@@ -110,11 +120,27 @@ export default class IssueRepository implements IIssueDB {
   }
 
   public async deleteIssue(id: number): Promise<void> {
+    const pid: number | null = await prisma.project
+      .findFirst({
+        where: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+        select: {
+          id: true,
+        },
+      })
+      ?.then(project => project?.id ?? null);
+
+    if (!pid) {
+      throw new Error("Project not found");
+    }
+
     await prisma.issue.delete({
       where: {
         id_projectId: {
           id,
-          projectId: this._projectId,
+          projectId: pid,
         },
       },
     });
@@ -185,7 +211,10 @@ export default class IssueRepository implements IIssueDB {
       },
       project: {
         connect: {
-          id: this._projectId,
+          key_ownerId: {
+            key: this._projectKey,
+            ownerId: Number(this._userId),
+          },
         },
       },
     });

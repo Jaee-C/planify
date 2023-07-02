@@ -10,9 +10,9 @@ import { NextRouter, useRouter } from "next/router";
 
 export default function BacklogPage(): JSX.Element {
   const router: NextRouter = useRouter();
-  const project: string | undefined = Array.isArray(router.query.pid)
-    ? router.query.pid[0]
-    : router.query.pid;
+  const project: string | undefined = Array.isArray(router.query.pKey)
+    ? router.query.pKey[0]
+    : router.query.pKey;
 
   return (
     <>
