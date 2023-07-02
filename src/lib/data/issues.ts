@@ -1,4 +1,4 @@
-import { StatusType, PriorityType, Issue, IssueResponse } from "@/interfaces";
+import { StatusType, PriorityType, Issue, IssueResponse } from "lib/types";
 
 export function convertNumtoStatus(status: number | undefined): string {
   if (!status) return "Invalid";
@@ -16,18 +16,18 @@ export function convertNumtoStatus(status: number | undefined): string {
 }
 
 export async function serverDeleteIssue(
-  pid: number,
+  pKey: string,
   issueId: number | string
 ): Promise<void> {
-  await fetch(`/api/${pid}/issue/${issueId}`, { method: "DELETE" });
+  await fetch(`/api/${pKey}/issue/${issueId}`, { method: "DELETE" });
 }
 
-export async function fetchIssueList(pid: number): Promise<IssueResponse> {
-  if (Number.isNaN(pid) || pid < 1) {
+export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
+  if (pKey == undefined || Array.isArray(pKey)) {
     return new IssueResponse([], [], []);
   }
 
-  const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
+  const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
     method: "GET",
   });
 
@@ -63,8 +63,8 @@ export async function fetchIssueList(pid: number): Promise<IssueResponse> {
   return new IssueResponse(issues, statuses, priorities);
 }
 
-export async function addIssue(pid: number, data: Issue): Promise<any> {
-  const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
+export async function addIssue(pKey: string, data: Issue): Promise<any> {
+  const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",

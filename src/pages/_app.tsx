@@ -1,5 +1,6 @@
 import "../../styles/globals.css";
 import type { AppProps } from "next/app";
+import { SessionProvider } from "next-auth/react";
 
 /**
  * Top level component used to initialise Nextjs pages. Sets up the
@@ -13,6 +14,13 @@ import type { AppProps } from "next/app";
  * @param pageProps - Props passed from the page component
  * @returns - The rendered root component
  */
-export default function App({ Component, pageProps }: AppProps): JSX.Element {
-  return <Component {...pageProps} />;
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps): JSX.Element {
+  return (
+    <SessionProvider session={session}>
+      <Component {...pageProps} />
+    </SessionProvider>
+  );
 }

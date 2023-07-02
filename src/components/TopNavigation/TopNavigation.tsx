@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { IconContext } from "react-icons";
 import { AiTwotoneSetting } from "react-icons/ai";
 import { IoHelpCircle } from "react-icons/io5";
 
 import TopNavigationButton from "./TopNavigationButton";
 import TopNavigationIcon from "./TopNavigationIcon";
-import Link from "next/link";
+import AccountSpace from "@/components/TopNavigation/AccountSpace";
 
 export enum NavigationPage {
   HOME,
@@ -48,6 +48,7 @@ export default function TopNavigation(props: TopNavigationProps): JSX.Element {
           <TopNavigationIcon icon={<AiTwotoneSetting />} />
         </div>
       </IconContext.Provider>
+      <AccountSpace />
     </header>
   );
 }

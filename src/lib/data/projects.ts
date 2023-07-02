@@ -1,4 +1,4 @@
-import { Project } from "@/interfaces";
+import { Project } from "lib/types";
 
 export async function fetchProjectList(): Promise<Project[]> {
   const httpResponse: Response = await fetch("/api/projects", {
