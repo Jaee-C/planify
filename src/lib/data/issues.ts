@@ -63,8 +63,8 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
   return new IssueResponse(issues, statuses, priorities);
 }
 
-export async function addIssue(pid: number, data: Issue): Promise<any> {
-  const httpResponse: Response = await fetch(`/api/${pid}/issues`, {
+export async function addIssue(pKey: string, data: Issue): Promise<any> {
+  const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
     method: "POST",
     headers: {
       "Content-type": "application/json",

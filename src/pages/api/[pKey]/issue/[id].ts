@@ -1,17 +1,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Project from "@/server/service/Project";
+import { JWT } from "next-auth/jwt";
+import { getUserToken } from "@/lib/auth/session";
+import { getUrlParam } from "@/lib/utils";
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string>
-): void {
-  const query: NextApiRequest["query"] = req.query;
+): Promise<void> {
+  const pKey: string = getUrlParam(req, "pKey");
+  const issueId: string = getUrlParam(req, "id");
+  const token: JWT = await getUserToken(req);
 
-  const project: Project = new Project(Number(query.pid));
+  const project: Project = new Project(pKey, token.id);
   switch (req.method) {
     case "DELETE":
-      project.deleteIssue(Number(query.id));
-      res.status(200).send(`DELETE ${query.id}`);
+      project.deleteIssue(Number(issueId));
+      res.status(200).send(`DELETE ${issueId}`);
       break;
     default:
       res.status(405).end();

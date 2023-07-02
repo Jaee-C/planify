@@ -13,9 +13,18 @@ type ProjectPayload = Prisma.ProjectGetPayload<{
 }>;
 
 export default class ProjectRepository {
+  private readonly _userId: string;
+
+  public constructor(user: string) {
+    this._userId = user;
+  }
+
   public async fetchAllProjects(): Promise<Project[]> {
     const dbProjects: ProjectPayload[] = await prisma.project.findMany({
       select: projectSelect,
+      where: {
+        ownerId: Number(this._userId),
+      },
     });
 
     return dbProjects.map(

@@ -2,10 +2,29 @@ import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue, StatusType, PriorityType } from "lib/types";
 
+/**
+ * Project is a service class that handles the business logic for the project.
+ * It is used by the API route handler to handle requests.
+ * @class
+ */
 export default class Project {
+  /**
+   * @property {string} _id - The project key.
+   * @private
+   */
   private readonly _id: string;
+  /**
+   * @property {IssueRepository} _store - The database repository.
+   * @private
+   */
   private readonly _store: IssueRepository;
 
+  /**
+   * Creates a new Project instance.
+   * @param {string} key - The project key.
+   * @param {string} user - The user identifier, (usually) obtained from the
+   * JWT.
+   */
   public constructor(key: string, user: string) {
     this._id = key;
     this._store = new IssueRepository(key, user);

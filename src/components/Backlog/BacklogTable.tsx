@@ -26,13 +26,15 @@ import {
 } from "@/lib/data/issues";
 import { StatusType, Issue, PriorityType } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
+import { verifyUrlParam } from "@/lib/utils";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
+  const projectKey: string = verifyUrlParam(pKey);
   const { data, isLoading } = useQuery(
-    ["issues", pKey],
-    () => fetchIssueList(pKey),
+    ["issues", projectKey],
+    () => fetchIssueList(projectKey),
     {
       enabled: !!pKey,
     }
@@ -94,10 +96,10 @@ export default function BacklogTable(): JSX.Element {
   );
 
   const deleteIssue = useMutation(
-    (id: GridRowId) => serverDeleteIssue(pKey, id),
+    (id: GridRowId) => serverDeleteIssue(projectKey, id),
     {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(["issues", pKey]);
+        await queryClient.invalidateQueries(["issues", projectKey]);
       },
     }
   );
