@@ -22,22 +22,24 @@ import {
   convertNumtoStatus,
   fetchIssueList,
   serverDeleteIssue,
-} from "@/components/data/issues";
-import { StatusType, Issue, PriorityType } from "@/interfaces";
+} from "@/lib/data/issues";
+import { StatusType, Issue, PriorityType } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
   CreateIssueContext,
   SidebarEditContext,
 } from "@/components/Backlog/index";
+import { verifyUrlParam } from "@/lib/utils";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pid } = router.query;
+  const { pKey } = router.query;
+  const projectKey: string = verifyUrlParam(pKey);
   const { data, isLoading } = useQuery(
-    ["issues", Number(pid)],
-    () => fetchIssueList(Number(pid)),
+    ["issues", projectKey],
+    () => fetchIssueList(projectKey),
     {
-      enabled: !!pid,
+      enabled: !!pKey,
     }
   );
   const [dialogOpen, setDialogOpen] = React.useState<boolean>(false);
@@ -81,10 +83,10 @@ export default function BacklogTable(): JSX.Element {
   };
 
   const deleteIssue = useMutation(
-    (key: string) => serverDeleteIssue(Number(pid), key),
+    (id: GridRowId) => serverDeleteIssue(projectKey, id),
     {
       onSuccess: async () => {
-        await queryClient.invalidateQueries(["issues", Number(pid)]);
+        await queryClient.invalidateQueries(["issues", projectKey]);
       },
     }
   );

@@ -1,4 +1,4 @@
-import { Issue } from "@/interfaces";
+import { Issue } from "lib/types";
 
 export type StatusType = 1 | 2 | 3;
 

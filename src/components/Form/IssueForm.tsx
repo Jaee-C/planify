@@ -9,8 +9,9 @@ import * as yup from "yup";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
-import { addIssue } from "@/components/data/issues";
-import { Issue } from "@/interfaces";
+import { addIssue } from "@/lib/data/issues";
+import { Issue } from "lib/types";
+import { verifyUrlParam } from "@/lib/utils";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -36,10 +37,13 @@ export interface IssueFormProps {
 
 export default function IssueForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pid } = router.query;
+  const { pKey } = router.query;
+  const projectKey: string = verifyUrlParam(pKey);
   const queryClient: QueryClient = useQueryClient();
-  const newIssueMutation = useMutation((data: Issue) => addIssue(1, data));
   const [editValue, setEditValue] = useState<string>("abcd");
+  const newIssueMutation = useMutation((data: Issue) =>
+    addIssue(projectKey, data)
+  );
 
   const baseForm: Issue = EMPTY_FORM();
   if (props.editingIssue !== undefined) {
@@ -57,10 +61,11 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
         values.assignee = "Daniel";
       }
       newIssueMutation.mutate(values, {
-        onSuccess: async () => {
-          await queryClient.invalidateQueries(["issues", Number(pid)]);
+        onSuccess: async (): Promise<void> => {
+          await queryClient.invalidateQueries(["issues", projectKey]);
+          console.log(projectKey);
         },
-        onSettled: () => {
+        onSettled: (): void => {
           formik.resetForm();
           props.closeForm();
         },

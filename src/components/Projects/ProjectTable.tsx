@@ -14,8 +14,8 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import TableToolbar from "@/components/Table/TableToolbar";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { Project } from "@/interfaces";
-import { fetchProjectList } from "@/components/data/projects";
+import { Project } from "lib/types";
+import { fetchProjectList } from "@/lib/data/projects";
 
 const columns: GridColDef[] = [
   { field: "key", headerName: "Key", width: 100 },
@@ -27,7 +27,7 @@ const columns: GridColDef[] = [
     minWidth: 150,
     renderCell: (params: GridRenderCellParams) => (
       <Link
-        href={`/${params.id}/backlog`}
+        href={`/${params.row.key}/backlog`}
         className="hover:underline hover:text-blue-600">
         {params.value}
       </Link>
