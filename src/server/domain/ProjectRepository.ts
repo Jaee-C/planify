@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
 import { Project } from "lib/types";
+import { IProjectDB } from "./interfaces";
 
 const projectSelect = {
   id: true,
@@ -12,7 +13,7 @@ type ProjectPayload = Prisma.ProjectGetPayload<{
   select: typeof projectSelect;
 }>;
 
-export default class ProjectRepository {
+export default class ProjectRepository implements IProjectDB {
   private readonly _userId: string;
 
   public constructor(user: string) {

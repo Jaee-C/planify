@@ -3,6 +3,7 @@ import { Project } from "lib/types";
 import ProjectRepository from "@/server/domain/ProjectRepository";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
+import { IProjectDB } from "@/server/domain/interfaces";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +11,7 @@ export default async function handler(
 ): Promise<void> {
   const token: JWT = await getUserToken(req);
   const userId: string = token.id;
-  const projectDb: ProjectRepository = new ProjectRepository(userId);
+  const projectDb: IProjectDB = new ProjectRepository(userId);
   switch (req.method) {
     case "GET":
       const allProjects: Project[] = await projectDb.fetchAllProjects();

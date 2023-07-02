@@ -2,6 +2,7 @@ import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
 import { Issue, StatusType, PriorityType } from "lib/types";
+import { IIssueDB } from "./interfaces";
 
 const issueSelect = {
   id: true,
@@ -41,13 +42,6 @@ const prioritySelect = {
 type PriorityPayload = Prisma.PriorityTypeGetPayload<{
   select: typeof prioritySelect;
 }>;
-
-export interface IIssueDB {
-  fetchAllIssues(): Promise<Issue[]>;
-  saveIssue(req: IssueRequest): Promise<Issue>;
-  editIssue(req: IssueRequest): Promise<void>;
-  deleteIssue(id: number): Promise<void>;
-}
 
 export default class IssueRepository implements IIssueDB {
   private readonly _projectKey: string;

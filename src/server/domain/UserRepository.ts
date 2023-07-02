@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
 import { NewUser, User } from "@/lib/types/User";
+import { IUserDB } from "@/server/domain/interfaces";
 
 const userSelect = {
   id: true,
@@ -14,7 +15,7 @@ type UserPayload = Prisma.UserGetPayload<{
   select: typeof userSelect;
 }>;
 
-class UserRepository {
+class UserRepository implements IUserDB {
   public async getUsernameCount(username: string): Promise<number> {
     return prisma.user.count({
       where: {
