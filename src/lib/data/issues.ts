@@ -1,4 +1,4 @@
-import { StatusType, PriorityType, Issue, IssueResponse } from "lib/types";
+import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
 
 export function toStatusString(
   status: number | undefined,
@@ -61,6 +61,23 @@ export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
   return statuses;
 }
 
+export async function fetchPriorities(
+  projectKey: string
+): Promise<PriorityType[]> {
+  const httpResponse: Response = await fetch(`/api/${projectKey}/priorities`, {
+    method: "GET",
+  });
+
+  if (!httpResponse.ok) {
+    throw new Error(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.json();
+  return json.map(
+    (item: any): PriorityType => new PriorityType(item.id, item.name)
+  );
+}
+
 export async function getIssue(
   projectKey: string,
   issueId: string
@@ -77,12 +94,12 @@ export async function getIssue(
   }
 
   const json = await httpResponse.json();
-  const newIssue: Issue = new Issue(json.data.id);
+  const newIssue: Issue = new Issue(json.id);
 
-  newIssue.title = json.data.title;
-  newIssue.assignee = json.data.assignee;
-  newIssue.status = json.data.status;
-  newIssue.issueKey = json.data.issueKey;
+  newIssue.title = json.title;
+  newIssue.assignee = json.assignee;
+  newIssue.status = json.status;
+  newIssue.issueKey = json.issueKey;
 
   return newIssue;
 }

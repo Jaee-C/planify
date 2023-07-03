@@ -1,6 +1,6 @@
 import * as React from "react";
 import { NextRouter, useRouter } from "next/router";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { SidebarEditContext } from "@/components/Backlog/index";
 import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 import {
@@ -8,10 +8,11 @@ import {
   useMutation,
   useQuery,
   useQueryClient,
+  UseQueryResult,
 } from "react-query";
 import { getIssue, editIssue } from "lib/data/issues";
 import * as Yup from "yup";
-import { Button, Divider, Grid, styled } from "@mui/material";
+import { Button, Divider, Grid, styled, TextField } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
 import FormSelectField from "@/components/Form/FormSelectField";
@@ -19,9 +20,13 @@ import {
   ISSUE_PRIORITIES,
   ISSUE_STATUSES,
 } from "@/components/Form/FormConstants";
-import { Issue } from "lib/types";
+import { Issue, StatusType } from "lib/types";
 import { FormikProps, useFormik } from "formik";
 import { verifyUrlParam } from "@/lib/utils";
+import { queryIssue, queryStatuses } from "@/lib/data/query";
+import FormAutocomplete from "@/components/Form/FormAutocomplete";
+import StatusSelect from "@/components/Form/StatusSelect";
+import PrioritySelect from "@/components/Form/PrioritySelect";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -35,31 +40,21 @@ export default function SideIssueViewer(): JSX.Element {
   const projectKey: string = verifyUrlParam(router.query.pKey);
   const { value: issueKey, action: handleEdit } =
     useContext(SidebarEditContext);
-  const [title, setTitle] = React.useState<string>("");
+  const [title, setTitle] = React.useState<string | undefined>(undefined);
 
   const queryClient: QueryClient = useQueryClient();
   const {
     data: editingIssue,
     isLoading,
     error,
-  } = useQuery(
-    ["issue", issueKey],
-    async () => getIssue(projectKey, issueKey),
-    {
-      enabled: projectKey !== "",
-      onSuccess: (data: Issue | undefined): void => {
-        if (data === undefined) {
-          handleClose();
-          return;
-        }
-        setTitle(data.title ? data.title : "");
-      },
-    }
-  );
+  }: UseQueryResult<Issue | undefined> = queryIssue(projectKey, issueKey);
+  const { data: statuses } = queryStatuses(projectKey);
 
-  if (isLoading || error) {
-    return <div></div>;
-  }
+  useEffect((): void => {
+    if (editingIssue === undefined) return;
+
+    setTitle(editingIssue.title ? editingIssue.title : "");
+  }, [editingIssue]);
 
   const editIssueMutation = useMutation(
     async (data: any) => await editIssue(projectKey, issueKey, data),
@@ -88,15 +83,19 @@ export default function SideIssueViewer(): JSX.Element {
     initialValues: {
       title: "",
       description: editingIssue?.description ? editingIssue.description : "",
-      status: editingIssue?.status ? editingIssue.status : 1,
+      status: statuses ? statuses[0] : 1,
       priority: editingIssue?.priority ? editingIssue.priority : 1,
       assignee: editingIssue?.assignee ? editingIssue.assignee : "",
       reporter: "",
     },
     onSubmit: (values: formValues): void => {
-      console.log("Good job");
+      console.log("Good job", values);
     },
   });
+
+  if (isLoading || error || !editingIssue) {
+    return <div>loading...</div>;
+  }
 
   return (
     <div className="px-5">
@@ -163,32 +162,17 @@ export default function SideIssueViewer(): JSX.Element {
               </FormRow>
               <FormRow item xs={12}>
                 <TextFieldLabel textLabel="Status: ">
-                  <FormSelectField
-                    name="status"
-                    label="Status"
-                    onChange={formik.handleChange}
-                    value={formik.values.status}
-                    error={
-                      formik.touched.status && Boolean(formik.errors.status)
-                    }
-                    helperText={formik.touched.status && formik.errors.status}
-                    options={ISSUE_STATUSES}
+                  <StatusSelect
+                    issueKey={issueKey}
+                    defaultValue={new StatusType(1, "To Do")}
                   />
                 </TextFieldLabel>
               </FormRow>
               <FormRow item xs={12}>
                 <TextFieldLabel textLabel="Priority: ">
-                  <FormSelectField
-                    name="priority"
-                    label="Priority"
-                    value={formik.values.priority}
-                    error={
-                      formik.touched.priority && Boolean(formik.errors.priority)
-                    }
-                    helperText={
-                      formik.touched.priority && formik.errors.priority
-                    }
-                    options={ISSUE_PRIORITIES}
+                  <PrioritySelect
+                    issueKey={issueKey}
+                    defaultValue={formik.values.priority}
                   />
                 </TextFieldLabel>
               </FormRow>

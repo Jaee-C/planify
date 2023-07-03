@@ -22,7 +22,7 @@ export default class PriorityRepository {
   private convertToPriorityType(dbPriority: PriorityPayload): PriorityType {
     return {
       id: dbPriority.id,
-      value: dbPriority.name,
+      name: dbPriority.name,
     };
   }
 }

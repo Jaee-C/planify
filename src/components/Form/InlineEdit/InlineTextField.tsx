@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 /** @jsx jsx */
 import { css, jsx } from "@emotion/react";
 
@@ -7,7 +7,7 @@ import Buttons from "./Buttons";
 import useButtonFocusHook from "./use-button-focus-hook";
 import ReadView from "./ReadView";
 import { TextField } from "@mui/material";
-import { Form, Formik, FormikProps } from "formik";
+import { Form, Formik, FormikProps, useFormik } from "formik";
 import * as Yup from "yup";
 
 const inputStyles = css({
@@ -74,6 +74,20 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
   const [isEditingState, setEditingState] = useState(startWithEditViewOpen);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   let formRef: React.RefObject<HTMLFormElement> = useRef(null);
+  const validationSchema = Yup.object().shape({
+    inlineEdit: validate,
+  });
+  const formik = useFormik({
+    onSubmit: (data: { inlineEdit: string }): void => {
+      onConfirm(data.inlineEdit);
+    },
+    initialValues: { inlineEdit: "" },
+    validationSchema: validationSchema,
+  });
+
+  useEffect(() => {
+    if (defaultValue) formik.setFieldValue("inlineEdit", defaultValue);
+  }, [defaultValue]);
 
   const {
     editButtonRef,
@@ -101,7 +115,6 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
 
   const onConfirm = (value: string): void => {
     providedOnConfirm(value);
-    console.log(value);
     if (isControlled) {
       setEditingState(false);
     }
@@ -165,10 +178,6 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     [keepEditViewOpenOnBlur, tryAutoSubmitWhenBlur]
   );
 
-  const validationSchema = Yup.object().shape({
-    inlineEdit: validate,
-  });
-
   /** Gets called when focus is transferred to the editView, or action buttons
    *
    * There are three paths here the function can be called:
@@ -192,75 +201,65 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     />
   );
 
+  if (defaultValue === undefined) {
+    return <div></div>;
+  }
+
   return (
-    <Formik
-      onSubmit={(data: { inlineEdit: string }): void => {
-        onConfirm(data.inlineEdit);
+    <form
+      onKeyDown={(e): void => {
+        if (e.key === "Escape" || e.key === "Esc") {
+          onCancel();
+        }
       }}
-      initialValues={{ inlineEdit: defaultValue }}
-      validationSchema={validationSchema}>
-      {({
-        touched,
-        errors,
-        handleSubmit,
-        handleChange,
-      }: FormikProps<{ inlineEdit: string }>): JSX.Element => (
-        <Form
-          onKeyDown={e => {
-            if (e.key === "Esc" || e.key === "Escape") {
-              onCancel();
-            }
-          }}
-          ref={(p): void => {
-            formRef.current = p;
-          }}>
-          {shouldBeEditing ? (
-            <div css={inputStyles}>
-              <TextField
-                autoFocus
-                defaultValue={defaultValue}
-                required={isRequired}
-                onBlur={(): void => {
-                  onEditViewWrapperBlur(
-                    errors.inlineEdit !== undefined,
-                    handleSubmit,
-                    formRef
-                  );
-                }}
-                name="inlineEdit"
-                onChange={handleChange}
-                onFocus={onEditViewWrapperFocus}
-                key="edit-view" // used for reset to default value
-                sx={[
-                  {
-                    "& .MuiOutlinedInput-input": {
-                      padding: "8px 6px",
-                    },
-                  },
-                ]}
-                fullWidth
-              />
-              {!hideActionButtons ? (
-                <Buttons
-                  cancelButtonLabel={cancelButtonLabel}
-                  confirmButtonLabel={confirmButtonLabel}
-                  onMouseDown={(): void => {
-                    /** Prevents focus on edit button only if mouse is used to click button, but not when keyboard is used */
-                    doNotFocusOnEditButton();
-                  }}
-                  onCancelClick={onCancelClick}
-                />
-              ) : (
-                /** This is to allow Ctrl + Enter to submit without action buttons */
-                <button css={buttonStyles} type="submit" />
-              )}
-            </div>
+      ref={(p): void => {
+        formRef.current = p;
+      }}>
+      {shouldBeEditing ? (
+        <div css={inputStyles}>
+          <TextField
+            autoFocus
+            value={formik.values.inlineEdit}
+            required={isRequired}
+            onBlur={(): void => {
+              onEditViewWrapperBlur(
+                formik.errors.inlineEdit !== undefined,
+                formik.handleSubmit,
+                formRef
+              );
+            }}
+            name="inlineEdit"
+            onChange={formik.handleChange}
+            onFocus={onEditViewWrapperFocus}
+            key="edit-view" // used for reset to default value
+            sx={[
+              {
+                "& .MuiOutlinedInput-input": {
+                  padding: "8px 6px",
+                },
+              },
+            ]}
+            fullWidth
+          />
+          {!hideActionButtons ? (
+            <Buttons
+              cancelButtonLabel={cancelButtonLabel}
+              confirmButtonLabel={confirmButtonLabel}
+              onMouseDown={(): void => {
+                /** Prevents focus on edit button only if mouse is used to click button, but not when keyboard is used */
+                doNotFocusOnEditButton();
+              }}
+              onCancelClick={onCancelClick}
+            />
           ) : (
-            /** Field is used here only for the label */
-            renderReadView()
+            /** This is to allow Ctrl + Enter to submit without action buttons */
+            <button css={buttonStyles} type="submit" />
           )}
-        </Form>
+        </div>
+      ) : (
+        /** Field is used here only for the label */
+        renderReadView()
       )}
-    </Formik>
+    </form>
   );
 }
