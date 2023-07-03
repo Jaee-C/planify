@@ -21,6 +21,7 @@ interface StatusSelectProps {
 export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const [value, setValue] = React.useState<StatusType | undefined>(undefined);
 
   // Server queries
   const queryClient: QueryClient = useQueryClient();
@@ -34,6 +35,9 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
       },
     }
   );
+  React.useEffect(() => {
+    setValue(props.defaultValue);
+  }, [props.defaultValue]);
 
   // Autocomplete formatting
   const getStatusLabel = (option: unknown): string => {
@@ -51,9 +55,13 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
     const valueCast: StatusType = value as StatusType;
     return optionCast.id === valueCast.id;
   };
-  const handleChange = (event: React.ChangeEvent<{}>, value: unknown): void => {
-    if (value instanceof StatusType) {
-      editStatusMutation.mutate({ status: value.id });
+  const handleChange = (
+    event: React.ChangeEvent<{}>,
+    newValue: unknown
+  ): void => {
+    if (newValue instanceof StatusType) {
+      editStatusMutation.mutate({ status: newValue.id });
+      setValue(newValue);
     }
   };
 
@@ -64,8 +72,9 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   return (
     <FormAutocomplete
       hideToggle
+      blurOnSelect
       renderInput={(params): React.ReactNode => <TextField {...params} />}
-      value={props.defaultValue}
+      value={value}
       getOptionLabel={getStatusLabel}
       isOptionEqualToValue={verifyValue}
       options={statuses ? statuses : []}

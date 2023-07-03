@@ -40,7 +40,6 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
   const queryClient: QueryClient = useQueryClient();
-  const [editValue, setEditValue] = useState<string>("abcd");
   const newIssueMutation = useMutation((data: Issue) =>
     addIssue(projectKey, data)
   );

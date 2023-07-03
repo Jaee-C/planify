@@ -34,7 +34,5 @@ export const ISSUE_PRIORITIES = [
 
 export const EMPTY_FORM = (): Issue => {
   const issue: Issue = new Issue(-1);
-  issue.status = 0;
-  issue.priority = "low";
   return issue;
 };
