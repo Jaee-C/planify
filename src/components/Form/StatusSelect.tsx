@@ -12,11 +12,10 @@ import FormAutocomplete from "@/components/Form/FormAutocomplete";
 import { TextField } from "@mui/material";
 import * as React from "react";
 import { editIssue } from "@/lib/data/issues";
-import { useEffect, useState } from "react";
 
 interface StatusSelectProps {
   issueKey: string;
-  defaultValue: StatusType;
+  defaultValue: StatusType | undefined;
 }
 
 export default function StatusSelect(props: StatusSelectProps): JSX.Element {

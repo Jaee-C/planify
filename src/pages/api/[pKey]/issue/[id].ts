@@ -4,6 +4,7 @@ import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
 import { Issue } from "@/lib/types";
+import { IssueRequest } from "@/server/service/Issue";
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,6 +24,15 @@ export default async function handler(
       } catch {
         res.status(404).end();
       }
+      break;
+    case "PUT":
+      const issueRequest: IssueRequest = new IssueRequest();
+      issueRequest.key = issueKey;
+      issueRequest.title = req.body.title;
+      issueRequest.description = req.body.description;
+      issueRequest.status = req.body.status;
+      await project.saveIssue(issueRequest);
+      res.status(200).end(`UPDATE ${issueKey}`);
       break;
     case "DELETE":
       await project.deleteIssue(issueKey);

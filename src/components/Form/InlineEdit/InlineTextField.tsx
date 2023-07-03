@@ -212,6 +212,10 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
           onCancel();
         }
       }}
+      onSubmit={e => {
+        e.preventDefault();
+        formik.handleSubmit(e);
+      }}
       ref={(p): void => {
         formRef.current = p;
       }}>

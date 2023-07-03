@@ -15,10 +15,13 @@ import { editIssue } from "@/lib/data/issues";
 
 interface PriorityProps {
   issueKey: string;
-  defaultValue: PriorityType;
+  defaultValue?: PriorityType;
 }
 
-export default function PrioritySelect(props: PriorityProps): JSX.Element {
+export default function PrioritySelect({
+  issueKey,
+  defaultValue = NONE_PRIORITY,
+}: PriorityProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
 
@@ -26,7 +29,7 @@ export default function PrioritySelect(props: PriorityProps): JSX.Element {
     queryPriorities(projectKey);
   const queryClient: QueryClient = useQueryClient();
   const editPriorityMutation = useMutation(
-    async (data: any) => await editIssue(projectKey, props.issueKey, data),
+    async (data: any) => await editIssue(projectKey, issueKey, data),
     {
       onSuccess: async (): Promise<void> => {
         await queryClient.invalidateQueries(["issues", projectKey]);
@@ -55,11 +58,14 @@ export default function PrioritySelect(props: PriorityProps): JSX.Element {
     <FormAutocomplete
       hideToggle
       renderInput={(params): React.ReactNode => <TextField {...params} />}
-      value={props.defaultValue}
+      value={defaultValue}
       getOptionLabel={getPriorityLabel}
       isOptionEqualToValue={verifyValue}
-      options={priorities ? priorities : []}
+      options={priorities ? priorities : [NONE_PRIORITY]}
       loading={isLoading}
+      getOptionDisabled={(option: unknown): boolean => option === NONE_PRIORITY}
     />
   );
 }
+
+const NONE_PRIORITY: PriorityType = new PriorityType(-1, "None");

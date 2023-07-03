@@ -98,8 +98,12 @@ export async function getIssue(
 
   newIssue.title = json.title;
   newIssue.assignee = json.assignee;
-  newIssue.status = json.status;
+  newIssue.status = new StatusType(json.status.id, json.status.name);
   newIssue.issueKey = json.issueKey;
+
+  if (json.priority) {
+    newIssue.priority = new PriorityType(json.priority.id, json.priority.name);
+  }
 
   return newIssue;
 }
@@ -139,7 +143,7 @@ export async function editIssue(
     console.log(httpResponse.statusText);
   }
 
-  const json = await httpResponse.json();
+  const json = await httpResponse.text();
 
-  return json.message;
+  return json;
 }

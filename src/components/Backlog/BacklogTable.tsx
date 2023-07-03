@@ -46,7 +46,7 @@ export default function BacklogTable(): JSX.Element {
             key: row.issueKey,
             title: row.title,
             assignee: row.assignee,
-            status: toStatusString(row.status, statuses),
+            status: toStatusString(row.status?.id, statuses),
             priority: "low",
           };
         });

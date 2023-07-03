@@ -8,9 +8,7 @@ import {
 } from "@/lib/data/issues";
 
 export function queryIssues(projectKey: string): UseQueryResult<IssueResponse> {
-  return useQuery(["issues", projectKey], () => fetchIssueList(projectKey), {
-    enabled: projectKey !== "",
-  });
+  return useQuery(["issues", projectKey], () => fetchIssueList(projectKey));
 }
 
 export function queryStatuses(
@@ -24,12 +22,8 @@ export function queryStatuses(
 export function queryPriorities(
   projectKey: string
 ): UseQueryResult<PriorityType[]> {
-  return useQuery(
-    ["priorities", projectKey],
-    () => fetchPriorities(projectKey),
-    {
-      enabled: projectKey !== "",
-    }
+  return useQuery(["priorities", projectKey], () =>
+    fetchPriorities(projectKey)
   );
 }
 
@@ -37,11 +31,7 @@ export function queryIssue(
   projectKey: string,
   issueKey: string
 ): UseQueryResult<Issue | undefined> {
-  return useQuery(
-    ["issue", projectKey, issueKey],
-    () => getIssue(projectKey, issueKey),
-    {
-      enabled: projectKey !== "",
-    }
+  return useQuery(["issue", projectKey, issueKey], () =>
+    getIssue(projectKey, issueKey)
   );
 }

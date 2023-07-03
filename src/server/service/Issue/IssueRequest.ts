@@ -9,6 +9,7 @@ export default class IssueRequest {
   public description?: string = undefined;
   public status?: number;
   public assignee?: string;
+  public key?: string;
 
   public saveStatus(value: number): void {
     if (Number.isNaN(value)) {
@@ -18,13 +19,13 @@ export default class IssueRequest {
     this.status = 1;
   }
 
-  public async verifyEntries(db: IIssueDB): Promise<boolean> {
+  public async verifyEntries(db: StatusRepository): Promise<boolean> {
     return (await this.verifyStatus(db)) && this.verifyTitle();
   }
 
   private async verifyStatus(db: StatusRepository): Promise<boolean> {
     if (Number.isNaN(this.status) || this.status === undefined) {
-      // console.log("Status is not a number.");
+      console.log("Status is not a number.");
       return false;
     }
 
@@ -33,7 +34,7 @@ export default class IssueRequest {
       (value: StatusType): number => value.id
     );
     if (validStatuses.indexOf(this.status) === -1) {
-      // console.log("Invalid status");
+      console.log("Invalid status");
       return false;
     }
 

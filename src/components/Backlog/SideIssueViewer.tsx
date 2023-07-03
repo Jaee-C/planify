@@ -12,19 +12,13 @@ import {
 } from "react-query";
 import { getIssue, editIssue } from "lib/data/issues";
 import * as Yup from "yup";
-import { Button, Divider, Grid, styled, TextField } from "@mui/material";
+import { Button, Divider, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
-import FormSelectField from "@/components/Form/FormSelectField";
-import {
-  ISSUE_PRIORITIES,
-  ISSUE_STATUSES,
-} from "@/components/Form/FormConstants";
 import { Issue, StatusType } from "lib/types";
 import { FormikProps, useFormik } from "formik";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssue, queryStatuses } from "@/lib/data/query";
-import FormAutocomplete from "@/components/Form/FormAutocomplete";
 import StatusSelect from "@/components/Form/StatusSelect";
 import PrioritySelect from "@/components/Form/PrioritySelect";
 
@@ -48,12 +42,13 @@ export default function SideIssueViewer(): JSX.Element {
     isLoading,
     error,
   }: UseQueryResult<Issue | undefined> = queryIssue(projectKey, issueKey);
-  const { data: statuses } = queryStatuses(projectKey);
 
   useEffect((): void => {
     if (editingIssue === undefined) return;
 
     setTitle(editingIssue.title ? editingIssue.title : "");
+    formik.setFieldValue("description", editingIssue.description);
+    formik.setFieldValue("assignee", editingIssue.assignee);
   }, [editingIssue]);
 
   const editIssueMutation = useMutation(
@@ -70,10 +65,7 @@ export default function SideIssueViewer(): JSX.Element {
   };
 
   interface formValues {
-    title: string;
     description: string;
-    status: number;
-    priority: number;
     assignee: string;
     reporter: string;
   }
@@ -81,10 +73,7 @@ export default function SideIssueViewer(): JSX.Element {
   const titleValidate: Yup.StringSchema = Yup.string().required("required");
   const formik: FormikProps<formValues> = useFormik<formValues>({
     initialValues: {
-      title: "",
       description: editingIssue?.description ? editingIssue.description : "",
-      status: statuses ? statuses[0] : 1,
-      priority: editingIssue?.priority ? editingIssue.priority : 1,
       assignee: editingIssue?.assignee ? editingIssue.assignee : "",
       reporter: "",
     },
@@ -97,10 +86,15 @@ export default function SideIssueViewer(): JSX.Element {
     return <div>loading...</div>;
   }
 
+  const editTitle = (newTitle: string): void => {
+    editIssueMutation.mutate({ title: newTitle });
+    setTitle(newTitle);
+  };
+
   return (
     <div className="px-5">
       <InlineTextField
-        onConfirm={setTitle}
+        onConfirm={editTitle}
         defaultValue={title}
         validate={titleValidate}
         readViewFitContainerWidth
@@ -164,7 +158,7 @@ export default function SideIssueViewer(): JSX.Element {
                 <TextFieldLabel textLabel="Status: ">
                   <StatusSelect
                     issueKey={issueKey}
-                    defaultValue={new StatusType(1, "To Do")}
+                    defaultValue={editingIssue.status}
                   />
                 </TextFieldLabel>
               </FormRow>
@@ -172,7 +166,7 @@ export default function SideIssueViewer(): JSX.Element {
                 <TextFieldLabel textLabel="Priority: ">
                   <PrioritySelect
                     issueKey={issueKey}
-                    defaultValue={formik.values.priority}
+                    defaultValue={editingIssue.priority}
                   />
                 </TextFieldLabel>
               </FormRow>

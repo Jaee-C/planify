@@ -2,6 +2,7 @@ import IssueRepository from "@/server/domain/IssueRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue, StatusType, PriorityType } from "lib/types";
 import { IIssueDB } from "@/server/domain/interfaces";
+import StatusRepository from "@/server/domain/StatusRepository";
 
 /**
  * Project is a service class that handles the business logic for the project.
@@ -19,6 +20,7 @@ export default class Project {
    * @private
    */
   private readonly _store: IIssueDB;
+  private readonly _status: StatusRepository;
 
   /**
    * Creates a new Project instance.
@@ -29,14 +31,18 @@ export default class Project {
   public constructor(key: string, user: string) {
     this._id = key;
     this._store = new IssueRepository(key, user);
+    this._status = new StatusRepository(key);
   }
 
   public async saveIssue(issue: IssueRequest): Promise<void> {
-    if (!(await issue.verifyEntries(this._store))) {
-      throw new Error("Invalid request");
-    }
+    // if (!(await issue.verifyEntries(this._status))) {
+    //   throw new Error("Invalid request");
+    // }
 
-    if (issue.id != undefined) {
+    if (issue.id !== undefined || issue.key !== undefined) {
+      if (issue.key !== undefined) {
+        issue.id = this.getIssueId(issue.key);
+      }
       await this._store.editIssue(issue);
       return;
     }

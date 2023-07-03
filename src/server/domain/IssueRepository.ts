@@ -1,13 +1,18 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
-import { Issue, StatusType, PriorityType } from "lib/types";
+import { Issue, StatusType } from "lib/types";
 import { IIssueDB } from "./interfaces";
 
 const issueSelect = {
   id: true,
   title: true,
-  statusId: true,
+  status: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
   project: {
     select: {
       key: true,
@@ -110,8 +115,35 @@ export default class IssueRepository implements IIssueDB {
       throw new Error("No valid issue id.");
     }
 
-    // TODO: implement updates for different cases
-    const issueId: number = req.id;
+    const pid: number | null = await prisma.project
+      .findFirst({
+        where: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+        select: {
+          id: true,
+        },
+      })
+      ?.then(project => project?.id ?? null);
+
+    if (!pid) {
+      throw new Error("Project not found");
+    }
+
+    await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id: req.id,
+          projectId: pid,
+        },
+      },
+      data: {
+        title: req.title,
+        description: req.description,
+        statusId: req.status,
+      },
+    });
   }
 
   public async deleteIssue(id: number): Promise<void> {
@@ -151,7 +183,7 @@ export default class IssueRepository implements IIssueDB {
     const result: Issue = new Issue(payload.id);
 
     result.title = payload.title;
-    result.status = payload.statusId;
+    result.status = new StatusType(payload.status.id, payload.status.name);
     result.issueKey = `${payload.project.key}-${payload.id}`;
     result.assignee = "testuser";
 

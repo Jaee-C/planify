@@ -7,9 +7,9 @@ export default class Issue {
   public assignee: string | undefined;
   public description: string | undefined;
   public reporter: string | undefined;
-  public status: number | undefined;
+  public status: StatusType | undefined;
   public issueKey: string | undefined;
-  public priority: number | undefined;
+  public priority: PriorityType | undefined;
 
   public constructor(id: number) {
     this.id = id;
