@@ -148,6 +148,15 @@ export default function SideIssueViewer(): JSX.Element {
               <Divider />
               <br />
               <FormRow item xs={12}>
+                <TextFieldLabel textLabel="Status: ">
+                  <StatusSelect
+                    issueKey={issueKey}
+                    defaultValue={editingIssue.status}
+                    hideToggle
+                  />
+                </TextFieldLabel>
+              </FormRow>
+              <FormRow item xs={12}>
                 <TextFieldLabel textLabel="Assignee: ">
                   <FormTextField
                     name="assignee"
@@ -174,14 +183,6 @@ export default function SideIssueViewer(): JSX.Element {
                     helperText={
                       formik.touched.reporter && formik.errors.reporter
                     }
-                  />
-                </TextFieldLabel>
-              </FormRow>
-              <FormRow item xs={12}>
-                <TextFieldLabel textLabel="Status: ">
-                  <StatusSelect
-                    issueKey={issueKey}
-                    defaultValue={editingIssue.status}
                   />
                 </TextFieldLabel>
               </FormRow>

@@ -8,15 +8,32 @@ import {
 } from "react-query";
 import { StatusType } from "@/lib/types";
 import { queryStatuses } from "@/lib/data/query";
-import FormAutocomplete from "@/components/Form/FormAutocomplete";
-import { TextField } from "@mui/material";
+import { MenuItem, Select, SelectChangeEvent, styled } from "@mui/material";
 import * as React from "react";
 import { editIssue } from "@/lib/data/issues";
+import StatusChip from "@/components/Backlog/StatusChip";
 
 interface StatusSelectProps {
   issueKey: string;
   defaultValue: StatusType | undefined;
+  hideToggle?: boolean;
+  defaultOpen?: boolean;
 }
+
+const StyledSelect = styled(Select)(() => ({
+  "& .MuiSelect-root": {
+    boxShadow: "none",
+  },
+  "& .MuiSelect-select": {
+    padding: "5px",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    border: 0,
+    "&:hover": {
+      border: 0,
+    },
+  },
+}));
 
 export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   const router: NextRouter = useRouter();
@@ -39,27 +56,17 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
     if (props.defaultValue) setValue(props.defaultValue);
   }, [props.defaultValue]);
 
-  // Autocomplete formatting
-  const getStatusLabel = (option: unknown): string => {
-    if (option instanceof StatusType) {
-      const cast: StatusType = option as StatusType;
-      return cast.name;
-    }
-    return "";
-  };
-  const verifyValue = (option: unknown, value: unknown): boolean => {
-    if (!(option instanceof StatusType && value instanceof StatusType))
-      return false;
-
-    const optionCast: StatusType = option as StatusType;
-    const valueCast: StatusType = value as StatusType;
-    return optionCast.id === valueCast.id;
-  };
-  const handleChange = (
-    event: React.ChangeEvent<{}>,
-    newValue: unknown
-  ): void => {
-    if (newValue instanceof StatusType && newValue.id !== value.id) {
+  // Select mutation
+  const handleSelectChange = (event: SelectChangeEvent<unknown>): void => {
+    event.preventDefault();
+    if (!statuses) return;
+    if (Number(event.target.value) > 0) {
+      const newValue: StatusType | undefined = statuses.find(
+        (status: StatusType) => {
+          return status.id === Number(event.target.value);
+        }
+      );
+      if (!newValue) return;
       editStatusMutation.mutate({ status: newValue.id });
       setValue(newValue);
     }
@@ -70,19 +77,20 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   }
 
   return (
-    <FormAutocomplete
-      hideToggle
-      blurOnSelect
-      disableClearable
-      selectOnFocus={false}
-      renderInput={(params): React.ReactNode => <TextField {...params} />}
-      value={value}
-      getOptionLabel={getStatusLabel}
-      isOptionEqualToValue={verifyValue}
-      options={statuses ? statuses : []}
-      loading={isLoading}
-      onChange={handleChange}
-    />
+    <>
+      <StyledSelect
+        value={String(value.id)}
+        onChange={handleSelectChange}
+        renderValue={(): React.ReactNode => <StatusChip value={value} />}
+        defaultOpen={props.defaultOpen}
+        IconComponent={(): null => null}>
+        {statuses?.map((status: StatusType) => (
+          <MenuItem value={status.id} key={status.id}>
+            <StatusChip value={status} />
+          </MenuItem>
+        ))}
+      </StyledSelect>
+    </>
   );
 }
 
