@@ -47,6 +47,7 @@ interface InlineEditProps {
   readViewFitContainerWidth?: boolean;
   validate?: Yup.StringSchema;
   readView?: React.ReactNode;
+  multiline?: boolean;
 }
 
 const noop = (): void => {};
@@ -66,6 +67,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     onEdit: providedOnEdit = noop,
     validate = Yup.string(),
     readView: providedReadView,
+    multiline = false,
   } = props;
   const editButtonLabel: string = "Edit";
   const confirmButtonLabel: string = "Confirm";
@@ -204,10 +206,6 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     />
   );
 
-  if (defaultValue === undefined) {
-    return <div></div>;
-  }
-
   return (
     <form
       onKeyDown={(e): void => {
@@ -246,6 +244,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
                 },
               },
             ]}
+            multiline={multiline}
             fullWidth
           />
           {!hideActionButtons ? (

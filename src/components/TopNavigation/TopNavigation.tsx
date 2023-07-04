@@ -27,7 +27,7 @@ export default function TopNavigation(props: TopNavigationProps): JSX.Element {
   return (
     <header
       className="bg-blue-400 top-0 z-50 w-full px-5 h-14 flex items-center
-                       justify-between shadow-xl text-sm font-medium">
+                       justify-between text-sm font-medium">
       <nav className="min-w-0 flex grow items-stretch relative shrink-0 h-full">
         <TopNavigationButton
           href="/"

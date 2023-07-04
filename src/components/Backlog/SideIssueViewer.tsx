@@ -18,8 +18,8 @@ import { Issue } from "lib/types";
 import { FormikProps, useFormik } from "formik";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssue } from "@/lib/data/query";
-import StatusSelect from "@/components/Form/StatusSelect";
-import PrioritySelect from "@/components/Form/PrioritySelect";
+import StatusSelect from "@/components/Backlog/StatusSelect";
+import PrioritySelect from "@/components/Backlog/PrioritySelect";
 import SideActionBar from "@/components/Backlog/SideActionBar";
 
 const FormRow = styled(Grid)(() => ({
@@ -35,6 +35,9 @@ export default function SideIssueViewer(): JSX.Element {
   const { value: issueKey, action: handleEdit } =
     useContext(SidebarEditContext);
   const [title, setTitle] = React.useState<string | undefined>(undefined);
+  const [description, setDescription] = React.useState<string | undefined>(
+    undefined
+  );
 
   const queryClient: QueryClient = useQueryClient();
   const {
@@ -47,7 +50,7 @@ export default function SideIssueViewer(): JSX.Element {
     if (editingIssue === undefined) return;
 
     setTitle(editingIssue.title ? editingIssue.title : "");
-    formik.setFieldValue("description", editingIssue.description);
+    setDescription(editingIssue.description ? editingIssue.description : "");
     formik.setFieldValue("assignee", editingIssue.assignee);
   }, [editingIssue]);
 
@@ -65,7 +68,6 @@ export default function SideIssueViewer(): JSX.Element {
   };
 
   interface formValues {
-    description: string;
     assignee: string;
     reporter: string;
   }
@@ -73,7 +75,6 @@ export default function SideIssueViewer(): JSX.Element {
   const titleValidate: Yup.StringSchema = Yup.string().required("required");
   const formik: FormikProps<formValues> = useFormik<formValues>({
     initialValues: {
-      description: editingIssue?.description ? editingIssue.description : "",
       assignee: editingIssue?.assignee ? editingIssue.assignee : "",
       reporter: "",
     },
@@ -91,22 +92,36 @@ export default function SideIssueViewer(): JSX.Element {
     editIssueMutation.mutate({ title: newTitle });
     setTitle(newTitle);
   };
-  const titleReadView = (): React.ReactNode => {
+  const editDescription = (newDescription: string): void => {
+    console.log(newDescription);
+  };
+  const createReadView = (value?: string): React.ReactNode => {
     return (
       <Typography
         color="text.primary"
         variant="h6"
         component="div"
-        sx={{
-          display: "flex",
-          maxWidth: "100%",
-          padding: "8px 6px",
-          fontSize: "1rem",
-          lineHeight: 1,
-          wordBreak: "break-word",
-          border: "2px solid transparent",
-        }}>
-        {title}
+        className={
+          "flex max-w-full break-words border-solid border-2 border-transparent text-xl"
+        }>
+        {value ? value : "No value"}
+      </Typography>
+    );
+  };
+
+  const createDescriptionReadView = (value?: string): React.ReactNode => {
+    const isPlaceholder: boolean = value === "" || value === undefined;
+    const placeholderText: string = "Enter a description...";
+    const textColor: string = isPlaceholder ? "text-gray-400" : "text-black";
+    return (
+      <Typography
+        paragraph
+        className={
+          "flex max-w-full break-words border-solid border-transparent base" +
+          " border-2 mb-0 " +
+          textColor
+        }>
+        {isPlaceholder ? placeholderText : value}
       </Typography>
     );
   };
@@ -121,7 +136,7 @@ export default function SideIssueViewer(): JSX.Element {
         onConfirm={editTitle}
         defaultValue={title}
         validate={titleValidate}
-        readView={titleReadView()}
+        readView={createReadView(title)}
         readViewFitContainerWidth
       />
       <Grid container spacing={2}>
@@ -129,19 +144,15 @@ export default function SideIssueViewer(): JSX.Element {
           <form onSubmit={formik.handleSubmit}>
             <Grid container>
               <FormRow item xs={12}>
-                <FormTextField
-                  name="description"
+                <Typography className="font-medium text-sm text-stone-700 mb-2">
+                  Description
+                </Typography>
+                <InlineTextField
                   multiline={true}
-                  placeholder="Enter a description"
-                  onChange={formik.handleChange}
-                  value={formik.values.description}
-                  error={
-                    formik.touched.description &&
-                    Boolean(formik.errors.description)
-                  }
-                  helperText={
-                    formik.touched.description && formik.errors.description
-                  }
+                  defaultValue={editingIssue.description}
+                  onConfirm={editDescription}
+                  readView={createDescriptionReadView(description)}
+                  readViewFitContainerWidth
                 />
               </FormRow>
               <br />

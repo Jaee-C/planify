@@ -15,7 +15,7 @@ interface SideActionBarProps {
 export default function SideActionBar(props: SideActionBarProps): JSX.Element {
   return (
     <AppBar position="sticky" color="inherit" elevation={0}>
-      <Toolbar>
+      <Toolbar className="px-0">
         <Breadcrumbs aria-label="breadcrumb" sx={{ flexGrow: 1 }}>
           <Typography color="inherit">Issue</Typography>
           <Typography color="text.primary" component="div">

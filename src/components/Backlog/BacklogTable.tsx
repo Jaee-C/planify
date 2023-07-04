@@ -2,9 +2,7 @@ import * as React from "react";
 import { Box, Paper } from "@mui/material";
 import {
   GridActionsCellItem,
-  GridCellModes,
-  GridCellModesModel,
-  GridCellParams,
+  GridCellEditStopParams,
   GridColDef,
   GridRenderCellParams,
   GridRowId,
@@ -19,7 +17,7 @@ import { IconContext } from "react-icons";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueEditDialog from "@/components/IssueEditDialog";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { toStatusString, serverDeleteIssue } from "@/lib/data/issues";
+import { serverDeleteIssue } from "@/lib/data/issues";
 import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
@@ -28,7 +26,7 @@ import {
 } from "@/components/Backlog/index";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssues, queryStatuses } from "@/lib/data/query";
-import StatusSelect from "@/components/Form/StatusSelect";
+import StatusSelect from "@/components/Backlog/StatusSelect";
 import StatusChip from "@/components/Backlog/StatusChip";
 
 export default function BacklogTable(): JSX.Element {
@@ -42,8 +40,6 @@ export default function BacklogTable(): JSX.Element {
   );
   const [rows, setRows] = React.useState<GridRowsProp>([]);
   const queryClient: QueryClient = useQueryClient();
-  const [cellModesModel, setCellModesModel] =
-    React.useState<GridCellModesModel>({});
 
   const editContext = React.useContext(SidebarEditContext);
   const createIssueContext = React.useContext(CreateIssueContext);
@@ -80,58 +76,6 @@ export default function BacklogTable(): JSX.Element {
     editContext.action
   );
 
-  // Allow single click editing
-  const handleCellClick = React.useCallback(
-    (params: GridCellParams, event: React.MouseEvent) => {
-      if (!params.isEditable) {
-        return;
-      }
-
-      // Ignore portal
-      if (!event.currentTarget.contains(event.target as Element)) {
-        return;
-      }
-
-      setCellModesModel(prevModel => {
-        return {
-          // Revert the mode of the other cells from other rows
-          ...Object.keys(prevModel).reduce(
-            (acc, id) => ({
-              ...acc,
-              [id]: Object.keys(prevModel[id]).reduce(
-                (acc2, field) => ({
-                  ...acc2,
-                  [field]: { mode: GridCellModes.View },
-                }),
-                {}
-              ),
-            }),
-            {}
-          ),
-          [params.id]: {
-            // Revert the mode of other cells in the same row
-            ...Object.keys(prevModel[params.id] || {}).reduce(
-              (acc, field) => ({
-                ...acc,
-                [field]: { mode: GridCellModes.View },
-              }),
-              {}
-            ),
-            [params.field]: { mode: GridCellModes.Edit },
-          },
-        };
-      });
-    },
-    []
-  );
-
-  const handleCellModesModelChange = React.useCallback(
-    (newModel: GridCellModesModel) => {
-      setCellModesModel(newModel);
-    },
-    []
-  );
-
   return (
     <IconContext.Provider value={{ size: "16px" }}>
       <Box sx={{ width: "100%" }}>
@@ -146,9 +90,7 @@ export default function BacklogTable(): JSX.Element {
             }}
             columns={columns}
             rows={rows}
-            onCellClick={handleCellClick}
-            cellModesModel={cellModesModel}
-            onCellModesModelChange={handleCellModesModelChange}
+            singleClickEdit
           />
         </Paper>
       </Box>
@@ -168,7 +110,20 @@ export function createBacklogColumns(
   handleEdit: handler
 ): GridColDef[] {
   return [
-    { field: "key", headerName: "Key", width: 100 },
+    {
+      field: "key",
+      headerName: "Key",
+      width: 100,
+      renderCell: (params: GridRenderCellParams): React.ReactNode => (
+        <strong
+          className="text-stone-500 font-medium cursor-pointer"
+          onClick={(): void => {
+            handleEdit(params.row.key);
+          }}>
+          {params.row.key}
+        </strong>
+      ),
+    },
     {
       field: "title",
       headerName: "Title",
