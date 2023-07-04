@@ -46,6 +46,7 @@ interface InlineEditProps {
   /** Determines whether the `readView` has 100% width within its container, or whether it fits the content. */
   readViewFitContainerWidth?: boolean;
   validate?: Yup.StringSchema;
+  readView?: React.ReactNode;
 }
 
 const noop = (): void => {};
@@ -64,6 +65,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
     onCancel: providedOnCancel = noop,
     onEdit: providedOnEdit = noop,
     validate = Yup.string(),
+    readView: providedReadView,
   } = props;
   const editButtonLabel: string = "Edit";
   const confirmButtonLabel: string = "Confirm";
@@ -198,6 +200,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
       editButtonRef={editButtonRef}
       readViewFitContainerWidth={readViewFitContainerWidth}
       editValue={defaultValue}
+      readView={providedReadView}
     />
   );
 

@@ -6,21 +6,21 @@ import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 import {
   QueryClient,
   useMutation,
-  useQuery,
   useQueryClient,
   UseQueryResult,
 } from "react-query";
-import { getIssue, editIssue } from "lib/data/issues";
+import { editIssue } from "lib/data/issues";
 import * as Yup from "yup";
-import { Button, Divider, Grid, styled } from "@mui/material";
+import { Button, Divider, Grid, styled, Typography } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
-import { Issue, StatusType } from "lib/types";
+import { Issue } from "lib/types";
 import { FormikProps, useFormik } from "formik";
 import { verifyUrlParam } from "@/lib/utils";
-import { queryIssue, queryStatuses } from "@/lib/data/query";
+import { queryIssue } from "@/lib/data/query";
 import StatusSelect from "@/components/Form/StatusSelect";
 import PrioritySelect from "@/components/Form/PrioritySelect";
+import SideActionBar from "@/components/Backlog/SideActionBar";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -87,16 +87,41 @@ export default function SideIssueViewer(): JSX.Element {
   }
 
   const editTitle = (newTitle: string): void => {
+    if (newTitle === title) return;
     editIssueMutation.mutate({ title: newTitle });
     setTitle(newTitle);
+  };
+  const titleReadView = (): React.ReactNode => {
+    return (
+      <Typography
+        color="text.primary"
+        variant="h6"
+        component="div"
+        sx={{
+          display: "flex",
+          maxWidth: "100%",
+          padding: "8px 6px",
+          fontSize: "1rem",
+          lineHeight: 1,
+          wordBreak: "break-word",
+          border: "2px solid transparent",
+        }}>
+        {title}
+      </Typography>
+    );
   };
 
   return (
     <div className="px-5">
+      <SideActionBar
+        closeAction={handleClose}
+        issueKey={editingIssue.issueKey}
+      />
       <InlineTextField
         onConfirm={editTitle}
         defaultValue={title}
         validate={titleValidate}
+        readView={titleReadView()}
         readViewFitContainerWidth
       />
       <Grid container spacing={2}>
@@ -104,22 +129,20 @@ export default function SideIssueViewer(): JSX.Element {
           <form onSubmit={formik.handleSubmit}>
             <Grid container>
               <FormRow item xs={12}>
-                <TextFieldLabel textLabel="Description: ">
-                  <FormTextField
-                    name="description"
-                    multiline={true}
-                    placeholder="Enter a description"
-                    onChange={formik.handleChange}
-                    value={formik.values.description}
-                    error={
-                      formik.touched.description &&
-                      Boolean(formik.errors.description)
-                    }
-                    helperText={
-                      formik.touched.description && formik.errors.description
-                    }
-                  />
-                </TextFieldLabel>
+                <FormTextField
+                  name="description"
+                  multiline={true}
+                  placeholder="Enter a description"
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                  error={
+                    formik.touched.description &&
+                    Boolean(formik.errors.description)
+                  }
+                  helperText={
+                    formik.touched.description && formik.errors.description
+                  }
+                />
               </FormRow>
               <br />
               <Divider />
@@ -170,7 +193,6 @@ export default function SideIssueViewer(): JSX.Element {
                   />
                 </TextFieldLabel>
               </FormRow>
-              <Button onClick={handleClose}>Close</Button>
               <Button
                 variant="contained"
                 color="primary"

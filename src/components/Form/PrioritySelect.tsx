@@ -57,6 +57,9 @@ export default function PrioritySelect({
   return (
     <FormAutocomplete
       hideToggle
+      blurOnSelect
+      disableClearable
+      selectOnFocus={false}
       renderInput={(params): React.ReactNode => <TextField {...params} />}
       value={defaultValue}
       getOptionLabel={getPriorityLabel}

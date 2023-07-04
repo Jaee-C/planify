@@ -3,6 +3,7 @@ import { Box, Paper } from "@mui/material";
 import {
   GridActionsCellItem,
   GridColDef,
+  GridRenderCellParams,
   GridRowId,
   GridRowParams,
   GridRowsProp,
@@ -83,6 +84,9 @@ export default function BacklogTable(): JSX.Element {
             }}
             columns={columns}
             rows={rows}
+            onRowClick={(params: GridRowParams): void => {
+              editContext.action(params.row.key);
+            }}
           />
         </Paper>
       </Box>
@@ -106,10 +110,16 @@ export function createBacklogColumns(
     {
       field: "title",
       headerName: "Title",
-      editable: true,
       align: "left",
       flex: 1,
       minWidth: 125,
+      renderCell: (params: GridRenderCellParams): React.ReactNode => {
+        return (
+          <div className="hover:underline cursor-pointer">
+            {params.row.title}
+          </div>
+        );
+      },
     },
     {
       field: "assignee",

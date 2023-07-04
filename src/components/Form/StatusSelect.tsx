@@ -21,7 +21,7 @@ interface StatusSelectProps {
 export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
-  const [value, setValue] = React.useState<StatusType | undefined>(undefined);
+  const [value, setValue] = React.useState<StatusType>(NONE_STATUS);
 
   // Server queries
   const queryClient: QueryClient = useQueryClient();
@@ -35,8 +35,8 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
       },
     }
   );
-  React.useEffect(() => {
-    setValue(props.defaultValue);
+  React.useEffect((): void => {
+    if (props.defaultValue) setValue(props.defaultValue);
   }, [props.defaultValue]);
 
   // Autocomplete formatting
@@ -59,7 +59,7 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
     event: React.ChangeEvent<{}>,
     newValue: unknown
   ): void => {
-    if (newValue instanceof StatusType) {
+    if (newValue instanceof StatusType && newValue.id !== value.id) {
       editStatusMutation.mutate({ status: newValue.id });
       setValue(newValue);
     }
@@ -73,6 +73,8 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
     <FormAutocomplete
       hideToggle
       blurOnSelect
+      disableClearable
+      selectOnFocus={false}
       renderInput={(params): React.ReactNode => <TextField {...params} />}
       value={value}
       getOptionLabel={getStatusLabel}
@@ -83,3 +85,5 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
     />
   );
 }
+
+const NONE_STATUS: StatusType = new StatusType(-1, "None");

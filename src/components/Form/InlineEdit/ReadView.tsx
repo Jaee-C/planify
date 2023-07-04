@@ -62,6 +62,7 @@ interface ReadViewProps {
   editButtonRef: React.RefObject<HTMLButtonElement>;
   readViewFitContainerWidth?: boolean;
   editValue?: string;
+  readView: React.ReactNode;
 }
 
 const ReadView = ({
@@ -71,6 +72,7 @@ const ReadView = ({
   editButtonRef,
   readViewFitContainerWidth,
   editValue,
+  readView,
 }: ReadViewProps): JSX.Element => {
   const startX = useRef(0);
   const startY = useRef(0);
@@ -120,9 +122,13 @@ const ReadView = ({
           startY.current = e.clientY;
         }}
         data-read-view-fit-container-width={readViewFitContainerWidth}>
-        <div css={readViewContainerStyles2}>
-          {editValue || "Click to enter a value"}
-        </div>
+        {readView ? (
+          readView
+        ) : (
+          <div css={readViewContainerStyles2}>
+            {editValue || "Click to enter a value"}
+          </div>
+        )}
       </div>
     </div>
   );
