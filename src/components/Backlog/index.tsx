@@ -2,7 +2,7 @@ import * as React from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import BacklogTable from "@/components/Backlog/BacklogTable";
 import { createContext, useState } from "react";
-import SideIssueViewer from "@/components/Backlog/SideIssueViewer";
+import SideIssueViewer from "@/components/SideIssueViewer";
 import { Button, IconButton, Tooltip } from "@mui/material";
 import { MdFilterList } from "react-icons/md";
 import TableToolbar from "@/components/Table/TableToolbar";

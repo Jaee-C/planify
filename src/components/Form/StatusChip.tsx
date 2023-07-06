@@ -23,6 +23,7 @@ export default function StatusChip(props: StatusChipProps): JSX.Element {
 
 const STATUS_COLOR_MAPPING: Record<string, "default" | "primary" | "success"> =
   {
+    None: "default",
     "To Do": "default",
     "In Progress": "primary",
     Done: "success",

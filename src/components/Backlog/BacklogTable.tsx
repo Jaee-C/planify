@@ -15,7 +15,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 import DataGrid from "@/components/Table/DataGrid";
-import IssueEditDialog from "@/components/IssueEditDialog";
+import IssueEditDialog from "@/components/CreateIssue/IssueEditDialog";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { serverDeleteIssue } from "@/lib/data/issues";
 import { Issue } from "lib/types";
@@ -26,8 +26,8 @@ import {
 } from "@/components/Backlog/index";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssues, queryStatuses } from "@/lib/data/query";
-import StatusSelect from "@/components/Backlog/StatusSelect";
-import StatusChip from "@/components/Backlog/StatusChip";
+import StatusSelect from "./StatusSelect";
+import StatusChip from "@/components/Form/StatusChip";
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();

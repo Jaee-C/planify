@@ -1,7 +1,13 @@
 import * as React from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect } from "react";
-import { SidebarEditContext } from "@/components/Backlog/index";
+import * as Yup from "yup";
+import { Button, Divider, Grid, styled, Typography } from "@mui/material";
+import { Issue } from "@/lib/types";
+import { FormikProps, useFormik } from "formik";
+import { verifyUrlParam } from "@/lib/utils";
+import { queryIssue } from "@/lib/data/query";
+import { SidebarEditContext } from "@/components/Backlog";
 import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 import {
   QueryClient,
@@ -9,18 +15,13 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "react-query";
-import { editIssue } from "lib/data/issues";
-import * as Yup from "yup";
-import { Button, Divider, Grid, styled, Typography } from "@mui/material";
+import { editIssue } from "@/lib/data/issues";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
-import { Issue } from "lib/types";
-import { FormikProps, useFormik } from "formik";
-import { verifyUrlParam } from "@/lib/utils";
-import { queryIssue } from "@/lib/data/query";
-import StatusSelect from "@/components/Backlog/StatusSelect";
-import PrioritySelect from "@/components/Backlog/PrioritySelect";
-import SideActionBar from "@/components/Backlog/SideActionBar";
+
+import StatusSelect from "./StatusSelect";
+import PrioritySelect from "./PrioritySelect";
+import SideActionBar from "./SideActionBar";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -29,6 +30,11 @@ const FormRow = styled(Grid)(() => ({
   },
 }));
 
+/**
+ * Issue viewer that appears on the right side of the screen, typically in the
+ * backlog page
+ * @constructor
+ */
 export default function SideIssueViewer(): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
