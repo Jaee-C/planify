@@ -19,7 +19,6 @@ export default function BacklogPage(): JSX.Element {
             minHeight: "400px",
             maxWidth: "100%",
           }}>
-          <BaseSidebar />
           <BacklogContent />
         </div>
       </ProSidebarProvider>
