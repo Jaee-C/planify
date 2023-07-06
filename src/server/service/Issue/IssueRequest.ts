@@ -16,7 +16,7 @@ export default class IssueRequest {
       return;
     }
 
-    this.status = 1;
+    this.status = value;
   }
 
   public async verifyEntries(db: StatusRepository): Promise<boolean> {

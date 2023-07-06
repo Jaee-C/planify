@@ -14,7 +14,7 @@ import CreateForm, {
 
 interface CreateIssueFormProps extends IssueFormProps {}
 
-export default function IssueEditDialog(
+export default function IssueCreateDialog(
   props: CreateIssueFormProps
 ): JSX.Element {
   return (

@@ -10,11 +10,7 @@ import { verifyUrlParam } from "@/lib/utils";
 import FormTextField from "../Form/FormTextField";
 import TextFieldLabel from "../Form/TextFieldLabel";
 import FormSelectField from "../Form/FormSelectField";
-import {
-  EMPTY_FORM,
-  ISSUE_PRIORITIES,
-  ISSUE_STATUSES,
-} from "../Form/FormConstants";
+import { EMPTY_FORM, ISSUE_PRIORITIES } from "../Form/FormConstants";
 import StatusSelect from "./StatusSelect";
 
 const FormRow = styled(Grid)(() => ({
@@ -52,7 +48,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
     description: yup.string().optional(),
     assignee: yup.string().optional(),
     reporter: yup.string().optional(),
-    status: yup.number().oneOf([1, 2, 3]).required(),
+    status: yup.number().oneOf([-1, 1, 2, 3]).required(),
     priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
   });
 
@@ -66,7 +62,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
       newIssueMutation.mutate(values, {
         onSuccess: async (): Promise<void> => {
           await queryClient.invalidateQueries(["issues", projectKey]);
-          console.log(projectKey);
+          console.log(values);
         },
         onSettled: (): void => {
           formik.resetForm();
@@ -167,14 +163,16 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
                 />
               </TextFieldLabel>
             </FormRow>
-            <Button onClick={handleFormClose}>Close</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className="bg-blue-600"
-              type="submit">
-              save
-            </Button>
+            <div className="w-full max-w-full flex justify-end mt-5">
+              <Button onClick={handleFormClose}>Close</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="bg-blue-600 ml-3"
+                type="submit">
+                save
+              </Button>
+            </div>
           </Grid>
         </form>
       </Grid>

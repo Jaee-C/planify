@@ -1,4 +1,5 @@
 import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
+import { IssueRequest } from "@/server/service/Issue";
 
 export function toStatusString(
   status: number | undefined,

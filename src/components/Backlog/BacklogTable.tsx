@@ -15,7 +15,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import { IconContext } from "react-icons";
 
 import DataGrid from "@/components/Table/DataGrid";
-import IssueEditDialog from "@/components/CreateIssue/IssueEditDialog";
+import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { serverDeleteIssue } from "@/lib/data/issues";
 import { Issue } from "lib/types";
@@ -94,7 +94,7 @@ export default function BacklogTable(): JSX.Element {
           />
         </Paper>
       </Box>
-      <IssueEditDialog
+      <IssueCreateDialog
         formOpen={createIssueContext.value}
         closeForm={createIssueContext.action}
         editingIssue={editingRow}

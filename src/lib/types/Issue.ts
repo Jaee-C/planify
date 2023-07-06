@@ -7,7 +7,7 @@ export default class Issue {
   public assignee: string | undefined;
   public description: string | undefined;
   public reporter: string | undefined;
-  public status: StatusType | undefined;
+  public status: StatusType;
   public issueKey: string | undefined;
   public priority: PriorityType | undefined;
 
