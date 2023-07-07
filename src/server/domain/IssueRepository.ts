@@ -183,9 +183,8 @@ export default class IssueRepository implements IIssueDB {
     const result: Issue = new Issue(payload.id);
 
     result.title = payload.title;
-    result.status = new StatusType(payload.status.id, payload.status.name);
+    result.status = { id: payload.status.id, name: payload.status.name };
     result.issueKey = `${payload.project.key}-${payload.id}`;
-    result.assignee = "testuser";
 
     return result;
   }

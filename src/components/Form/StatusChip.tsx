@@ -2,10 +2,11 @@ import { StatusType } from "@/lib/types";
 import { Chip } from "@mui/material";
 
 interface StatusChipProps {
-  value: StatusType;
+  value?: StatusType;
 }
 
 export default function StatusChip(props: StatusChipProps): JSX.Element {
+  if (!props.value) return <></>;
   const getChipColor = (
     status: StatusType
   ): "default" | "primary" | "success" => {

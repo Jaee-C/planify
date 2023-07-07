@@ -1,7 +1,6 @@
 import React from "react";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
-import BaseSidebar from "@/components/SideNavigationBar/BaseSidebar";
 import TopNavigation, {
   NavigationPage,
 } from "@/components/TopNavigation/TopNavigation";

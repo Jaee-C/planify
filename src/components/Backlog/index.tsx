@@ -60,11 +60,6 @@ export default function BacklogContent(): JSX.Element {
         <div className="px-8 mt-6 mb-4">
           <IconContext.Provider value={{ size: "16px" }}>
             <TableToolbar title="Backlog">
-              <Tooltip title="Filter list">
-                <IconButton className="mr-3">
-                  <MdFilterList />
-                </IconButton>
-              </Tooltip>
               <Button
                 className="bg-blue-600 text-xs"
                 variant="contained"

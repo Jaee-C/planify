@@ -1,7 +1,5 @@
-import IssueRepository from "@/server/domain/IssueRepository";
 import { StatusType } from "lib/types";
 import StatusRepository from "@/server/domain/StatusRepository";
-import { IIssueDB } from "@/server/domain/interfaces";
 
 export default class IssueRequest {
   public id?: number = undefined;

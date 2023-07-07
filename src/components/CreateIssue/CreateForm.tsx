@@ -39,15 +39,12 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
     baseForm.title = props.editingIssue.title;
-    baseForm.assignee = props.editingIssue.assignee;
     baseForm.status = props.editingIssue.status;
   }
 
   const issueValidation = yup.object({
     title: yup.string().required("Enter a title"),
     description: yup.string().optional(),
-    assignee: yup.string().optional(),
-    reporter: yup.string().optional(),
     status: yup.number().oneOf([-1, 1, 2, 3]).required(),
     priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
   });
@@ -113,32 +110,32 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
             <br />
             <Divider />
             <br />
-            <FormRow item xs={12}>
-              <TextFieldLabel textLabel="Assignee: ">
-                <FormTextField
-                  name="assignee"
-                  onChange={formik.handleChange}
-                  value={formik.values.assignee}
-                  error={
-                    formik.touched.assignee && Boolean(formik.errors.assignee)
-                  }
-                  helperText={formik.touched.assignee && formik.errors.assignee}
-                />
-              </TextFieldLabel>
-            </FormRow>
-            <FormRow item xs={12}>
-              <TextFieldLabel textLabel="Reporter: ">
-                <FormTextField
-                  name="reporter"
-                  onChange={formik.handleChange}
-                  value={formik.values.reporter}
-                  error={
-                    formik.touched.reporter && Boolean(formik.errors.reporter)
-                  }
-                  helperText={formik.touched.reporter && formik.errors.reporter}
-                />
-              </TextFieldLabel>
-            </FormRow>
+            {/* <FormRow item xs={12}> */}
+            {/*   <TextFieldLabel textLabel="Assignee: "> */}
+            {/*     <FormTextField */}
+            {/*       name="assignee" */}
+            {/*       onChange={formik.handleChange} */}
+            {/*       value={formik.values.assignee} */}
+            {/*       error={ */}
+            {/*         formik.touched.assignee && Boolean(formik.errors.assignee) */}
+            {/*       } */}
+            {/*       helperText={formik.touched.assignee && formik.errors.assignee} */}
+            {/*     /> */}
+            {/*   </TextFieldLabel> */}
+            {/* </FormRow> */}
+            {/* <FormRow item xs={12}> */}
+            {/*   <TextFieldLabel textLabel="Reporter: "> */}
+            {/*     <FormTextField */}
+            {/*       name="reporter" */}
+            {/*       onChange={formik.handleChange} */}
+            {/*       value={formik.values.reporter} */}
+            {/*       error={ */}
+            {/*         formik.touched.reporter && Boolean(formik.errors.reporter) */}
+            {/*       } */}
+            {/*       helperText={formik.touched.reporter && formik.errors.reporter} */}
+            {/*     /> */}
+            {/*   </TextFieldLabel> */}
+            {/* </FormRow> */}
             <FormRow item xs={12}>
               <TextFieldLabel textLabel="Status: ">
                 <StatusSelect

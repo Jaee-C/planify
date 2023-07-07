@@ -91,4 +91,4 @@ export default function StatusSelect(props: StatusSelectProp): JSX.Element {
   );
 }
 
-const NONE_STATUS: StatusType = new StatusType(-1, "None");
+const NONE_STATUS: StatusType = { id: -1, name: "None" };

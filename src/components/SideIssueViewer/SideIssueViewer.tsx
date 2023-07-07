@@ -2,7 +2,7 @@ import * as React from "react";
 import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import * as Yup from "yup";
-import { Button, Divider, Grid, styled, Typography } from "@mui/material";
+import { Divider, Grid, styled, Typography } from "@mui/material";
 import { Issue } from "@/lib/types";
 import { FormikProps, useFormik } from "formik";
 import { verifyUrlParam } from "@/lib/utils";
@@ -185,6 +185,8 @@ export default function SideIssueViewer(): JSX.Element {
                     helperText={
                       formik.touched.assignee && formik.errors.assignee
                     }
+                    placeholder="disabled"
+                    disabled
                   />
                 </TextFieldLabel>
               </FormRow>
@@ -200,6 +202,8 @@ export default function SideIssueViewer(): JSX.Element {
                     helperText={
                       formik.touched.reporter && formik.errors.reporter
                     }
+                    placeholder="disabled"
+                    disabled
                   />
                 </TextFieldLabel>
               </FormRow>
@@ -211,13 +215,6 @@ export default function SideIssueViewer(): JSX.Element {
                   />
                 </TextFieldLabel>
               </FormRow>
-              <Button
-                variant="contained"
-                color="primary"
-                className="bg-blue-600"
-                type="submit">
-                save
-              </Button>
             </Grid>
           </form>
         </Grid>

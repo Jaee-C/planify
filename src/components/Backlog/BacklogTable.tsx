@@ -2,14 +2,12 @@ import * as React from "react";
 import { Box, Paper } from "@mui/material";
 import {
   GridActionsCellItem,
-  GridCellEditStopParams,
   GridColDef,
   GridRenderCellParams,
   GridRowId,
   GridRowParams,
   GridRowsProp,
   GridValueFormatterParams,
-  MuiEvent,
 } from "@mui/x-data-grid";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { IconContext } from "react-icons";
@@ -17,7 +15,7 @@ import { IconContext } from "react-icons";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
-import { serverDeleteIssue } from "@/lib/data/issues";
+import { editIssue, serverDeleteIssue } from "@/lib/data/issues";
 import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
@@ -29,17 +27,44 @@ import { queryIssues, queryStatuses } from "@/lib/data/query";
 import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
 
+function getDistinctValues(updated: any, original: any): any {
+  const distinct: any = {};
+  Object.keys(updated).forEach((key: string) => {
+    if (updated[key] !== original[key]) {
+      distinct[key] = updated[key];
+    }
+  });
+  return distinct;
+}
+
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
   const { data: issues, isLoading } = queryIssues(projectKey);
   const { data: statuses } = queryStatuses(projectKey);
-  const [editingRow, setEditingRow] = React.useState<Issue | undefined>(
-    undefined
-  );
   const [rows, setRows] = React.useState<GridRowsProp>([]);
+
+  // Server queries
   const queryClient: QueryClient = useQueryClient();
+  const editIssueMutation = useMutation(
+    async ([issueKey, data]: any) =>
+      await editIssue(projectKey, issueKey, data),
+    {
+      onSuccess: async (): Promise<void> => {
+        await queryClient.invalidateQueries(["issues", projectKey]);
+      },
+    }
+  );
+  const handleRowEdit = (updatedRow: any, originalRow: any): void => {
+    const changes: any = getDistinctValues(updatedRow, originalRow);
+    if (Object.keys(changes).length === 0) return originalRow;
+    if (changes.status) {
+      changes.status = changes.status.id;
+    }
+    editIssueMutation.mutate([updatedRow.key, changes]);
+    return updatedRow;
+  };
 
   const editContext = React.useContext(SidebarEditContext);
   const createIssueContext = React.useContext(CreateIssueContext);
@@ -52,7 +77,7 @@ export default function BacklogTable(): JSX.Element {
             id: row.id,
             key: row.issueKey,
             title: row.title,
-            assignee: row.assignee,
+            // assignee: row.assignee,
             status: row.status,
             priority: "low",
           };
@@ -90,6 +115,7 @@ export default function BacklogTable(): JSX.Element {
             }}
             columns={columns}
             rows={rows}
+            processRowUpdate={handleRowEdit}
             singleClickEdit
           />
         </Paper>
@@ -97,7 +123,6 @@ export default function BacklogTable(): JSX.Element {
       <IssueCreateDialog
         formOpen={createIssueContext.value}
         closeForm={createIssueContext.action}
-        editingIssue={editingRow}
       />
     </IconContext.Provider>
   );
@@ -142,12 +167,12 @@ export function createBacklogColumns(
         );
       },
     },
-    {
-      field: "assignee",
-      headerName: "Assignee",
-      align: "left",
-      width: 150,
-    },
+    // {
+    //   field: "assignee",
+    //   headerName: "Assignee",
+    //   align: "left",
+    //   width: 150,
+    // },
     {
       field: "status",
       headerName: "Status",
@@ -159,16 +184,18 @@ export function createBacklogColumns(
       renderEditCell: (params: GridRenderCellParams): React.ReactNode => {
         return (
           <StatusSelect
+            id={params.id}
+            field={params.field}
             issueKey={params.row.key}
             defaultValue={params.row.status}
             hideToggle
-            defaultOpen
           />
         );
       },
       renderCell: (params: GridRenderCellParams): React.ReactNode => (
         <StatusChip value={params.row.status} />
       ),
+      sortComparator: (v1, v2) => v1.id - v2.id,
     },
     {
       field: "priority",

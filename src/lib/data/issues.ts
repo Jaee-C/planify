@@ -35,7 +35,6 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
     const newIssue: Issue = new Issue(item.id);
 
     newIssue.title = item.title;
-    newIssue.assignee = item.assignee;
     newIssue.status = item.status;
     newIssue.issueKey = item.issueKey;
 
@@ -56,7 +55,7 @@ export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
 
   const json = await httpResponse.json();
   const statuses: StatusType[] = json.map(
-    (item: any): StatusType => new StatusType(item.id, item.name)
+    (item: any): StatusType => ({ id: item.id, name: item.name })
   );
 
   return statuses;
@@ -99,7 +98,7 @@ export async function getIssue(
 
   newIssue.title = json.title;
   newIssue.assignee = json.assignee;
-  newIssue.status = new StatusType(json.status.id, json.status.name);
+  newIssue.status = { id: json.status.id, name: json.status.name };
   newIssue.issueKey = json.issueKey;
 
   if (json.priority) {

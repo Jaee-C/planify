@@ -46,7 +46,7 @@ const StyledSelect = styled(Select)(() => ({
 export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
-  const [value, setValue] = React.useState<StatusType>(NONE_STATUS);
+  const [value, setValue] = React.useState<StatusType>();
 
   // Server queries
   const queryClient: QueryClient = useQueryClient();
@@ -87,7 +87,7 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   return (
     <>
       <StyledSelect
-        value={String(value.id)}
+        value={String(value?.id)}
         onChange={handleSelectChange}
         renderValue={(): React.ReactNode => <StatusChip value={value} />}
         defaultOpen={props.defaultOpen}
@@ -101,5 +101,3 @@ export default function StatusSelect(props: StatusSelectProps): JSX.Element {
     </>
   );
 }
-
-const NONE_STATUS: StatusType = new StatusType(-1, "None");
