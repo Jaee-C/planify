@@ -26,6 +26,8 @@ import { verifyUrlParam } from "@/lib/utils";
 import { queryIssues, queryStatuses } from "@/lib/data/query";
 import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
+import PrioritySelect from "@/components/Backlog/PrioritySelect";
+import { NONE_PRIORITY } from "@/lib/constants";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};
@@ -62,6 +64,9 @@ export default function BacklogTable(): JSX.Element {
     if (changes.status) {
       changes.status = changes.status.id;
     }
+    if (changes.priority) {
+      changes.priority = changes.priority.id;
+    }
     editIssueMutation.mutate([updatedRow.key, changes]);
     return updatedRow;
   };
@@ -79,7 +84,7 @@ export default function BacklogTable(): JSX.Element {
             title: row.title,
             // assignee: row.assignee,
             status: row.status,
-            priority: "low",
+            priority: row.priority ? row.priority : NONE_PRIORITY,
           };
         });
         setRows(newRows);
@@ -202,6 +207,19 @@ export function createBacklogColumns(
       headerName: "Priority",
       editable: true,
       width: 75,
+      valueFormatter: (params: GridValueFormatterParams): string =>
+        params.value.name,
+      renderEditCell: (params: GridRenderCellParams): React.ReactNode => (
+        <PrioritySelect
+          id={params.id}
+          field={params.field}
+          issueKey={params.row.key}
+          defaultValue={params.row.priority}
+        />
+      ),
+      renderCell: (params: GridRenderCellParams): React.ReactNode => (
+        <div className="hover:cursor-pointer">{params.row.priority.name}</div>
+      ),
     },
     {
       field: "actions",

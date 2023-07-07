@@ -13,6 +13,12 @@ const issueSelect = {
       name: true,
     },
   },
+  priority: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
   project: {
     select: {
       key: true,
@@ -114,6 +120,7 @@ export default class IssueRepository implements IIssueDB {
     if (req.id === undefined || req.id < 0) {
       throw new Error("No valid issue id.");
     }
+    console.log(req);
 
     const pid: number | null = await prisma.project
       .findFirst({
@@ -142,6 +149,7 @@ export default class IssueRepository implements IIssueDB {
         title: req.title,
         description: req.description,
         statusId: req.status,
+        priorityId: req.priority,
       },
     });
   }
@@ -185,6 +193,12 @@ export default class IssueRepository implements IIssueDB {
     result.title = payload.title;
     result.status = { id: payload.status.id, name: payload.status.name };
     result.issueKey = `${payload.project.key}-${payload.id}`;
+    if (payload.priority) {
+      result.priority = {
+        id: payload.priority.id,
+        name: payload.priority.name,
+      };
+    }
 
     return result;
   }

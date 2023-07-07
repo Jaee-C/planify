@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main(): Promise<void> {
+  // StatusType
   await prisma.statusType.create({
     data: {
       id: 1,
@@ -22,6 +23,31 @@ async function main(): Promise<void> {
     },
   });
 
+  // PriorityType
+  await prisma.priorityType.create({
+    data: {
+      name: "Low",
+    },
+  });
+
+  await prisma.priorityType.create({
+    data: {
+      name: "Medium",
+    },
+  });
+
+  await prisma.priorityType.create({
+    data: {
+      name: "High",
+    },
+  });
+
+  await prisma.priorityType.create({
+    data: {
+      name: "Critical",
+    },
+  });
+
   await prisma.user.create({
     data: {
       id: 1,
@@ -31,6 +57,7 @@ async function main(): Promise<void> {
     },
   });
 
+  // Default project
   await prisma.project.create({
     data: {
       id: 1,

@@ -6,6 +6,7 @@ export default class IssueRequest {
   public title?: string = undefined;
   public description?: string = undefined;
   public status?: number;
+  public priority?: number;
   public assignee?: string;
   public key?: string;
 

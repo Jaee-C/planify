@@ -31,8 +31,9 @@ export default async function handler(
       issueRequest.title = req.body.title;
       issueRequest.description = req.body.description;
       issueRequest.status = req.body.status;
+      issueRequest.priority = req.body.priority;
       await project.saveIssue(issueRequest);
-      res.status(200).end(`UPDATE ${issueKey}`);
+      res.status(200).send(`UPDATE ${issueKey}`);
       break;
     case "DELETE":
       await project.deleteIssue(issueKey);

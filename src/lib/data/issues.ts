@@ -37,6 +37,7 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
     newIssue.title = item.title;
     newIssue.status = item.status;
     newIssue.issueKey = item.issueKey;
+    newIssue.priority = item.priority;
 
     return newIssue;
   });
@@ -74,7 +75,7 @@ export async function fetchPriorities(
 
   const json = await httpResponse.json();
   return json.map(
-    (item: any): PriorityType => new PriorityType(item.id, item.name)
+    (item: any): PriorityType => ({ id: item.id, name: item.name })
   );
 }
 
@@ -102,7 +103,10 @@ export async function getIssue(
   newIssue.issueKey = json.issueKey;
 
   if (json.priority) {
-    newIssue.priority = new PriorityType(json.priority.id, json.priority.name);
+    newIssue.priority = {
+      id: json.priority.id,
+      name: json.priority.name,
+    };
   }
 
   return newIssue;

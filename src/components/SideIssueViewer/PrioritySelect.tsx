@@ -12,6 +12,8 @@ import FormAutocomplete from "@/components/Form/FormAutocomplete";
 import * as React from "react";
 import { TextField } from "@mui/material";
 import { editIssue } from "@/lib/data/issues";
+import { NONE_PRIORITY } from "@/lib/constants";
+import { SyntheticEvent } from "react";
 
 interface PriorityProps {
   issueKey: string;
@@ -24,6 +26,7 @@ export default function PrioritySelect({
 }: PriorityProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const [value, setValue] = React.useState<PriorityType>(defaultValue);
 
   const { data: priorities, isLoading }: UseQueryResult<PriorityType[]> =
     queryPriorities(projectKey);
@@ -37,16 +40,36 @@ export default function PrioritySelect({
     }
   );
 
+  React.useEffect((): void => {
+    if (defaultValue) setValue(defaultValue);
+  }, [defaultValue]);
+
+  const onChange = (e: SyntheticEvent, value: unknown): void => {
+    e.preventDefault();
+    if (value && typeof value === "object" && "id" in value) {
+      const cast: PriorityType = value as PriorityType;
+      editPriorityMutation.mutate({ priority: cast.id });
+      setValue(cast);
+    }
+  };
+
   // Autocomplete Formatting
   const getPriorityLabel = (option: unknown): string => {
-    if (option instanceof PriorityType) {
+    if (option && typeof option === "object" && "name" in option) {
       const cast: PriorityType = option as PriorityType;
       return cast.name;
     }
     return "";
   };
   const verifyValue = (option: unknown, value: unknown): boolean => {
-    if (!(option instanceof PriorityType && value instanceof PriorityType))
+    if (
+      !(
+        option &&
+        value &&
+        typeof option === "object" &&
+        typeof value === "object"
+      )
+    )
       return false;
 
     const optionCast: PriorityType = option as PriorityType;
@@ -61,14 +84,12 @@ export default function PrioritySelect({
       disableClearable
       selectOnFocus={false}
       renderInput={(params): React.ReactNode => <TextField {...params} />}
-      value={defaultValue}
+      value={value}
       getOptionLabel={getPriorityLabel}
       isOptionEqualToValue={verifyValue}
       options={priorities ? priorities : [NONE_PRIORITY]}
       loading={isLoading}
-      getOptionDisabled={(option: unknown): boolean => option === NONE_PRIORITY}
+      onChange={onChange}
     />
   );
 }
-
-const NONE_PRIORITY: PriorityType = new PriorityType(-1, "None");

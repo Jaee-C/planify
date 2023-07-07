@@ -6,6 +6,7 @@ import {
   fetchStatuses,
   getIssue,
 } from "@/lib/data/issues";
+import { STALE_TIME } from "@/lib/constants";
 
 export function queryIssues(projectKey: string): UseQueryResult<IssueResponse> {
   return useQuery(["issues", projectKey], () => fetchIssueList(projectKey));
@@ -16,14 +17,19 @@ export function queryStatuses(
 ): UseQueryResult<StatusType[]> {
   return useQuery(["statuses", projectKey], () => fetchStatuses(projectKey), {
     enabled: projectKey !== "",
+    staleTime: STALE_TIME,
   });
 }
 
 export function queryPriorities(
   projectKey: string
 ): UseQueryResult<PriorityType[]> {
-  return useQuery(["priorities", projectKey], () =>
-    fetchPriorities(projectKey)
+  return useQuery(
+    ["priorities", projectKey],
+    () => fetchPriorities(projectKey),
+    {
+      staleTime: STALE_TIME,
+    }
   );
 }
 

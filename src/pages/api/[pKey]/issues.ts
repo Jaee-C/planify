@@ -6,7 +6,6 @@ import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import StatusRepository from "@/server/domain/StatusRepository";
 import { getServerUrlParam } from "@/lib/utils";
-import PriorityRepository from "@/server/domain/PriorityRepository";
 
 export default async function handler(
   req: NextApiRequest,
