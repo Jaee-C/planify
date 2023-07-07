@@ -36,6 +36,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "client/node_modules"
-  ]
+    "node_modules"
+  ],
+  "ts-node": {
+    "esm": true
+  }
 }

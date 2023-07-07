@@ -36,7 +36,7 @@ const StyledFormField = styled(Select)(() => ({
 
 interface StatusSelectProp {
   handleChange: (e: SelectChangeEvent<unknown>) => void;
-  value?: number;
+  value?: StatusType;
   error?: boolean;
   helperText?: string | false;
 }
@@ -50,15 +50,25 @@ export default function StatusSelect(props: StatusSelectProp): JSX.Element {
   const { data: statuses, isLoading }: UseQueryResult<StatusType[]> =
     queryStatuses(projectKey);
 
-  React.useEffect(() => {
+  React.useEffect((): void => {
     if (props.value && statuses) {
       const foundStatus: StatusType | undefined = statuses.find(
-        status => status.id === props.value
+        (status: StatusType) => status.id === props.value?.id
       );
 
       if (foundStatus) setValue(foundStatus);
     }
   }, [props.value]);
+
+  // Set default status as first in list of statuses
+  React.useEffect((): void => {
+    if (statuses && statuses.length > 0) {
+      setValue(statuses[0]);
+      props.handleChange({
+        target: { value: statuses[0].id, name: "status" },
+      } as SelectChangeEvent<unknown>);
+    }
+  }, [statuses]);
 
   return (
     <FormControl variant="outlined" fullWidth className="rounded-lg">
