@@ -1,17 +1,17 @@
-import "react";
-import { NextRouter, useRouter } from "next/router";
-import { Button, Divider, Grid, styled } from "@mui/material";
-import FormTextField from "@/components/Form/FormTextField";
-import TextFieldLabel from "@/components/Form/TextFieldLabel";
-import FormSelectField from "@/components/Form/FormSelectField";
 import React from "react";
 import * as yup from "yup";
+import { NextRouter, useRouter } from "next/router";
 import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { FormikProps, useFormik } from "formik";
-import { EMPTY_FORM, ISSUE_PRIORITIES, ISSUE_STATUSES } from "./FormConstants";
+import { Button, Divider, Grid, styled } from "@mui/material";
 import { addIssue } from "@/lib/data/issues";
-import { Issue } from "lib/types";
+import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
+import FormTextField from "../Form/FormTextField";
+import TextFieldLabel from "../Form/TextFieldLabel";
+import FormSelectField from "../Form/FormSelectField";
+import { EMPTY_FORM, ISSUE_PRIORITIES } from "../Form/FormConstants";
+import StatusSelect from "./StatusSelect";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -20,22 +20,13 @@ const FormRow = styled(Grid)(() => ({
   },
 }));
 
-const issueValidation = yup.object({
-  title: yup.string().required("Enter a title"),
-  description: yup.string().optional(),
-  assignee: yup.string().optional(),
-  reporter: yup.string().optional(),
-  status: yup.number().oneOf([1, 2, 3]).required(),
-  priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
-});
-
 export interface IssueFormProps {
   formOpen: boolean;
   closeForm: () => void;
   editingIssue?: Issue;
 }
 
-export default function IssueForm(props: IssueFormProps): JSX.Element {
+export default function CreateForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
@@ -48,9 +39,15 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   if (props.editingIssue !== undefined) {
     baseForm.id = props.editingIssue.id;
     baseForm.title = props.editingIssue.title;
-    baseForm.assignee = props.editingIssue.assignee;
     baseForm.status = props.editingIssue.status;
   }
+
+  const issueValidation = yup.object({
+    title: yup.string().required("Enter a title"),
+    description: yup.string().optional(),
+    status: yup.number().oneOf([-1, 1, 2, 3]).required(),
+    priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
+  });
 
   const formik: FormikProps<Issue> = useFormik<Issue>({
     initialValues: baseForm,
@@ -62,7 +59,7 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
       newIssueMutation.mutate(values, {
         onSuccess: async (): Promise<void> => {
           await queryClient.invalidateQueries(["issues", projectKey]);
-          console.log(projectKey);
+          console.log(values);
         },
         onSettled: (): void => {
           formik.resetForm();
@@ -73,7 +70,6 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
   });
 
   const handleFormClose = (): void => {
-    formik.resetForm();
     props.closeForm();
   };
 
@@ -114,42 +110,39 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
             <br />
             <Divider />
             <br />
-            <FormRow item xs={12}>
-              <TextFieldLabel textLabel="Assignee: ">
-                <FormTextField
-                  name="assignee"
-                  onChange={formik.handleChange}
-                  value={formik.values.assignee}
-                  error={
-                    formik.touched.assignee && Boolean(formik.errors.assignee)
-                  }
-                  helperText={formik.touched.assignee && formik.errors.assignee}
-                />
-              </TextFieldLabel>
-            </FormRow>
-            <FormRow item xs={12}>
-              <TextFieldLabel textLabel="Reporter: ">
-                <FormTextField
-                  name="reporter"
-                  onChange={formik.handleChange}
-                  value={formik.values.reporter}
-                  error={
-                    formik.touched.reporter && Boolean(formik.errors.reporter)
-                  }
-                  helperText={formik.touched.reporter && formik.errors.reporter}
-                />
-              </TextFieldLabel>
-            </FormRow>
+            {/* <FormRow item xs={12}> */}
+            {/*   <TextFieldLabel textLabel="Assignee: "> */}
+            {/*     <FormTextField */}
+            {/*       name="assignee" */}
+            {/*       onChange={formik.handleChange} */}
+            {/*       value={formik.values.assignee} */}
+            {/*       error={ */}
+            {/*         formik.touched.assignee && Boolean(formik.errors.assignee) */}
+            {/*       } */}
+            {/*       helperText={formik.touched.assignee && formik.errors.assignee} */}
+            {/*     /> */}
+            {/*   </TextFieldLabel> */}
+            {/* </FormRow> */}
+            {/* <FormRow item xs={12}> */}
+            {/*   <TextFieldLabel textLabel="Reporter: "> */}
+            {/*     <FormTextField */}
+            {/*       name="reporter" */}
+            {/*       onChange={formik.handleChange} */}
+            {/*       value={formik.values.reporter} */}
+            {/*       error={ */}
+            {/*         formik.touched.reporter && Boolean(formik.errors.reporter) */}
+            {/*       } */}
+            {/*       helperText={formik.touched.reporter && formik.errors.reporter} */}
+            {/*     /> */}
+            {/*   </TextFieldLabel> */}
+            {/* </FormRow> */}
             <FormRow item xs={12}>
               <TextFieldLabel textLabel="Status: ">
-                <FormSelectField
-                  name="status"
-                  label="Status"
-                  onChange={formik.handleChange}
+                <StatusSelect
+                  handleChange={formik.handleChange}
                   value={formik.values.status}
                   error={formik.touched.status && Boolean(formik.errors.status)}
                   helperText={formik.touched.status && formik.errors.status}
-                  options={ISSUE_STATUSES}
                 />
               </TextFieldLabel>
             </FormRow>
@@ -158,7 +151,7 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
                 <FormSelectField
                   name="priority"
                   label="Priority"
-                  value={formik.values.priority}
+                  value={formik.values.priority?.id}
                   error={
                     formik.touched.priority && Boolean(formik.errors.priority)
                   }
@@ -167,14 +160,16 @@ export default function IssueForm(props: IssueFormProps): JSX.Element {
                 />
               </TextFieldLabel>
             </FormRow>
-            <Button onClick={handleFormClose}>Close</Button>
-            <Button
-              variant="contained"
-              color="primary"
-              className="bg-blue-600"
-              type="submit">
-              save
-            </Button>
+            <div className="w-full max-w-full flex justify-end mt-5">
+              <Button onClick={handleFormClose}>Close</Button>
+              <Button
+                variant="contained"
+                color="primary"
+                className="bg-blue-600 ml-3"
+                type="submit">
+                save
+              </Button>
+            </div>
           </Grid>
         </form>
       </Grid>

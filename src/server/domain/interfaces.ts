@@ -11,6 +11,7 @@ export interface IIssueDB {
   saveIssue(req: IssueRequest): Promise<Issue>;
   editIssue(req: IssueRequest): Promise<void>;
   deleteIssue(id: number): Promise<void>;
+  fetchIssue(id: number): Promise<Issue | null>;
 }
 
 export interface IUserDB {

@@ -8,11 +8,13 @@ import {
   DialogContent,
 } from "@mui/material";
 import { MdClose } from "react-icons/md";
-import IssueForm, { IssueFormProps } from "@/components/Form/IssueForm";
+import CreateForm, {
+  IssueFormProps,
+} from "@/components/CreateIssue/CreateForm";
 
 interface CreateIssueFormProps extends IssueFormProps {}
 
-export default function IssueEditDialog(
+export default function IssueCreateDialog(
   props: CreateIssueFormProps
 ): JSX.Element {
   return (
@@ -27,7 +29,7 @@ export default function IssueEditDialog(
       </DialogTitle>
       <Divider />
       <DialogContent>
-        <IssueForm {...props} />
+        <CreateForm {...props} />
       </DialogContent>
     </Dialog>
   );

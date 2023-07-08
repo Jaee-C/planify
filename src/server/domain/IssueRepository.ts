@@ -1,13 +1,24 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
-import { Issue, StatusType, PriorityType } from "lib/types";
+import { Issue, StatusType } from "lib/types";
 import { IIssueDB } from "./interfaces";
 
 const issueSelect = {
   id: true,
   title: true,
-  statusId: true,
+  status: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  priority: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
   project: {
     select: {
       key: true,
@@ -23,24 +34,6 @@ const issueNumberSelect = {
 
 type IssueNumberPayload = Prisma.ProjectGetPayload<{
   select: typeof issueNumberSelect;
-}>;
-
-const statusSelect = {
-  id: true,
-  name: true,
-} satisfies Prisma.StatusTypeSelect;
-
-type StatusPayload = Prisma.StatusTypeGetPayload<{
-  select: typeof statusSelect;
-}>;
-
-const prioritySelect = {
-  id: true,
-  name: true,
-} satisfies Prisma.PriorityTypeSelect;
-
-type PriorityPayload = Prisma.PriorityTypeGetPayload<{
-  select: typeof prioritySelect;
 }>;
 
 export default class IssueRepository implements IIssueDB {
@@ -66,6 +59,25 @@ export default class IssueRepository implements IIssueDB {
     return dbIssues.map((dbIssue: IssuePayload) => {
       return this.convertToIssue(dbIssue);
     });
+  }
+
+  public async fetchIssue(id: number): Promise<Issue | null> {
+    const dbIssue: IssuePayload | null = await prisma.issue.findFirst({
+      where: {
+        project: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+        id: id,
+      },
+      select: issueSelect,
+    });
+
+    if (!dbIssue) {
+      return null;
+    }
+
+    return this.convertToIssue(dbIssue);
   }
 
   public async saveIssue(req: IssueRequest): Promise<Issue> {
@@ -108,9 +120,38 @@ export default class IssueRepository implements IIssueDB {
     if (req.id === undefined || req.id < 0) {
       throw new Error("No valid issue id.");
     }
+    console.log(req);
 
-    // TODO: implement updates for different cases
-    const issueId: number = req.id;
+    const pid: number | null = await prisma.project
+      .findFirst({
+        where: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+        select: {
+          id: true,
+        },
+      })
+      ?.then(project => project?.id ?? null);
+
+    if (!pid) {
+      throw new Error("Project not found");
+    }
+
+    await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id: req.id,
+          projectId: pid,
+        },
+      },
+      data: {
+        title: req.title,
+        description: req.description,
+        statusId: req.status,
+        priorityId: req.priority,
+      },
+    });
   }
 
   public async deleteIssue(id: number): Promise<void> {
@@ -140,32 +181,6 @@ export default class IssueRepository implements IIssueDB {
     });
   }
 
-  public async fetchStatuses(): Promise<StatusType[]> {
-    const payload: StatusPayload[] = await prisma.statusType.findMany({
-      select: statusSelect,
-    });
-
-    return payload.map((status: StatusPayload) => {
-      return {
-        id: status.id,
-        name: status.name,
-      };
-    });
-  }
-
-  public async fetchPriorities(): Promise<PriorityType[]> {
-    const payload: PriorityPayload[] = await prisma.priorityType.findMany({
-      select: prioritySelect,
-    });
-
-    return payload.map((priority: PriorityPayload) => {
-      return {
-        id: priority.id,
-        value: priority.name,
-      };
-    });
-  }
-
   /**
    * Convert payload from db so internal representation that can be reused
    * @param {IssuePayload} payload payload from db
@@ -176,9 +191,14 @@ export default class IssueRepository implements IIssueDB {
     const result: Issue = new Issue(payload.id);
 
     result.title = payload.title;
-    result.status = payload.statusId;
+    result.status = { id: payload.status.id, name: payload.status.name };
     result.issueKey = `${payload.project.key}-${payload.id}`;
-    result.assignee = "testuser";
+    if (payload.priority) {
+      result.priority = {
+        id: payload.priority.id,
+        name: payload.priority.name,
+      };
+    }
 
     return result;
   }

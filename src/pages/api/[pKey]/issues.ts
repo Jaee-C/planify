@@ -4,30 +4,28 @@ import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
+import StatusRepository from "@/server/domain/StatusRepository";
+import { getServerUrlParam } from "@/lib/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<IssueResponse[] | string | undefined>
 ): Promise<void> {
-  if (Array.isArray(req.query.pKey) || req.query.pKey === undefined) {
+  const projectKey: string = getServerUrlParam(req, "pKey");
+
+  if (projectKey === "") {
     res.status(405).end();
     return;
   }
+
   const userToken: JWT = await getUserToken(req);
   const userId: string = userToken.id;
-  const project: Project = new Project(req.query.pKey, userId);
+  const project: Project = new Project(projectKey, userId);
 
   switch (req.method) {
     case "GET":
       const allIssues: Issue[] = await project.getAllIssues();
-      const statuses: StatusType[] = await project.getAllStatuses();
-      const priorities: PriorityType[] = await project.getAllPriorities();
-      const response: IssueResponse = new IssueResponse(
-        allIssues,
-        statuses,
-        priorities
-      );
-
+      const response: IssueResponse = { data: allIssues };
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.end(JSON.stringify(response));

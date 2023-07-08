@@ -36,7 +36,7 @@ const StyledFormField = styled(Select)(() => ({
 
 interface FormSelectFieldProps {
   name: string;
-  label: string;
+  label?: string;
   placeholder?: string;
   disabled?: boolean;
   multiselect?: boolean;

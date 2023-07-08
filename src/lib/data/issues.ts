@@ -1,18 +1,13 @@
-import { StatusType, PriorityType, Issue, IssueResponse } from "lib/types";
+import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
+import { IssueRequest } from "@/server/service/Issue";
 
-export function convertNumtoStatus(status: number | undefined): string {
-  if (!status) return "Invalid";
+export function toStatusString(
+  status: number | undefined,
+  ref: StatusType[] | undefined
+): string {
+  if (!status || !ref) return "Invalid";
 
-  switch (status) {
-    case 1:
-      return "To Do";
-    case 2:
-      return "In Progress";
-    case 3:
-      return "Done";
-    default:
-      return "Invalid";
-  }
+  return ref.filter((item: StatusType): boolean => item.id === status)[0].name;
 }
 
 export async function serverDeleteIssue(
@@ -24,7 +19,7 @@ export async function serverDeleteIssue(
 
 export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
   if (pKey == undefined || Array.isArray(pKey)) {
-    return new IssueResponse([], [], []);
+    return { data: [] };
   }
 
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
@@ -40,27 +35,81 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
     const newIssue: Issue = new Issue(item.id);
 
     newIssue.title = item.title;
-    newIssue.assignee = item.assignee;
     newIssue.status = item.status;
     newIssue.issueKey = item.issueKey;
+    newIssue.priority = item.priority;
 
     return newIssue;
   });
-  const statuses: StatusType[] = json.statuses.map((item: any): StatusType => {
-    const newStatus: StatusType = new StatusType(item.id, item.status);
 
-    return newStatus;
+  return { data: issues };
+}
+
+export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
+  const httpResponse: Response = await fetch(`/api/${projectKey}/statuses`, {
+    method: "GET",
   });
-  const priorities: PriorityType[] = json.priorities.map(
-    (item: any): PriorityType => {
-      return {
-        id: item.id,
-        value: item.value,
-      };
+
+  if (!httpResponse.ok) {
+    throw new Error(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.json();
+  const statuses: StatusType[] = json.map(
+    (item: any): StatusType => ({ id: item.id, name: item.name })
+  );
+
+  return statuses;
+}
+
+export async function fetchPriorities(
+  projectKey: string
+): Promise<PriorityType[]> {
+  const httpResponse: Response = await fetch(`/api/${projectKey}/priorities`, {
+    method: "GET",
+  });
+
+  if (!httpResponse.ok) {
+    throw new Error(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.json();
+  return json.map(
+    (item: any): PriorityType => ({ id: item.id, name: item.name })
+  );
+}
+
+export async function getIssue(
+  projectKey: string,
+  issueId: string
+): Promise<Issue> {
+  const httpResponse: Response = await fetch(
+    `/api/${projectKey}/issue/${issueId}`,
+    {
+      method: "GET",
     }
   );
 
-  return new IssueResponse(issues, statuses, priorities);
+  if (!httpResponse.ok) {
+    throw new Error(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.json();
+  const newIssue: Issue = new Issue(json.id);
+
+  newIssue.title = json.title;
+  newIssue.assignee = json.assignee;
+  newIssue.status = { id: json.status.id, name: json.status.name };
+  newIssue.issueKey = json.issueKey;
+
+  if (json.priority) {
+    newIssue.priority = {
+      id: json.priority.id,
+      name: json.priority.name,
+    };
+  }
+
+  return newIssue;
 }
 
 export async function addIssue(pKey: string, data: Issue): Promise<any> {
@@ -79,4 +128,26 @@ export async function addIssue(pKey: string, data: Issue): Promise<any> {
   const json = await httpResponse.json();
 
   return json.message;
+}
+
+export async function editIssue(
+  pKey: string,
+  issueKey: string,
+  data: any
+): Promise<any> {
+  const httpResponse: Response = await fetch(`/api/${pKey}/issue/${issueKey}`, {
+    method: "PUT",
+    headers: {
+      "Content-type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!httpResponse.ok) {
+    console.log(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.text();
+
+  return json;
 }

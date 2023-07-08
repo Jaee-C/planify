@@ -17,13 +17,16 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
+    "jsxImportSource": "@emotion/react",
     "incremental": true,
     "baseUrl": "./src",
     "paths": {
       "@/*": [
         "./*"
       ],
-      "src/*": ["src/*"]
+      "src/*": [
+        "src/*"
+      ]
     },
     "typeRoots": ["./src/lib/types", "./node_modules/@types"]
   },
@@ -33,6 +36,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "client/node_modules"
-  ]
+    "node_modules"
+  ],
+  "ts-node": {
+    "esm": true
+  }
 }

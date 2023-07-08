@@ -1,6 +1,7 @@
 {
   "parser": "@typescript-eslint/parser",
   "plugins": [
+    "@emotion",
     "@typescript-eslint",
     "prettier"
   ],
@@ -13,11 +14,13 @@
     "browser": true
   },
   "rules": {
+    "@emotion/jsx-import": "error",
+    "@emotion/no-vanilla": "error",
     "prettier/prettier": ["error"],
     "use-isnan": "error",
     "no-unreachable": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
-    "@typescript-eslint/explicit-function-return-type": "error",
+    "@typescript-eslint/explicit-function-return-type": "warn",
     "require-jsdoc": "off",
     "no-case-declarations": "off"
   },
