@@ -1,7 +1,7 @@
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
-import { Issue, StatusType } from "lib/types";
+import { Issue } from "lib/types";
 import { IIssueDB } from "./interfaces";
 
 const issueSelect = {
@@ -27,6 +27,15 @@ const issueSelect = {
 } satisfies Prisma.IssueSelect;
 
 type IssuePayload = Prisma.IssueGetPayload<{ select: typeof issueSelect }>;
+
+const detailedIssue = {
+  ...issueSelect,
+  description: true,
+};
+
+type DetailedIssuePayload = Prisma.IssueGetPayload<{
+  select: typeof detailedIssue;
+}>;
 
 const issueNumberSelect = {
   numIssues: true,
@@ -62,7 +71,7 @@ export default class IssueRepository implements IIssueDB {
   }
 
   public async fetchIssue(id: number): Promise<Issue | null> {
-    const dbIssue: IssuePayload | null = await prisma.issue.findFirst({
+    const dbIssue: DetailedIssuePayload | null = await prisma.issue.findFirst({
       where: {
         project: {
           ownerId: Number(this._userId),
@@ -70,7 +79,7 @@ export default class IssueRepository implements IIssueDB {
         },
         id: id,
       },
-      select: issueSelect,
+      select: detailedIssue,
     });
 
     if (!dbIssue) {
@@ -109,7 +118,7 @@ export default class IssueRepository implements IIssueDB {
     const issueCount: number = countPayload.numIssues;
 
     const payload: IssuePayload = await prisma.issue.create({
-      data: this.createIssue(issueCount, req.title, req.status, req.priority),
+      data: this.createIssue(issueCount, req.title, req.status, req),
       select: issueSelect,
     });
 
@@ -120,6 +129,7 @@ export default class IssueRepository implements IIssueDB {
     if (req.id === undefined || req.id < 0) {
       throw new Error("No valid issue id.");
     }
+    console.log(req);
 
     const pid: number | null = await prisma.project
       .findFirst({
@@ -182,11 +192,11 @@ export default class IssueRepository implements IIssueDB {
 
   /**
    * Convert payload from db so internal representation that can be reused
-   * @param {IssuePayload} payload payload from db
+   * @param {IssuePayload | DetailedIssuePayload} payload payload from db
    * @returns {Issue}
    * @private
    */
-  private convertToIssue(payload: IssuePayload): Issue {
+  private convertToIssue(payload: IssuePayload | DetailedIssuePayload): Issue {
     const result: Issue = new Issue(payload.id);
 
     result.title = payload.title;
@@ -199,6 +209,10 @@ export default class IssueRepository implements IIssueDB {
       };
     }
 
+    if ("description" in payload && payload.description) {
+      result.description = payload.description;
+    }
+
     return result;
   }
 
@@ -207,14 +221,14 @@ export default class IssueRepository implements IIssueDB {
    * @param {number} id     issue id, provided by db
    * @param {string} title  issue title
    * @param {number} status id of status
-   * @param {number} [priority] id of priority (optional)
+   * @param {IssueRequest} [req] remaining (optional) request values
    * @private
    */
   private createIssue(
     id: number,
     title: string,
     status?: number,
-    priority?: number
+    req?: IssueRequest
   ): Prisma.IssueCreateInput {
     const createPayload = {
       id,
@@ -236,13 +250,18 @@ export default class IssueRepository implements IIssueDB {
     };
 
     // Dynamically add fields if provided
-    if (typeof priority === "number") {
+    if (req && typeof req.priority === "number") {
       // @ts-ignore
       createPayload.priority = {
         connect: {
-          id: priority,
+          id: req.priority,
         },
       };
+    }
+
+    if (req && typeof req.description === "string") {
+      // @ts-ignore
+      createPayload.description = req.description;
     }
     return Prisma.validator<Prisma.IssueCreateInput>()(createPayload);
   }

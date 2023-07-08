@@ -100,6 +100,7 @@ export async function getIssue(
 
   newIssue.title = json.title;
   newIssue.assignee = json.assignee;
+  newIssue.description = json.description;
   newIssue.status = { id: json.status.id, name: json.status.name };
   newIssue.issueKey = json.issueKey;
 

@@ -4,7 +4,6 @@ import { useContext, useEffect } from "react";
 import * as Yup from "yup";
 import { Divider, Grid, styled, Typography } from "@mui/material";
 import { Issue } from "@/lib/types";
-import { FormikProps, useFormik } from "formik";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssue } from "@/lib/data/query";
 import { SidebarEditContext } from "@/components/Backlog";
@@ -57,7 +56,6 @@ export default function SideIssueViewer(): JSX.Element {
 
     setTitle(editingIssue.title ? editingIssue.title : "");
     setDescription(editingIssue.description ? editingIssue.description : "");
-    formik.setFieldValue("assignee", editingIssue.assignee);
   }, [editingIssue]);
 
   const editIssueMutation = useMutation(
@@ -73,21 +71,7 @@ export default function SideIssueViewer(): JSX.Element {
     handleEdit("");
   };
 
-  interface formValues {
-    assignee: string;
-    reporter: string;
-  }
-
   const titleValidate: Yup.StringSchema = Yup.string().required("required");
-  const formik: FormikProps<formValues> = useFormik<formValues>({
-    initialValues: {
-      assignee: editingIssue?.assignee ? editingIssue.assignee : "",
-      reporter: "",
-    },
-    onSubmit: (values: formValues): void => {
-      console.log("Good job", values);
-    },
-  });
 
   if (isLoading || error || !editingIssue) {
     return <div>loading...</div>;
@@ -99,7 +83,9 @@ export default function SideIssueViewer(): JSX.Element {
     setTitle(newTitle);
   };
   const editDescription = (newDescription: string): void => {
-    console.log(newDescription);
+    if (newDescription === description) return;
+    editIssueMutation.mutate({ description: newDescription });
+    setDescription(newDescription);
   };
   const createReadView = (value?: string): React.ReactNode => {
     return (
@@ -147,76 +133,58 @@ export default function SideIssueViewer(): JSX.Element {
       />
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <form onSubmit={formik.handleSubmit}>
-            <Grid container>
-              <FormRow item xs={12}>
-                <Typography className="font-medium text-sm text-stone-700 mb-2">
-                  Description
-                </Typography>
-                <InlineTextField
-                  multiline={true}
-                  defaultValue={editingIssue.description}
-                  onConfirm={editDescription}
-                  readView={createDescriptionReadView(description)}
-                  readViewFitContainerWidth
+          <Grid container>
+            <FormRow item xs={12}>
+              <Typography className="font-medium text-sm text-stone-700 mb-2">
+                Description
+              </Typography>
+              <InlineTextField
+                multiline={true}
+                defaultValue={editingIssue.description}
+                onConfirm={editDescription}
+                readView={createDescriptionReadView(description)}
+                readViewFitContainerWidth
+              />
+            </FormRow>
+            <br />
+            <Divider />
+            <br />
+            <FormRow item xs={12}>
+              <TextFieldLabel textLabel="Status: ">
+                <StatusSelect
+                  issueKey={issueKey}
+                  defaultValue={editingIssue.status}
+                  hideToggle
                 />
-              </FormRow>
-              <br />
-              <Divider />
-              <br />
-              <FormRow item xs={12}>
-                <TextFieldLabel textLabel="Status: ">
-                  <StatusSelect
-                    issueKey={issueKey}
-                    defaultValue={editingIssue.status}
-                    hideToggle
-                  />
-                </TextFieldLabel>
-              </FormRow>
-              <FormRow item xs={12}>
-                <TextFieldLabel textLabel="Assignee: ">
-                  <FormTextField
-                    name="assignee"
-                    onChange={formik.handleChange}
-                    value={formik.values.assignee}
-                    error={
-                      formik.touched.assignee && Boolean(formik.errors.assignee)
-                    }
-                    helperText={
-                      formik.touched.assignee && formik.errors.assignee
-                    }
-                    placeholder="disabled"
-                    disabled
-                  />
-                </TextFieldLabel>
-              </FormRow>
-              <FormRow item xs={12}>
-                <TextFieldLabel textLabel="Reporter: ">
-                  <FormTextField
-                    name="reporter"
-                    onChange={formik.handleChange}
-                    value={formik.values.reporter}
-                    error={
-                      formik.touched.reporter && Boolean(formik.errors.reporter)
-                    }
-                    helperText={
-                      formik.touched.reporter && formik.errors.reporter
-                    }
-                    placeholder="disabled"
-                    disabled
-                  />
-                </TextFieldLabel>
-              </FormRow>
-              <FormRow item xs={12}>
-                <TextFieldLabel textLabel="Priority: ">
-                  <PrioritySelect
-                    issueKey={issueKey}
-                    defaultValue={editingIssue.priority}
-                  />
-                </TextFieldLabel>
-              </FormRow>
-            </Grid>
-          </form>
+              </TextFieldLabel>
+            </FormRow>
+            <FormRow item xs={12}>
+              <TextFieldLabel textLabel="Assignee: ">
+                <FormTextField
+                  name="assignee"
+                  placeholder="disabled"
+                  disabled
+                />
+              </TextFieldLabel>
+            </FormRow>
+            <FormRow item xs={12}>
+              <TextFieldLabel textLabel="Reporter: ">
+                <FormTextField
+                  name="reporter"
+                  placeholder="disabled"
+                  disabled
+                />
+              </TextFieldLabel>
+            </FormRow>
+            <FormRow item xs={12}>
+              <TextFieldLabel textLabel="Priority: ">
+                <PrioritySelect
+                  issueKey={issueKey}
+                  defaultValue={editingIssue.priority}
+                />
+              </TextFieldLabel>
+            </FormRow>
+          </Grid>
         </Grid>
       </Grid>
     </div>
