@@ -9,9 +9,9 @@ import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
 import FormTextField from "../Form/FormTextField";
 import TextFieldLabel from "../Form/TextFieldLabel";
-import FormSelectField from "../Form/FormSelectField";
-import { EMPTY_FORM, ISSUE_PRIORITIES } from "../Form/FormConstants";
+import { EMPTY_FORM, FormValues } from "../Form/FormConstants";
 import StatusSelect from "./StatusSelect";
+import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -31,30 +31,25 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
   const queryClient: QueryClient = useQueryClient();
-  const newIssueMutation = useMutation((data: Issue) =>
+  const newIssueMutation = useMutation((data: FormValues) =>
     addIssue(projectKey, data)
   );
 
-  const baseForm: Issue = EMPTY_FORM();
-  if (props.editingIssue !== undefined) {
-    baseForm.id = props.editingIssue.id;
-    baseForm.title = props.editingIssue.title;
-    baseForm.status = props.editingIssue.status;
-  }
+  const baseForm: FormValues = EMPTY_FORM;
 
   const issueValidation = yup.object({
     title: yup.string().required("Enter a title"),
     description: yup.string().optional(),
     status: yup.number().oneOf([-1, 1, 2, 3]).required(),
-    priority: yup.string().oneOf(["low", "medium", "high"]).optional(),
+    priority: yup.number().optional(),
   });
 
-  const formik: FormikProps<Issue> = useFormik<Issue>({
+  const formik: FormikProps<FormValues> = useFormik<FormValues>({
     initialValues: baseForm,
     validationSchema: issueValidation,
-    onSubmit: (values: Issue): void => {
-      if (!values.assignee) {
-        values.assignee = "Daniel";
+    onSubmit: (values: FormValues): void => {
+      if (values.priority === -1) {
+        delete values.priority;
       }
       newIssueMutation.mutate(values, {
         onSuccess: async (): Promise<void> => {
@@ -84,7 +79,6 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
                 label="Title"
                 size="medium"
                 onChange={formik.handleChange}
-                value={formik.values.title}
                 error={formik.touched.title && Boolean(formik.errors.title)}
                 helperText={formik.touched.title && formik.errors.title}
               />
@@ -140,7 +134,6 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
               <TextFieldLabel textLabel="Status: ">
                 <StatusSelect
                   handleChange={formik.handleChange}
-                  value={formik.values.status}
                   error={formik.touched.status && Boolean(formik.errors.status)}
                   helperText={formik.touched.status && formik.errors.status}
                 />
@@ -148,15 +141,11 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
             </FormRow>
             <FormRow item xs={12}>
               <TextFieldLabel textLabel="Priority: ">
-                <FormSelectField
-                  name="priority"
-                  label="Priority"
-                  value={formik.values.priority?.id}
+                <PrioritySelect
+                  handleChange={formik.handleChange}
                   error={
                     formik.touched.priority && Boolean(formik.errors.priority)
                   }
-                  helperText={formik.touched.priority && formik.errors.priority}
-                  options={ISSUE_PRIORITIES}
                 />
               </TextFieldLabel>
             </FormRow>

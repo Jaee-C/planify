@@ -9,34 +9,13 @@ import {
   FormControl,
   FormHelperText,
   MenuItem,
-  Select,
   SelectChangeEvent,
-  styled,
 } from "@mui/material";
-
-const StyledFormField = styled(Select)(() => ({
-  "& .MuiInputBase-input": {
-    padding: "12px 14px",
-    color: "rgb(18, 25, 38)",
-    backgroundColor: "rgb(248, 250, 252)",
-    fontWeight: 500,
-    borderRadius: 8,
-    fontSize: "0.875rem",
-  },
-  "&.MuiInputBase-root": {
-    borderRadius: "8px",
-  },
-  "& .MuiInputLabel-root": {
-    fontSize: "0.875rem",
-  },
-  "&.Mui-focused": {
-    color: "rgb(33, 150, 243)",
-  },
-}));
+import StyledSelect from "@/components/Form/FormSelectField";
+import { NONE_STATUS } from "@/lib/constants";
 
 interface StatusSelectProp {
   handleChange: (e: SelectChangeEvent<unknown>) => void;
-  value?: StatusType;
   error?: boolean;
   helperText?: string | false;
 }
@@ -47,18 +26,8 @@ export default function StatusSelect(props: StatusSelectProp): JSX.Element {
   const [value, setValue] = React.useState<StatusType>(NONE_STATUS);
 
   // Server queries
-  const { data: statuses, isLoading }: UseQueryResult<StatusType[]> =
+  const { data: statuses }: UseQueryResult<StatusType[]> =
     queryStatuses(projectKey);
-
-  React.useEffect((): void => {
-    if (props.value && statuses) {
-      const foundStatus: StatusType | undefined = statuses.find(
-        (status: StatusType) => status.id === props.value?.id
-      );
-
-      if (foundStatus) setValue(foundStatus);
-    }
-  }, [props.value]);
 
   // Set default status as first in list of statuses
   React.useEffect((): void => {
@@ -72,12 +41,13 @@ export default function StatusSelect(props: StatusSelectProp): JSX.Element {
 
   return (
     <FormControl variant="outlined" fullWidth className="rounded-lg">
-      <StyledFormField
+      <StyledSelect
         name="status"
-        value={String(value.id)}
+        defaultValue={value.id}
         onChange={props.handleChange}
         error={props.error}
-        renderValue={(): React.ReactNode => <StatusChip value={value} />}>
+        renderValue={(): React.ReactNode => <StatusChip value={value} />}
+        sx={{ padding: "12px 14px" }}>
         {statuses?.map(
           (status: StatusType): React.ReactNode => (
             <MenuItem value={status.id} key={status.id}>
@@ -85,10 +55,8 @@ export default function StatusSelect(props: StatusSelectProp): JSX.Element {
             </MenuItem>
           )
         )}
-      </StyledFormField>
+      </StyledSelect>
       {props.helperText && <FormHelperText>{props.helperText}</FormHelperText>}
     </FormControl>
   );
 }
-
-const NONE_STATUS: StatusType = { id: -1, name: "None" };

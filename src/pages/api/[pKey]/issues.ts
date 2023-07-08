@@ -39,6 +39,7 @@ export default async function handler(
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify(response));
       } catch (e: any) {
+        console.log(e);
         res.statusCode = 400;
         res.end(e.message);
       }

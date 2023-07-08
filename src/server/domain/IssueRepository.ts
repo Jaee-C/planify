@@ -81,8 +81,8 @@ export default class IssueRepository implements IIssueDB {
   }
 
   public async saveIssue(req: IssueRequest): Promise<Issue> {
-    if (!(req.title && req.assignee && req.status)) {
-      throw Error("Invalid request");
+    if (!(req.title && req.status)) {
+      throw Error("Invalid request: missing title or status");
     }
 
     const countPayload: IssueNumberPayload | null = await prisma.project.update(
@@ -109,7 +109,7 @@ export default class IssueRepository implements IIssueDB {
     const issueCount: number = countPayload.numIssues;
 
     const payload: IssuePayload = await prisma.issue.create({
-      data: this.createIssue(issueCount, req.title, req.status),
+      data: this.createIssue(issueCount, req.title, req.status, req.priority),
       select: issueSelect,
     });
 
@@ -120,7 +120,6 @@ export default class IssueRepository implements IIssueDB {
     if (req.id === undefined || req.id < 0) {
       throw new Error("No valid issue id.");
     }
-    console.log(req);
 
     const pid: number | null = await prisma.project
       .findFirst({
@@ -208,21 +207,18 @@ export default class IssueRepository implements IIssueDB {
    * @param {number} id     issue id, provided by db
    * @param {string} title  issue title
    * @param {number} status id of status
+   * @param {number} [priority] id of priority (optional)
    * @private
    */
   private createIssue(
     id: number,
     title: string,
-    status: number
+    status?: number,
+    priority?: number
   ): Prisma.IssueCreateInput {
-    return Prisma.validator<Prisma.IssueCreateInput>()({
+    const createPayload = {
       id,
       title,
-      status: {
-        connect: {
-          id: status,
-        },
-      },
       project: {
         connect: {
           key_ownerId: {
@@ -231,6 +227,23 @@ export default class IssueRepository implements IIssueDB {
           },
         },
       },
-    });
+      status: {
+        connect: {
+          id: status,
+        },
+      },
+      priority: undefined,
+    };
+
+    // Dynamically add fields if provided
+    if (typeof priority === "number") {
+      // @ts-ignore
+      createPayload.priority = {
+        connect: {
+          id: priority,
+        },
+      };
+    }
+    return Prisma.validator<Prisma.IssueCreateInput>()(createPayload);
   }
 }

@@ -8,5 +8,6 @@ export default class NextjsIssueRequest extends IssueRequest {
     if (req.body.description) this.title = req.body.description;
     super.saveStatus(parseInt(req.body.status));
     if (req.body.assignee) this.assignee = req.body.assignee;
+    if (req.body.priority) this.priority = parseInt(req.body.priority);
   }
 }

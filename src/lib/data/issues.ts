@@ -1,5 +1,6 @@
 import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
 import { IssueRequest } from "@/server/service/Issue";
+import { FormValues } from "@/components/Form/FormConstants";
 
 export function toStatusString(
   status: number | undefined,
@@ -112,7 +113,7 @@ export async function getIssue(
   return newIssue;
 }
 
-export async function addIssue(pKey: string, data: Issue): Promise<any> {
+export async function addIssue(pKey: string, data: FormValues): Promise<any> {
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
     method: "POST",
     headers: {
