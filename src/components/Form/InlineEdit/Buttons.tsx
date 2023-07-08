@@ -81,10 +81,12 @@ const Buttons = ({
             : buttonWrapperElevationDarkStyles,
         ]}>
         <Button
+          type="reset"
           sx={inlineEditButtonStyles}
           aria-label={cancelButtonLabel}
-          onClick={onCancelClick}
-          onMouseDown={onMouseDown}>
+          onClick={() => {
+            console.log("cancel");
+          }}>
           <MdClose />
         </Button>
       </div>

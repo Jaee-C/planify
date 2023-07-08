@@ -129,7 +129,6 @@ export default class IssueRepository implements IIssueDB {
     if (req.id === undefined || req.id < 0) {
       throw new Error("No valid issue id.");
     }
-    console.log(req);
 
     const pid: number | null = await prisma.project
       .findFirst({
