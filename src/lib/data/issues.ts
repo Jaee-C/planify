@@ -1,6 +1,6 @@
 import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
 import { IssueRequest } from "@/server/service/Issue";
-import { FormValues } from "@/components/Form/FormConstants";
+import { FormValues } from "@/components/CreateIssue/FormConstants";
 
 export function toStatusString(
   status: number | undefined,
