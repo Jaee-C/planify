@@ -11,11 +11,11 @@ import {
   GridRowsProp,
 } from "@mui/x-data-grid";
 import { MdDelete, MdEdit } from "react-icons/md";
-import TableToolbar from "@/components/Table/TableToolbar";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import { Project } from "lib/types";
 import { fetchProjectList } from "@/lib/data/projects";
+import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
 
 const columns: GridColDef[] = [
   { field: "key", headerName: "Key", width: 100 },
@@ -73,7 +73,7 @@ export default function ProjectTable(): JSX.Element {
           id: row.id,
           key: row.key,
           name: row.name,
-          owner: "cheche",
+          owner: "Guest",
         };
       });
       setRows(newRows);
@@ -86,7 +86,6 @@ export default function ProjectTable(): JSX.Element {
         <Paper
           sx={{ width: "100%", mb: 2 }}
           className="bg-transparent shadow-none">
-          <TableToolbar title={"Projects"} />
           <DataGrid
             sx={{
               "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
@@ -98,6 +97,7 @@ export default function ProjectTable(): JSX.Element {
           />
         </Paper>
       </Box>
+      <CreateProjectDialog />
     </IconContext.Provider>
   );
 }

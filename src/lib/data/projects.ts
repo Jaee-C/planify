@@ -1,4 +1,5 @@
 import { Project } from "lib/types";
+import { ProjectFormValues } from "@/components/Projects/FormConstants";
 
 export async function fetchProjectList(): Promise<Project[]> {
   const httpResponse: Response = await fetch("/api/projects", {
@@ -18,4 +19,22 @@ export async function fetchProjectList(): Promise<Project[]> {
 
     return newProject;
   });
+}
+
+export async function addProject(data: ProjectFormValues): Promise<any> {
+  const httpResponse: Response = await fetch("/api/projects", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!httpResponse.ok) {
+    throw new Error(httpResponse.statusText);
+  }
+
+  const json = await httpResponse.json();
+
+  return json.message;
 }
