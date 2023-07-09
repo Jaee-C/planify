@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import { redirect } from "next/navigation";
 
 function Copyright(props: any): JSX.Element {
   return (
@@ -46,7 +47,9 @@ export default function SignUp(): JSX.Element {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(loginData),
     });
-    console.log(await res.text());
+    if (res.status === 200) {
+      redirect("/");
+    }
   };
 
   return (

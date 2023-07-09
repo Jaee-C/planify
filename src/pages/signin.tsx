@@ -12,7 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Router } from "next/router";
+import { redirect } from "next/navigation";
 
 function Copyright(props: any): JSX.Element {
   return (
@@ -52,7 +52,7 @@ export default function SignIn(): JSX.Element {
         body: JSON.stringify(request),
       });
       if (res.status === 200) {
-        await Router.push("/");
+        await redirect("/");
       } else {
         throw new Error(await res.text());
       }

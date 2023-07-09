@@ -126,6 +126,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
 
   const onCancelClick = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
+      console.log("cancel");
       event.preventDefault();
       onCancel();
     },
@@ -145,6 +146,7 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
       ) {
         doNotFocusOnEditButton();
         if (formRef.current.checkValidity()) {
+          console.log("checked");
           onSubmit();
         }
       }
@@ -217,22 +219,20 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
         e.preventDefault();
         formik.handleSubmit(e);
       }}
-      ref={(p): void => {
-        formRef.current = p;
-      }}>
+      onBlur={(): void => {
+        onEditViewWrapperBlur(
+          formik.errors.inlineEdit !== undefined,
+          formik.handleSubmit,
+          formRef
+        );
+      }}
+      ref={formRef}>
       {shouldBeEditing ? (
         <div css={inputStyles}>
           <TextField
             autoFocus
             value={formik.values.inlineEdit}
             required={isRequired}
-            onBlur={(): void => {
-              onEditViewWrapperBlur(
-                formik.errors.inlineEdit !== undefined,
-                formik.handleSubmit,
-                formRef
-              );
-            }}
             name="inlineEdit"
             onChange={formik.handleChange}
             onFocus={onEditViewWrapperFocus}
