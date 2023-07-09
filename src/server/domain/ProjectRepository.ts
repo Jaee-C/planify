@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
 import { Project } from "lib/types";
 import { IProjectDB } from "./interfaces";
+import ProjectRequest from "@/server/service/ProjectRequest";
 
 const projectSelect = {
   id: true,
@@ -33,11 +34,43 @@ export default class ProjectRepository implements IProjectDB {
     );
   }
 
+  public async saveProject(req: ProjectRequest): Promise<Project> {
+    if (!req.isValidRequest()) {
+      throw new Error("Invalid request");
+    }
+
+    const dbProject: ProjectPayload = await prisma.project.create({
+      // @ts-ignore
+      data: this.createProject(req.name, req.key, req.ownerId, req.description),
+      select: projectSelect,
+    });
+
+    return this.convertToProject(dbProject);
+  }
+
   private convertToProject(dbProject: ProjectPayload): Project {
     return {
       id: dbProject.id,
       name: dbProject.name,
       key: dbProject.key,
+    };
+  }
+
+  private createProject(
+    name: string,
+    key: string,
+    ownerId: number,
+    description?: string
+  ): Prisma.ProjectCreateInput {
+    return {
+      name,
+      key,
+      description,
+      owner: {
+        connect: {
+          id: ownerId,
+        },
+      },
     };
   }
 }

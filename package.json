@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "postinstall": "prisma generate"
   },
   "lint-staged": {
     "src/**/*.{ts,tsx,js,jsx}": [

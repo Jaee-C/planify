@@ -9,7 +9,7 @@ import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
 import FormTextField from "../Form/FormTextField";
 import TextFieldLabel from "../Form/TextFieldLabel";
-import { EMPTY_FORM, FormValues } from "../Form/FormConstants";
+import { EMPTY_FORM, FormValues } from "./FormConstants";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
 

@@ -4,7 +4,6 @@ import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
 import Project from "@/server/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
-import StatusRepository from "@/server/domain/StatusRepository";
 import { getServerUrlParam } from "@/lib/utils";
 
 export default async function handler(

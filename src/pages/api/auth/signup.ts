@@ -28,7 +28,6 @@ export default async function handler(
   } catch (err) {
     res.statusCode = 500;
     res.send(JSON.stringify(err));
-    res.end();
     return;
   }
 }

@@ -1,9 +1,11 @@
 import { Issue, Project, User } from "@/lib/types";
 import IssueRequest from "../service/Issue/IssueRequest";
 import { NewUser } from "@/lib/types/User";
+import ProjectRequest from "@/server/service/ProjectRequest";
 
 export interface IProjectDB {
   fetchAllProjects(): Promise<Project[]>;
+  saveProject(req: ProjectRequest): Promise<Project>;
 }
 
 export interface IIssueDB {
