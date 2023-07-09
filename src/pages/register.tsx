@@ -11,7 +11,7 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/router";
 
 function Copyright(props: any): JSX.Element {
   return (
@@ -31,6 +31,7 @@ function Copyright(props: any): JSX.Element {
 }
 
 export default function SignUp(): JSX.Element {
+  const router = useRouter();
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -42,13 +43,13 @@ export default function SignUp(): JSX.Element {
       firstName: data.get("firstName"),
       lastName: data.get("lastName"),
     };
-    const res = await fetch("/api/register", {
+    const res = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(loginData),
     });
     if (res.status === 200) {
-      redirect("/");
+      await router.push("/api/auth/signin");
     }
   };
 
