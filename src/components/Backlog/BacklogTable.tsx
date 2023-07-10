@@ -28,8 +28,13 @@ import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
 import PrioritySelect from "@/components/Backlog/PrioritySelect";
 import { NONE_PRIORITY } from "@/lib/constants";
-import { useAtom } from "jotai";
-import { issueRowsAtom } from "@/components/utils/atom";
+import { useAtom, useSetAtom } from "jotai";
+import {
+  editOneIssueAtom,
+  issueRowsAtom,
+  removeOneIssueAtom,
+} from "@/components/utils/atom";
+import { createGridRowFromIssue } from "@/components/Backlog/utils";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};
@@ -46,6 +51,8 @@ export default function BacklogTable(): JSX.Element {
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
   const [issueRows, setIssueRows] = useAtom(issueRowsAtom);
+  const editOneRow = useSetAtom(editOneIssueAtom);
+  const removeOneRow = useSetAtom(removeOneIssueAtom);
   const { data: issues, isLoading } = queryIssues(projectKey);
   const { data: statuses } = queryStatuses(projectKey);
 
@@ -55,8 +62,9 @@ export default function BacklogTable(): JSX.Element {
     async ([issueKey, data]: any) =>
       await editIssue(projectKey, issueKey, data),
     {
-      onSuccess: async (): Promise<void> => {
-        await queryClient.invalidateQueries(["issues", projectKey]);
+      onSuccess: async (res: Issue): Promise<void> => {
+        const newRow: GridRowsProp = createGridRowFromIssue(res);
+        editOneRow(newRow[0].id, newRow);
       },
     }
   );
@@ -95,10 +103,10 @@ export default function BacklogTable(): JSX.Element {
   }, [issues, statuses]);
 
   const deleteIssue = useMutation(
-    (id: GridRowId) => serverDeleteIssue(projectKey, id),
+    (issueKey: string) => serverDeleteIssue(projectKey, issueKey),
     {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(["issues", projectKey]);
+      onSuccess: async (id: string) => {
+        removeOneRow(id);
       },
     }
   );

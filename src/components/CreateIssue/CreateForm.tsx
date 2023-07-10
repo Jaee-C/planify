@@ -12,9 +12,10 @@ import TextFieldLabel from "../Form/TextFieldLabel";
 import { EMPTY_FORM, FormValues } from "./FormConstants";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
-import { useAtom, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { addOneIssueAtom } from "@/components/utils/atom";
 import { NONE_PRIORITY } from "@/lib/constants";
+import { createGridRowFromIssue } from "@/components/Backlog/utils";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -33,7 +34,6 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const queryClient: QueryClient = useQueryClient();
   const newIssueMutation = useMutation((data: FormValues) =>
     addIssue(projectKey, data)
   );
@@ -57,15 +57,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
       }
       newIssueMutation.mutate(values, {
         onSuccess: async (res: Issue): Promise<void> => {
-          addToIssueRow([
-            {
-              id: res.id,
-              key: res.issueKey,
-              title: res.title,
-              status: res.status,
-              priority: res.priority ? res.priority : NONE_PRIORITY,
-            },
-          ]);
+          addToIssueRow(createGridRowFromIssue(res));
           console.log(values);
         },
         onSettled: (): void => {

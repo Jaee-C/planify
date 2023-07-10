@@ -1,5 +1,4 @@
 import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
-import { IssueRequest } from "@/server/service/Issue";
 import { FormValues } from "@/components/CreateIssue/FormConstants";
 
 export function toStatusString(
@@ -13,9 +12,10 @@ export function toStatusString(
 
 export async function serverDeleteIssue(
   pKey: string,
-  issueId: number | string
-): Promise<void> {
-  await fetch(`/api/${pKey}/issue/${issueId}`, { method: "DELETE" });
+  issueKey: string
+): Promise<string> {
+  await fetch(`/api/${pKey}/issue/${issueKey}`, { method: "DELETE" });
+  return issueKey;
 }
 
 export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
@@ -152,11 +152,18 @@ export async function editIssue(
     body: JSON.stringify(data),
   });
 
+  const json = await httpResponse.json();
+
   if (!httpResponse.ok) {
     console.log(httpResponse.statusText);
   }
 
-  const json = await httpResponse.text();
+  const jsonData = json.data[0];
+  const newIssue: Issue = new Issue(jsonData.id);
+  newIssue.title = jsonData.title;
+  newIssue.status = jsonData.status;
+  newIssue.issueKey = jsonData.issueKey;
+  newIssue.priority = jsonData.priority;
 
-  return json;
+  return newIssue;
 }

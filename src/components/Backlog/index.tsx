@@ -3,12 +3,17 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import BacklogTable from "@/components/Backlog/BacklogTable";
 import { createContext, useState } from "react";
 import SideIssueViewer from "@/components/SideIssueViewer";
-import { Button, IconButton, Tooltip } from "@mui/material";
-import { MdFilterList } from "react-icons/md";
+import { Button } from "@mui/material";
 import TableToolbar from "@/components/Table/TableToolbar";
 import { IconContext } from "react-icons";
 
-const queryClient: QueryClient = new QueryClient();
+const queryClient: QueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 interface SidebarContextProps {
   action: (id: string) => void;
