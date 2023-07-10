@@ -3,6 +3,8 @@ import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
 import { Issue } from "lib/types";
 import { IIssueDB } from "./interfaces";
+import AppError from "@/server/service/AppError";
+import { INVALID_DATA_TYPES, NOT_FOUND_IN_DB } from "@/lib/data/errors";
 
 const issueSelect = {
   id: true,
@@ -91,7 +93,10 @@ export default class IssueRepository implements IIssueDB {
 
   public async saveIssue(req: IssueRequest): Promise<Issue> {
     if (!(req.title && req.status)) {
-      throw Error("Invalid request: missing title or status");
+      throw new AppError(
+        INVALID_DATA_TYPES,
+        "Invalid request: missing title or status"
+      );
     }
 
     const countPayload: IssueNumberPayload | null = await prisma.project.update(
@@ -112,22 +117,32 @@ export default class IssueRepository implements IIssueDB {
     );
 
     if (countPayload === null) {
-      throw Error("Project not found");
+      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
     }
 
     const issueCount: number = countPayload.numIssues;
+    let payload: IssuePayload;
 
-    const payload: IssuePayload = await prisma.issue.create({
-      data: this.createIssue(issueCount, req.title, req.status, req),
-      select: issueSelect,
-    });
+    try {
+      payload = await prisma.issue.create({
+        data: this.createIssue(issueCount, req.title, req.status, req),
+        select: issueSelect,
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === "P2003") {
+          throw new AppError(INVALID_DATA_TYPES, e.message);
+        }
+      }
+    }
 
+    // @ts-ignore
     return this.convertToIssue(payload);
   }
 
   public async editIssue(req: IssueRequest): Promise<void> {
     if (req.id === undefined || req.id < 0) {
-      throw new Error("No valid issue id.");
+      throw new AppError(NOT_FOUND_IN_DB, "No valid issue id.");
     }
 
     const pid: number | null = await prisma.project
@@ -143,7 +158,7 @@ export default class IssueRepository implements IIssueDB {
       ?.then(project => project?.id ?? null);
 
     if (!pid) {
-      throw new Error("Project not found");
+      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
     }
 
     await prisma.issue.update({

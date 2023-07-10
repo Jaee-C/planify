@@ -35,10 +35,6 @@ export default class Project {
   }
 
   public async saveIssue(issue: IssueRequest): Promise<void> {
-    // if (!(await issue.verifyEntries(this._status))) {
-    //   throw new Error("Invalid request");
-    // }
-
     if (issue.id !== undefined || issue.key !== undefined) {
       if (issue.key !== undefined) {
         issue.id = this.getIssueId(issue.key);

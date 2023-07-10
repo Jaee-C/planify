@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import userRegister from "@/lib/auth/UserAuth";
 import { NewUser } from "@/lib/types/User";
+import AppError from "@/server/service/AppError";
+import { USER_CREATION_ERROR, USERNAME_TAKEN } from "@/lib/data/errors";
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,9 +17,12 @@ export default async function handler(
 
   // Validate if username is already taken
   if (await userRegister.checkUsernameExists(user.username)) {
+    const error: AppError = new AppError(
+      USERNAME_TAKEN,
+      "Username already taken"
+    );
     res.statusCode = 409;
-    res.send("Username already taken");
-    res.end();
+    res.end(error.toJSONString());
     return;
   }
 
@@ -27,7 +32,9 @@ export default async function handler(
     return;
   } catch (err) {
     res.statusCode = 500;
-    res.send(JSON.stringify(err));
+
+    const error: AppError = AppError.generateAppError(err, USER_CREATION_ERROR);
+    res.end(error.toJSONString());
     return;
   }
 }
