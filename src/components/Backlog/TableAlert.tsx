@@ -6,7 +6,7 @@ import {
   resetBacklogErrorAtom,
 } from "@/components/utils/atom";
 
-export default function TableError(): JSX.Element {
+export default function TableAlert(): JSX.Element {
   const error: AppError | null = useAtomValue(backlogErrorAtom);
   const removeError = useSetAtom(resetBacklogErrorAtom);
 

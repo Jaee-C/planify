@@ -1,9 +1,9 @@
 import React from "react";
 import * as yup from "yup";
 import { NextRouter, useRouter } from "next/router";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { FormikProps, useFormik } from "formik";
-import { Button, Divider, Grid, styled } from "@mui/material";
+import { Alert, Button, Divider, Grid, styled } from "@mui/material";
 import { addIssue } from "@/lib/data/issues";
 import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
@@ -14,8 +14,8 @@ import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
 import { useSetAtom } from "jotai";
 import { addOneIssueAtom } from "@/components/utils/atom";
-import { NONE_PRIORITY } from "@/lib/constants";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
+import AppError from "@/server/service/AppError";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -34,10 +34,16 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const newIssueMutation = useMutation((data: FormValues) =>
-    addIssue(projectKey, data)
+  const newIssueMutation = useMutation(
+    (data: FormValues) => addIssue(projectKey, data),
+    {
+      onError: (err: AppError): void => {
+        setError(err);
+      },
+    }
   );
   const addToIssueRow = useSetAtom(addOneIssueAtom);
+  const [error, setError] = React.useState<AppError | null>(null);
 
   const baseForm: FormValues = EMPTY_FORM;
 
@@ -77,6 +83,11 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
       <Grid item xs={12}>
         <form onSubmit={formik.handleSubmit}>
           <Grid container>
+            {error !== null ? (
+              <Alert severity="error" onClose={() => setError(null)}>
+                {error.message}
+              </Alert>
+            ) : null}
             <Grid item xs={12}>
               <FormTextField
                 name="title"

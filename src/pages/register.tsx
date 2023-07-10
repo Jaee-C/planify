@@ -12,6 +12,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useRouter } from "next/router";
+import AppError from "@/server/service/AppError";
+import { useState } from "react";
+import { Alert } from "@mui/material";
 
 function Copyright(props: any): JSX.Element {
   return (
@@ -32,6 +35,7 @@ function Copyright(props: any): JSX.Element {
 
 export default function SignUp(): JSX.Element {
   const router = useRouter();
+  const [error, setError] = useState<AppError | null>(null);
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
@@ -50,6 +54,11 @@ export default function SignUp(): JSX.Element {
     });
     if (res.status === 200) {
       await router.push("/api/auth/signin");
+    } else {
+      const json = await res.json();
+      if (json.code && json.message) {
+        setError(new AppError(json.code, json.message));
+      }
     }
   };
 
@@ -71,6 +80,11 @@ export default function SignUp(): JSX.Element {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
+            {error !== null ? (
+              <Grid item xs={12}>
+                <Alert severity="error">{error.message}</Alert>
+              </Grid>
+            ) : null}
             <Grid item xs={12} sm={6}>
               <TextField
                 autoComplete="given-name"

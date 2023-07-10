@@ -126,9 +126,9 @@ export async function addIssue(pKey: string, data: FormValues): Promise<any> {
 
   const json = await httpResponse.json();
   if (!httpResponse.ok) {
-    console.log(httpResponse.statusText);
-    console.log(json.message);
-    return json.message;
+    if (json.message && json.code) {
+      throw new AppError(json.code, json.message);
+    }
   }
 
   const jsonData = json.data[0];
