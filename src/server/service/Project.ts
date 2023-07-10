@@ -34,15 +34,14 @@ export default class Project {
     this._status = new StatusRepository(key);
   }
 
-  public async saveIssue(issue: IssueRequest): Promise<void> {
+  public async saveIssue(issue: IssueRequest): Promise<Issue> {
     if (issue.id !== undefined || issue.key !== undefined) {
       if (issue.key !== undefined) {
         issue.id = this.getIssueId(issue.key);
       }
-      await this._store.editIssue(issue);
-      return;
+      return this._store.editIssue(issue);
     }
-    await this._store.saveIssue(issue);
+    return this._store.saveIssue(issue);
   }
 
   public async getAllIssues(): Promise<Issue[]> {

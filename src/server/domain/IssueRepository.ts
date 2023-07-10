@@ -140,7 +140,7 @@ export default class IssueRepository implements IIssueDB {
     return this.convertToIssue(payload);
   }
 
-  public async editIssue(req: IssueRequest): Promise<void> {
+  public async editIssue(req: IssueRequest): Promise<Issue> {
     if (req.id === undefined || req.id < 0) {
       throw new AppError(NOT_FOUND_IN_DB, "No valid issue id.");
     }
@@ -161,13 +161,14 @@ export default class IssueRepository implements IIssueDB {
       throw new AppError(NOT_FOUND_IN_DB, "Project not found");
     }
 
-    await prisma.issue.update({
+    const dbPayload: IssuePayload = await prisma.issue.update({
       where: {
         id_projectId: {
           id: req.id,
           projectId: pid,
         },
       },
+      select: issueSelect,
       data: {
         title: req.title,
         description: req.description,
@@ -175,6 +176,8 @@ export default class IssueRepository implements IIssueDB {
         priorityId: req.priority,
       },
     });
+
+    return this.convertToIssue(dbPayload);
   }
 
   public async deleteIssue(id: number): Promise<void> {

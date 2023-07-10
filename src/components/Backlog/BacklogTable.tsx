@@ -28,6 +28,8 @@ import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
 import PrioritySelect from "@/components/Backlog/PrioritySelect";
 import { NONE_PRIORITY } from "@/lib/constants";
+import { useAtom } from "jotai";
+import { issueRowsAtom } from "@/components/utils/atom";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};
@@ -43,9 +45,9 @@ export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
+  const [issueRows, setIssueRows] = useAtom(issueRowsAtom);
   const { data: issues, isLoading } = queryIssues(projectKey);
   const { data: statuses } = queryStatuses(projectKey);
-  const [rows, setRows] = React.useState<GridRowsProp>([]);
 
   // Server queries
   const queryClient: QueryClient = useQueryClient();
@@ -87,7 +89,7 @@ export default function BacklogTable(): JSX.Element {
             priority: row.priority ? row.priority : NONE_PRIORITY,
           };
         });
-        setRows(newRows);
+        setIssueRows(newRows);
       }
     }
   }, [issues, statuses]);
@@ -119,7 +121,7 @@ export default function BacklogTable(): JSX.Element {
               },
             }}
             columns={columns}
-            rows={rows}
+            rows={issueRows}
             processRowUpdate={handleRowEdit}
             singleClickEdit
           />

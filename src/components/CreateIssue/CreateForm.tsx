@@ -12,6 +12,9 @@ import TextFieldLabel from "../Form/TextFieldLabel";
 import { EMPTY_FORM, FormValues } from "./FormConstants";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
+import { useAtom, useSetAtom } from "jotai";
+import { addOneIssueAtom } from "@/components/utils/atom";
+import { NONE_PRIORITY } from "@/lib/constants";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -34,6 +37,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const newIssueMutation = useMutation((data: FormValues) =>
     addIssue(projectKey, data)
   );
+  const addToIssueRow = useSetAtom(addOneIssueAtom);
 
   const baseForm: FormValues = EMPTY_FORM;
 
@@ -52,8 +56,16 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
         delete values.priority;
       }
       newIssueMutation.mutate(values, {
-        onSuccess: async (): Promise<void> => {
-          await queryClient.invalidateQueries(["issues", projectKey]);
+        onSuccess: async (res: Issue): Promise<void> => {
+          addToIssueRow([
+            {
+              id: res.id,
+              key: res.issueKey,
+              title: res.title,
+              status: res.status,
+              priority: res.priority ? res.priority : NONE_PRIORITY,
+            },
+          ]);
           console.log(values);
         },
         onSettled: (): void => {

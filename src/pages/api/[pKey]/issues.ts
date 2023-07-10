@@ -41,8 +41,8 @@ export default async function handler(
     case "POST":
       const request: IssueRequest = new NextjsIssueRequest(req);
       try {
-        const response = { message: "Done." };
-        await project.saveIssue(request);
+        const newIssue: Issue = await project.saveIssue(request);
+        const response = { data: [newIssue] };
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.end(JSON.stringify(response));

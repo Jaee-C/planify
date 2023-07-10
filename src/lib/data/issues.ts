@@ -123,13 +123,20 @@ export async function addIssue(pKey: string, data: FormValues): Promise<any> {
     body: JSON.stringify(data),
   });
 
+  const json = await httpResponse.json();
   if (!httpResponse.ok) {
     console.log(httpResponse.statusText);
+    console.log(json.message);
+    return json.message;
   }
 
-  const json = await httpResponse.json();
-
-  return json.message;
+  const jsonData = json.data[0];
+  const newIssue: Issue = new Issue(jsonData.id);
+  newIssue.title = jsonData.title;
+  newIssue.status = jsonData.status;
+  newIssue.issueKey = jsonData.issueKey;
+  newIssue.priority = jsonData.priority;
+  return newIssue;
 }
 
 export async function editIssue(
