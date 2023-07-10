@@ -4,7 +4,11 @@ import { Prisma } from "@prisma/client";
 import { Issue } from "lib/types";
 import { IIssueDB } from "./interfaces";
 import AppError from "@/server/service/AppError";
-import { INVALID_DATA_TYPES, NOT_FOUND_IN_DB } from "@/lib/data/errors";
+import {
+  INVALID_DATA_TYPES,
+  INVALID_SELECT,
+  NOT_FOUND_IN_DB,
+} from "@/lib/data/errors";
 
 const issueSelect = {
   id: true,
@@ -131,7 +135,7 @@ export default class IssueRepository implements IIssueDB {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2003") {
-          throw new AppError(INVALID_DATA_TYPES, e.message);
+          throw new AppError(INVALID_SELECT, e.message);
         }
       }
     }
@@ -142,7 +146,7 @@ export default class IssueRepository implements IIssueDB {
 
   public async editIssue(req: IssueRequest): Promise<Issue> {
     if (req.id === undefined || req.id < 0) {
-      throw new AppError(NOT_FOUND_IN_DB, "No valid issue id.");
+      throw new AppError(NOT_FOUND_IN_DB, "Invalid issue id.");
     }
 
     const pid: number | null = await prisma.project
@@ -161,22 +165,38 @@ export default class IssueRepository implements IIssueDB {
       throw new AppError(NOT_FOUND_IN_DB, "Project not found");
     }
 
-    const dbPayload: IssuePayload = await prisma.issue.update({
-      where: {
-        id_projectId: {
-          id: req.id,
-          projectId: pid,
+    let dbPayload: IssuePayload;
+    try {
+      dbPayload = await prisma.issue.update({
+        where: {
+          id_projectId: {
+            id: req.id,
+            projectId: pid,
+          },
         },
-      },
-      select: issueSelect,
-      data: {
-        title: req.title,
-        description: req.description,
-        statusId: req.status,
-        priorityId: req.priority,
-      },
-    });
+        select: issueSelect,
+        data: {
+          title: req.title,
+          description: req.description,
+          statusId: req.status,
+          priorityId: req.priority,
+        },
+      });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === "P2003") {
+          throw new AppError(
+            INVALID_SELECT,
+            "Selected invalid option from dropdown"
+          );
+        }
+        if (e.code === "P2025") {
+          throw new AppError(NOT_FOUND_IN_DB, "Modified issue not found");
+        }
+      }
+    }
 
+    // @ts-ignore
     return this.convertToIssue(dbPayload);
   }
 

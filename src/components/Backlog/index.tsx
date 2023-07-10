@@ -6,6 +6,8 @@ import SideIssueViewer from "@/components/SideIssueViewer";
 import { Button } from "@mui/material";
 import TableToolbar from "@/components/Table/TableToolbar";
 import { IconContext } from "react-icons";
+import TableError from "@/components/Backlog/TableError";
+import AppError from "@/server/service/AppError";
 
 const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +66,7 @@ export default function BacklogContent(): JSX.Element {
       <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-shrink flex-grow">
         <div className="px-8 mt-6 mb-4">
           <IconContext.Provider value={{ size: "16px" }}>
+            <TableError />
             <TableToolbar title="Backlog">
               <Button
                 className="bg-blue-600 text-xs"

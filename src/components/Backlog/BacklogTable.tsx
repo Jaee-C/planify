@@ -4,7 +4,6 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRenderCellParams,
-  GridRowId,
   GridRowParams,
   GridRowsProp,
   GridValueFormatterParams,
@@ -14,7 +13,7 @@ import { IconContext } from "react-icons";
 
 import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { editIssue, serverDeleteIssue } from "@/lib/data/issues";
 import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
@@ -33,8 +32,10 @@ import {
   editOneIssueAtom,
   issueRowsAtom,
   removeOneIssueAtom,
+  setBacklogErrorAtom,
 } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
+import AppError from "@/server/service/AppError";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};
@@ -50,14 +51,16 @@ export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const [issueRows, setIssueRows] = useAtom(issueRowsAtom);
-  const editOneRow = useSetAtom(editOneIssueAtom);
-  const removeOneRow = useSetAtom(removeOneIssueAtom);
   const { data: issues, isLoading } = queryIssues(projectKey);
   const { data: statuses } = queryStatuses(projectKey);
 
+  // Global states
+  const [issueRows, setIssueRows] = useAtom(issueRowsAtom);
+  const editOneRow = useSetAtom(editOneIssueAtom);
+  const removeOneRow = useSetAtom(removeOneIssueAtom);
+  const setError = useSetAtom(setBacklogErrorAtom);
+
   // Server queries
-  const queryClient: QueryClient = useQueryClient();
   const editIssueMutation = useMutation(
     async ([issueKey, data]: any) =>
       await editIssue(projectKey, issueKey, data),
@@ -65,6 +68,9 @@ export default function BacklogTable(): JSX.Element {
       onSuccess: async (res: Issue): Promise<void> => {
         const newRow: GridRowsProp = createGridRowFromIssue(res);
         editOneRow(newRow[0].id, newRow);
+      },
+      onError: (err: AppError): void => {
+        setError(err);
       },
     }
   );
@@ -84,6 +90,7 @@ export default function BacklogTable(): JSX.Element {
   const editContext = React.useContext(SidebarEditContext);
   const createIssueContext = React.useContext(CreateIssueContext);
 
+  // Load table rows
   React.useEffect((): void => {
     if (!isLoading && issues) {
       if (issues.data.length > 0) {

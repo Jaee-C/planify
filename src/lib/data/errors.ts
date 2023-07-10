@@ -4,6 +4,7 @@
 
 export const NOT_FOUND_IN_DB = 40004;
 export const INVALID_DATA_TYPES = 40005;
+export const INVALID_SELECT = 40006;
 
 // Authentication errors
 export const USERNAME_TAKEN = 40009;

@@ -1,5 +1,7 @@
 import { atom } from "jotai";
 import { GridRowsProp } from "@mui/x-data-grid";
+import AppError from "@/server/service/AppError";
+import { ALERT_DURATION } from "@/lib/constants";
 
 export const issueRowsAtom = atom<GridRowsProp>([]);
 export const addOneIssueAtom = atom<null, [GridRowsProp], void>(
@@ -27,5 +29,23 @@ export const removeOneIssueAtom = atom<null, [string], void>(
     console.log(key);
     const newRows = rows.filter(item => item.key !== key);
     set(issueRowsAtom, newRows);
+  }
+);
+
+// Backlog Error
+export const backlogErrorAtom = atom<AppError | null>(null);
+export const setBacklogErrorAtom = atom<null, [AppError], void>(
+  null,
+  (get, set, error): void => {
+    set(backlogErrorAtom, error);
+    setTimeout(() => {
+      set(backlogErrorAtom, null);
+    }, ALERT_DURATION);
+  }
+);
+export const resetBacklogErrorAtom = atom<null, [], void>(
+  null,
+  (get, set): void => {
+    set(backlogErrorAtom, null);
   }
 );

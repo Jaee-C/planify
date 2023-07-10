@@ -1,5 +1,6 @@
 import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
 import { FormValues } from "@/components/CreateIssue/FormConstants";
+import AppError from "@/server/service/AppError";
 
 export function toStatusString(
   status: number | undefined,
@@ -155,7 +156,9 @@ export async function editIssue(
   const json = await httpResponse.json();
 
   if (!httpResponse.ok) {
-    console.log(httpResponse.statusText);
+    if (json.code && json.message) {
+      throw new AppError(json.code, json.message);
+    }
   }
 
   const jsonData = json.data[0];
