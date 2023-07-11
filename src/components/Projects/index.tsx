@@ -1,8 +1,7 @@
 import "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { Button, Card, styled } from "@mui/material";
+import { Button, Card } from "@mui/material";
 import ProjectTable from "@/components/Projects/ProjectTable";
-import { boolean } from "yup";
 import { createContext, useState } from "react";
 import TableToolbar from "@/components/Table/TableToolbar";
 
