@@ -1,9 +1,9 @@
 import React from "react";
 import * as yup from "yup";
 import { NextRouter, useRouter } from "next/router";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { FormikProps, useFormik } from "formik";
-import { Button, Divider, Grid, styled } from "@mui/material";
+import { Alert, Button, Divider, Grid, styled } from "@mui/material";
 import { addIssue } from "@/lib/data/issues";
 import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
@@ -12,6 +12,11 @@ import TextFieldLabel from "../Form/TextFieldLabel";
 import { EMPTY_FORM, FormValues } from "./FormConstants";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
+import { useSetAtom } from "jotai";
+import { addOneIssueAtom } from "@/components/utils/atom";
+import { createGridRowFromIssue } from "@/components/Backlog/utils";
+import AppError from "@/server/service/AppError";
+import { LoadingButton } from "@mui/lab";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -30,10 +35,17 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const queryClient: QueryClient = useQueryClient();
-  const newIssueMutation = useMutation((data: FormValues) =>
-    addIssue(projectKey, data)
+  const newIssueMutation = useMutation(
+    (data: FormValues) => addIssue(projectKey, data),
+    {
+      onError: (err: AppError): void => {
+        setError(err);
+      },
+    }
   );
+  const addToIssueRow = useSetAtom(addOneIssueAtom);
+  const [error, setError] = React.useState<AppError | null>(null);
+  const [formSubmit, setFormSubmit] = React.useState<boolean>(false);
 
   const baseForm: FormValues = EMPTY_FORM;
 
@@ -51,10 +63,12 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
       if (values.priority === -1) {
         delete values.priority;
       }
+      setFormSubmit(true);
       newIssueMutation.mutate(values, {
-        onSuccess: async (): Promise<void> => {
-          await queryClient.invalidateQueries(["issues", projectKey]);
+        onSuccess: async (res: Issue): Promise<void> => {
+          addToIssueRow(createGridRowFromIssue(res));
           console.log(values);
+          setFormSubmit(false);
         },
         onSettled: (): void => {
           formik.resetForm();
@@ -73,6 +87,11 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
       <Grid item xs={12}>
         <form onSubmit={formik.handleSubmit}>
           <Grid container>
+            {error !== null ? (
+              <Alert severity="error" onClose={() => setError(null)}>
+                {error.message}
+              </Alert>
+            ) : null}
             <Grid item xs={12}>
               <FormTextField
                 name="title"
@@ -151,13 +170,14 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
             </FormRow>
             <div className="w-full max-w-full flex justify-end mt-5">
               <Button onClick={handleFormClose}>Close</Button>
-              <Button
+              <LoadingButton
+                loading={formSubmit}
                 variant="contained"
                 color="primary"
                 className="bg-blue-600 ml-3"
                 type="submit">
                 save
-              </Button>
+              </LoadingButton>
             </div>
           </Grid>
         </form>

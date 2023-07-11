@@ -4,7 +4,6 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRenderCellParams,
-  GridRowId,
   GridRowParams,
   GridRowsProp,
   GridValueFormatterParams,
@@ -14,7 +13,7 @@ import { IconContext } from "react-icons";
 
 import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
-import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { useMutation } from "react-query";
 import { editIssue, serverDeleteIssue } from "@/lib/data/issues";
 import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
@@ -28,6 +27,15 @@ import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
 import PrioritySelect from "@/components/Backlog/PrioritySelect";
 import { NONE_PRIORITY } from "@/lib/constants";
+import { useAtom, useSetAtom } from "jotai";
+import {
+  editOneIssueAtom,
+  issueRowsAtom,
+  removeOneIssueAtom,
+  setBacklogErrorAtom,
+} from "@/components/utils/atom";
+import { createGridRowFromIssue } from "@/components/Backlog/utils";
+import AppError from "@/server/service/AppError";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};
@@ -45,16 +53,24 @@ export default function BacklogTable(): JSX.Element {
   const projectKey: string = verifyUrlParam(pKey);
   const { data: issues, isLoading } = queryIssues(projectKey);
   const { data: statuses } = queryStatuses(projectKey);
-  const [rows, setRows] = React.useState<GridRowsProp>([]);
+
+  // Global states
+  const [issueRows, setIssueRows] = useAtom(issueRowsAtom);
+  const editOneRow = useSetAtom(editOneIssueAtom);
+  const removeOneRow = useSetAtom(removeOneIssueAtom);
+  const setError = useSetAtom(setBacklogErrorAtom);
 
   // Server queries
-  const queryClient: QueryClient = useQueryClient();
   const editIssueMutation = useMutation(
     async ([issueKey, data]: any) =>
       await editIssue(projectKey, issueKey, data),
     {
-      onSuccess: async (): Promise<void> => {
-        await queryClient.invalidateQueries(["issues", projectKey]);
+      onSuccess: async (res: Issue): Promise<void> => {
+        const newRow: GridRowsProp = createGridRowFromIssue(res);
+        editOneRow(newRow[0].id, newRow);
+      },
+      onError: (err: AppError): void => {
+        setError(err);
       },
     }
   );
@@ -74,6 +90,7 @@ export default function BacklogTable(): JSX.Element {
   const editContext = React.useContext(SidebarEditContext);
   const createIssueContext = React.useContext(CreateIssueContext);
 
+  // Load table rows
   React.useEffect((): void => {
     if (!isLoading && issues) {
       if (issues.data.length > 0) {
@@ -87,16 +104,16 @@ export default function BacklogTable(): JSX.Element {
             priority: row.priority ? row.priority : NONE_PRIORITY,
           };
         });
-        setRows(newRows);
+        setIssueRows(newRows);
       }
     }
   }, [issues, statuses]);
 
   const deleteIssue = useMutation(
-    (id: GridRowId) => serverDeleteIssue(projectKey, id),
+    (issueKey: string) => serverDeleteIssue(projectKey, issueKey),
     {
-      onSuccess: async () => {
-        await queryClient.invalidateQueries(["issues", projectKey]);
+      onSuccess: async (id: string) => {
+        removeOneRow(id);
       },
     }
   );
@@ -119,7 +136,7 @@ export default function BacklogTable(): JSX.Element {
               },
             }}
             columns={columns}
-            rows={rows}
+            rows={issueRows}
             processRowUpdate={handleRowEdit}
             singleClickEdit
           />

@@ -2,6 +2,7 @@ import userRepo from "@/server/domain/UserRepository";
 import { User } from "@/lib/types";
 import bcrypt from "bcrypt";
 import { NewUser } from "@/lib/types/User";
+import AppError from "@/server/service/AppError";
 
 const SALT_ROUNDS: number = 10;
 
@@ -15,7 +16,9 @@ class UserAuth {
       password,
       SALT_ROUNDS,
       async (err: Error | undefined, hash: string): Promise<void> => {
-        if (err) throw err;
+        if (err) {
+          throw new AppError(50001, "Error hashing password");
+        }
 
         await userRepo.saveUser(hash, user);
       }

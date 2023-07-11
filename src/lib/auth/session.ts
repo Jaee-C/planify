@@ -34,7 +34,7 @@ export async function getUserToken(req: NextApiRequest): Promise<JWT> {
   }
 
   return {
-    id: "-1",
+    id: "1",
     name: "Guest",
   };
 }

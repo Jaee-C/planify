@@ -11,7 +11,7 @@ export interface IProjectDB {
 export interface IIssueDB {
   fetchAllIssues(): Promise<Issue[]>;
   saveIssue(req: IssueRequest): Promise<Issue>;
-  editIssue(req: IssueRequest): Promise<void>;
+  editIssue(req: IssueRequest): Promise<Issue>;
   deleteIssue(id: number): Promise<void>;
   fetchIssue(id: number): Promise<Issue | null>;
 }

@@ -2,6 +2,8 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
 import { NewUser, User } from "@/lib/types/User";
 import { IUserDB } from "@/server/domain/interfaces";
+import { USER_CREATION_ERROR } from "@/lib/data/errors";
+import AppError from "@/server/service/AppError";
 
 const userSelect = {
   id: true,
@@ -38,8 +40,7 @@ class UserRepository implements IUserDB {
   }
 
   public async getUserByUsername(username: string): Promise<User | null> {
-    // @ts-ignore
-    const dbResult: UserPayload = await prisma.user.findUnique({
+    const dbResult: UserPayload | null = await prisma.user.findUnique({
       where: {
         username: username,
       },
@@ -67,9 +68,15 @@ class UserRepository implements IUserDB {
   }
 
   public async saveUser(password: string, user: NewUser): Promise<void> {
-    await prisma.user.create({
-      data: { password, ...user },
-    });
+    try {
+      await prisma.user.create({
+        data: { password, ...user },
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        throw new AppError(USER_CREATION_ERROR, e.message);
+      }
+    }
   }
 
   private convertToUser(dbUser: UserPayload): User {

@@ -3,12 +3,19 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import BacklogTable from "@/components/Backlog/BacklogTable";
 import { createContext, useState } from "react";
 import SideIssueViewer from "@/components/SideIssueViewer";
-import { Button, IconButton, Tooltip } from "@mui/material";
-import { MdFilterList } from "react-icons/md";
+import { Button } from "@mui/material";
 import TableToolbar from "@/components/Table/TableToolbar";
 import { IconContext } from "react-icons";
+import TableAlert from "@/components/Backlog/TableAlert";
+import AppError from "@/server/service/AppError";
 
-const queryClient: QueryClient = new QueryClient();
+const queryClient: QueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 interface SidebarContextProps {
   action: (id: string) => void;
@@ -59,6 +66,7 @@ export default function BacklogContent(): JSX.Element {
       <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-shrink flex-grow">
         <div className="px-8 mt-6 mb-4">
           <IconContext.Provider value={{ size: "16px" }}>
+            <TableAlert />
             <TableToolbar title="Backlog">
               <Button
                 className="bg-blue-600 text-xs"
