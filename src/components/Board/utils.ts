@@ -1,12 +1,16 @@
-import { Issue, IssueResponse } from "@/lib/types";
+import { Issue, StatusType } from "@/lib/types";
 
 export interface ColumnDefinition {
   name: string;
   order: number;
+  status: StatusType;
 }
 
-export function issueResponseToIssue(res: IssueResponse | undefined): Issue[] {
-  if (!res) return [];
+export function getIssuesByStatus(
+  issues: Issue[] | undefined,
+  status: StatusType
+): Issue[] {
+  if (!issues) return [];
 
-  return res.data;
+  return issues.filter((issue: Issue) => issue.status?.id === status.id);
 }

@@ -88,11 +88,9 @@ interface InnerListProps {
 }
 
 function InnerList(props: InnerListProps): JSX.Element {
-  const title = props.title ? props.title : "No title";
-
   return (
     <>
-      <Title>{title}</Title>
+      {props.title ? <Title>{props.title}</Title> : null}
       <Dropzone ref={props.dropProvided.innerRef}>
         <InnerIssueListMemo issues={props.issues} />
         {props.dropProvided.placeholder}

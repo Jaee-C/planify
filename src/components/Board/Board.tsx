@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { Droppable, DroppableProvided } from "@hello-pangea/dnd";
-import { queryIssues, queryStatuses } from "@/lib/data/query";
+import { queryIssuesConverted, queryStatuses } from "@/lib/data/query";
 import { verifyUrlParam } from "@/lib/utils";
-import {
-  ColumnDefinition,
-  issueResponseToIssue,
-} from "@/components/Board/utils";
+import { ColumnDefinition, getIssuesByStatus } from "@/components/Board/utils";
 import { StatusType } from "@/lib/types";
 import Column from "@/components/Board/Column";
 import { useRouter } from "next/router";
@@ -29,7 +26,8 @@ export default function Board(props: BoardProps): JSX.Element {
   const router = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const { data: issues, isLoading: issueLoading } = queryIssues(projectKey);
+  const { data: issues, isLoading: issueLoading } =
+    queryIssuesConverted(projectKey);
   const { data: statuses, isLoading: statusLoading } =
     queryStatuses(projectKey);
 
@@ -42,6 +40,7 @@ export default function Board(props: BoardProps): JSX.Element {
         (status: StatusType): ColumnDefinition => ({
           order: status.id,
           name: status.name,
+          status,
         })
       )
     );
@@ -62,7 +61,7 @@ export default function Board(props: BoardProps): JSX.Element {
           {ordered.map((key: ColumnDefinition, index: number) => (
             <Column
               title={key.name}
-              issues={issueResponseToIssue(issues)}
+              issues={getIssuesByStatus(issues, key.status)}
               index={index}
               key={key.name}
               isScrollable={props.withScrollableColumns}

@@ -2,7 +2,7 @@ import { Issue } from "@/lib/types";
 import { styled } from "@mui/material";
 import IssueList from "@/components/Board/IssueList";
 
-const Title = styled("div")(({ theme }) => ({
+const Title = styled("div")(() => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
