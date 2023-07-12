@@ -1,9 +1,10 @@
 import { Issue } from "@/lib/types";
 import { DraggableProvided } from "@hello-pangea/dnd";
-import { styled } from "@mui/material";
+import { Card, CardContent, styled } from "@mui/material";
+import IssueInfo from "@/components/Board/IssueInfo";
 
-const Container = styled("a")(() => ({
-  borderRadius: "2px",
+const Container = styled(Card)(() => ({
+  borderRadius: "3px",
   border: "2px solid transparent",
   backgroundColor: "#FFFFFF",
   boxShadow: "none",
@@ -12,15 +13,29 @@ const Container = styled("a")(() => ({
   marginBottom: "8px",
   userSelect: "none",
   display: "flex",
+  flexDirection: "column",
+  transition: "background-color ease 0.2s",
 
   "&:hover, &:active": {
     color: "#091E42",
+    backgroundColor: "#DFE1E6",
+    transition: "background-color ease 0.2s",
     textDecoration: "none",
   },
 
   "&:focus": {
     outline: "none",
     boxShadow: "none",
+  },
+}));
+
+const Content = styled(CardContent)(() => ({
+  width: "100%",
+  padding: 0,
+  marginBottom: "8px",
+
+  "&:last-child": {
+    paddingBottom: 0,
   },
 }));
 
@@ -42,7 +57,8 @@ export default function IssueItem(props: IssueItemProps): JSX.Element {
       data-is-dragging={props.isDragging}
       data-testid={props.issue.id}
       data-index={props.index}>
-      {props.issue.title}
+      <Content>{props.issue.title}</Content>
+      <IssueInfo issue={props.issue} />
     </Container>
   );
 }

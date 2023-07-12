@@ -11,7 +11,6 @@ import { styled } from "@mui/material";
 import IssueItem from "@/components/Board/IssueItem";
 
 const Wrapper = styled("div")(() => ({
-  backgroundColor: "#EBECF0",
   display: "flex",
   flexDirection: "column",
   opacity: "inherit",
