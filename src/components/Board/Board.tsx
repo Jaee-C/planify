@@ -7,12 +7,19 @@ import {
 } from "@hello-pangea/dnd";
 import { queryIssuesConverted, queryStatuses } from "@/lib/data/query";
 import { verifyUrlParam } from "@/lib/utils";
-import { ColumnDefinition, getIssuesByStatus } from "@/components/Board/utils";
+import {
+  ColumnDefinition,
+  findIssueKeyById,
+  getIssuesByStatus,
+  updateIssueStatus,
+} from "@/components/Board/utils";
 import { Issue, StatusType } from "@/lib/types";
 import Column from "@/components/Board/Column";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
+import { useMutation } from "react-query";
+import { editIssue } from "@/lib/data/issues";
 
 const Container = styled("div")(() => ({
   display: "inline-flex",
@@ -38,6 +45,21 @@ export default function Board(props: BoardProps): JSX.Element {
     queryIssuesConverted(projectKey);
   const { data: statuses, isLoading: statusLoading } =
     queryStatuses(projectKey);
+  const editIssueMutation = useMutation(
+    async ([issueKey, data]: any) =>
+      await editIssue(projectKey, issueKey, data),
+    {
+      onSuccess: (updated: Issue) => {
+        const editedIssueId = String(updated.id);
+        const newIssues = updateIssueStatus(
+          editedIssueId,
+          allIssues,
+          updated.status
+        );
+        setAllIssues(newIssues);
+      },
+    }
+  );
 
   // Define Columns
   useEffect(() => {
@@ -64,18 +86,31 @@ export default function Board(props: BoardProps): JSX.Element {
     // Dropped nowhere
     if (!result.destination || !statuses) return;
 
-    const destStatus: string = result.destination.droppableId;
-    const moved: Issue | undefined = allIssues.find(
-      issue => String(issue.id) === result.draggableId
+    // did not move anywhere - can bail early
+    if (
+      result.source.droppableId === result.destination.droppableId &&
+      result.source.index === result.destination.index
+    ) {
+      return;
+    }
+
+    const editedIssueKey: string = findIssueKeyById(
+      allIssues,
+      result.draggableId
     );
 
-    if (!moved) return;
+    if (!editedIssueKey) return;
 
-    // Update status
-    moved.status = statuses.find(status => String(status.name) === destStatus);
-    const updated = [...allIssues.filter(issue => issue.id !== moved.id)];
-    updated.push(moved);
+    const destStatus: string = result.destination.droppableId;
+    const newStatus = statuses.find(
+      status => String(status.name) === destStatus
+    );
+
+    if (!newStatus) return;
+
+    const updated = updateIssueStatus(result.draggableId, allIssues, newStatus);
     setAllIssues(updated);
+    editIssueMutation.mutate([editedIssueKey, { status: newStatus.id }]);
   };
 
   if (issueLoading || statusLoading) {

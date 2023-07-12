@@ -81,6 +81,8 @@ function InnerIssueList(props: IssueListProps): JSX.Element {
   );
 }
 
+const InnerIssueListMemo = React.memo<IssueListProps>(InnerIssueList);
+
 interface InnerListProps {
   dropProvided: DroppableProvided;
   issues: Issue[];
@@ -92,7 +94,7 @@ function InnerList(props: InnerListProps): JSX.Element {
     <>
       {props.title ? <Title>{props.title}</Title> : null}
       <Dropzone ref={props.dropProvided.innerRef}>
-        <InnerIssueList issues={props.issues} />
+        <InnerIssueListMemo issues={props.issues} />
         {props.dropProvided.placeholder}
       </Dropzone>
     </>
