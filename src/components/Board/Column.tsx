@@ -27,7 +27,7 @@ interface ColumnProps {
 
 export default function Column(props: ColumnProps): JSX.Element {
   return (
-    <>
+    <div>
       {/* Column header */}
       <Title aria-label={`${props.title} issue list`}>{props.title}</Title>
       <IssueList
@@ -37,6 +37,6 @@ export default function Column(props: ColumnProps): JSX.Element {
         isCombineEnabled={Boolean(props.isCombineEnabled)}
         useClone={Boolean(props.useClone)}
       />
-    </>
+    </div>
   );
 }

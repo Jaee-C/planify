@@ -1,4 +1,4 @@
-import { useQuery, UseQueryResult } from "react-query";
+import { QueryClient, useQuery, UseQueryResult } from "react-query";
 import { Issue, IssueResponse, PriorityType, StatusType } from "@/lib/types";
 import {
   fetchIssueList,
@@ -7,6 +7,14 @@ import {
   getIssue,
 } from "@/lib/data/issues";
 import { STALE_TIME } from "@/lib/constants";
+
+export const queryClient: QueryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 export function queryIssues(projectKey: string): UseQueryResult<IssueResponse> {
   return useQuery(["issues", projectKey], () => fetchIssueList(projectKey));

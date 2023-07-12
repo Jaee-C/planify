@@ -21,6 +21,7 @@ const Wrapper = styled("div")(() => ({
   transition: "background-color 0.2s ease",
   userSelect: "none",
   width: "250px",
+  margin: 0,
 }));
 
 const Title = styled("h4")(() => ({
@@ -29,6 +30,7 @@ const Title = styled("h4")(() => ({
   userSelect: "none",
   flexGrow: 1,
   position: "relative",
+  width: "250px",
 }));
 
 const scrollContainerHeight = 250;

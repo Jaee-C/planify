@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { router } from "next/client";
 import { Droppable, DroppableProvided } from "@hello-pangea/dnd";
 import { queryIssues, queryStatuses } from "@/lib/data/query";
 import { verifyUrlParam } from "@/lib/utils";
@@ -9,6 +8,13 @@ import {
 } from "@/components/Board/utils";
 import { StatusType } from "@/lib/types";
 import Column from "@/components/Board/Column";
+import { useRouter } from "next/router";
+import { styled } from "@mui/material";
+
+const Container = styled("div")(() => ({
+  display: "inline-flex",
+  minWidth: "100vw",
+}));
 
 interface BoardProps {
   isCombineEnabled?: boolean;
@@ -20,6 +26,7 @@ interface BoardProps {
 export default function Board(props: BoardProps): JSX.Element {
   const [ordered, setOrdered] = useState<ColumnDefinition[]>([]);
 
+  const router = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
   const { data: issues, isLoading: issueLoading } = queryIssues(projectKey);
@@ -51,7 +58,7 @@ export default function Board(props: BoardProps): JSX.Element {
       isCombineEnabled={props.isCombineEnabled}
       ignoreContainerClipping={props.ignoreContainerClipping}>
       {(provided: DroppableProvided) => (
-        <div ref={provided.innerRef} {...provided.droppableProps}>
+        <Container ref={provided.innerRef} {...provided.droppableProps}>
           {ordered.map((key: ColumnDefinition, index: number) => (
             <Column
               title={key.name}
@@ -63,7 +70,7 @@ export default function Board(props: BoardProps): JSX.Element {
               useClone={props.useClone}
             />
           ))}
-        </div>
+        </Container>
       )}
     </Droppable>
   );

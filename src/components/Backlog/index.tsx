@@ -1,5 +1,5 @@
 import * as React from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { QueryClientProvider } from "react-query";
 import BacklogTable from "@/components/Backlog/BacklogTable";
 import { createContext, useState } from "react";
 import SideIssueViewer from "@/components/SideIssueViewer";
@@ -7,15 +7,7 @@ import { Button } from "@mui/material";
 import TableToolbar from "@/components/Table/TableToolbar";
 import { IconContext } from "react-icons";
 import TableAlert from "@/components/Backlog/TableAlert";
-import AppError from "@/server/service/AppError";
-
-const queryClient: QueryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import { queryClient } from "@/lib/data/query";
 
 interface SidebarContextProps {
   action: (id: string) => void;
