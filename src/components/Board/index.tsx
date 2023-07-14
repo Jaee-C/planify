@@ -2,6 +2,7 @@ import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scr
 import Board from "@/components/Board/Board";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "@/lib/data/query";
+import BoardHeader from "@/components/Board/BoardHeader";
 
 interface Props {
   autoScrollerOptions?: PartialAutoScrollerOptions;
@@ -14,12 +15,15 @@ interface Props {
 export default function Index(props: Props): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
-      <Board
-        isCombineEnabled={props.isCombineEnabled}
-        ignoreContainerClipping={Boolean(props.containerHeight)}
-        withScrollableColumns={props.withScrollableColumns}
-        useClone={props.useClone}
-      />
+      <div>
+        <BoardHeader />
+        <Board
+          isCombineEnabled={props.isCombineEnabled}
+          ignoreContainerClipping={Boolean(props.containerHeight)}
+          withScrollableColumns={props.withScrollableColumns}
+          useClone={props.useClone}
+        />
+      </div>
     </QueryClientProvider>
   );
 }

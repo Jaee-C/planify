@@ -24,6 +24,7 @@ import { editIssue } from "@/lib/data/issues";
 const Container = styled("div")(() => ({
   display: "inline-flex",
   minWidth: "100vw",
+  padding: "0 32px",
 }));
 
 interface BoardProps {

@@ -5,7 +5,7 @@ import TopNavigation, {
   NavigationPage,
 } from "@/components/TopNavigation/TopNavigation";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import BaseSidebar from "@/components/SideNavigationBar/BaseSidebar";
+import SideNavigation from "@/components/SideNavigationBar/SideNavigation";
 
 export default function Projects(): JSX.Element {
   return (

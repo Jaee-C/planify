@@ -31,10 +31,11 @@ const Title = styled("h4")(() => ({
 
 const ColumnContainer = styled("div")(() => ({
   margin: "8px",
-  display: "flex",
-  flexDirection: "column",
   borderRadius: "6px",
   backgroundColor: "#EBECF0",
+  // stop the list collapsing when empty
+  minHeight: "150px",
+  height: "fit-content",
 }));
 
 interface ColumnProps {
