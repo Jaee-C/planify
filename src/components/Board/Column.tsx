@@ -2,6 +2,7 @@ import { Issue } from "@/lib/types";
 import { styled } from "@mui/material";
 import IssueList from "@/components/Board/IssueList";
 
+// Column header
 const Header = styled("div")(() => ({
   display: "flex",
   alignItems: "center",
@@ -12,7 +13,7 @@ const Header = styled("div")(() => ({
   height: "48px",
 
   "&:hover": {
-    backgroundColor: "#E3FCEF",
+    backgroundColor: "inherit",
   },
 }));
 

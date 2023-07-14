@@ -2,7 +2,7 @@ import React from "react";
 import { Menu, MenuItem, Sidebar, useProSidebar } from "react-pro-sidebar";
 import { GoChecklist } from "react-icons/go";
 import { FaBarsStaggered, FaTrello } from "react-icons/fa6";
-import { Button } from "@mui/material";
+import { IconButton } from "@mui/material";
 import SidebarHeader from "@/components/SideNavigationBar/SidebarHeader";
 import { PageType } from "@/lib/types";
 import colors from "tailwindcss/colors";
@@ -10,6 +10,7 @@ import { IconContext } from "react-icons";
 import { verifyUrlParam } from "@/lib/utils";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
 
 interface SideNavigationProps {
   currentPage?: PageType;
@@ -18,14 +19,14 @@ interface SideNavigationProps {
 export default function SideNavigation(
   props: SideNavigationProps
 ): JSX.Element {
-  const { collapseSidebar } = useProSidebar();
+  const { collapseSidebar, collapsed } = useProSidebar();
   const router = useRouter();
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
 
   return (
     <IconContext.Provider value={{ className: "shared-class", size: "14px" }}>
-      <Sidebar width="200px" transitionDuration={200} breakPoint="sm">
+      <Sidebar width="200px" transitionDuration={200}>
         <div
           style={{ display: "flex", flexDirection: "column", height: "100%" }}>
           <div style={{ flex: 1, marginBottom: "32px", padding: "8px" }}>
@@ -74,8 +75,20 @@ export default function SideNavigation(
               <MenuItem icon={<GoChecklist />}> Issues</MenuItem>
             </Menu>
           </div>
-          <div style={{ paddingBottom: "20px" }}>
-            <Button onClick={() => collapseSidebar()}>Collapse</Button>
+          <div className="pb-6 px-3 flex justify-end">
+            {collapsed ? (
+              <IconButton
+                aria-label="show-sidebar"
+                onClick={() => collapseSidebar(false)}>
+                <AiOutlineDoubleRight />
+              </IconButton>
+            ) : (
+              <IconButton
+                aria-label="hide-sidebar"
+                onClick={() => collapseSidebar(true)}>
+                <AiOutlineDoubleLeft />
+              </IconButton>
+            )}
           </div>
         </div>
       </Sidebar>
