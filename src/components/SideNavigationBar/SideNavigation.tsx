@@ -72,7 +72,9 @@ export default function SideNavigation(
                 }>
                 Board
               </MenuItem>
-              <MenuItem icon={<GoChecklist />}> Issues</MenuItem>
+              <MenuItem icon={<GoChecklist />} disabled>
+                Issues
+              </MenuItem>
             </Menu>
           </div>
           <div className="pb-6 px-3 flex justify-end">
