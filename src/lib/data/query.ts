@@ -6,7 +6,7 @@ import {
   fetchStatuses,
   getIssue,
 } from "@/lib/data/issues";
-import { STALE_TIME } from "@/lib/constants";
+import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
 
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
@@ -17,7 +17,9 @@ export const queryClient: QueryClient = new QueryClient({
 });
 
 export function queryIssues(projectKey: string): UseQueryResult<IssueResponse> {
-  return useQuery(["issues", projectKey], () => fetchIssueList(projectKey));
+  return useQuery(["issues", projectKey], () => fetchIssueList(projectKey), {
+    staleTime: ISSUE_STALE_TIME,
+  });
 }
 
 export function queryIssuesConverted(

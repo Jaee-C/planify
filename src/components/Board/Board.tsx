@@ -102,16 +102,36 @@ export default function Board(props: BoardProps): JSX.Element {
 
     if (!editedIssueKey) return;
 
+    // Check if issue status is updated
     const destStatus: string = result.destination.droppableId;
     const newStatus = statuses.find(
       status => String(status.name) === destStatus
     );
-
     if (!newStatus) return;
+
+    // Find issues before and after the moved issue, to determine the new order
+    const issueDestIndex: number = result.destination.index;
+    const destIssues: Issue[] = getIssuesByStatus(allIssues, newStatus);
+
+    let issueBefore: Issue | undefined;
+    let issueAfter: Issue | undefined;
+    if (issueDestIndex > 0) {
+      issueBefore = destIssues[issueDestIndex - 1];
+    }
+    if (issueDestIndex < destIssues.length - 1) {
+      issueAfter = destIssues[issueDestIndex + 1];
+    }
 
     const updated = updateIssueStatus(result.draggableId, allIssues, newStatus);
     setAllIssues(updated);
-    editIssueMutation.mutate([editedIssueKey, { status: newStatus.id }]);
+    editIssueMutation.mutate([
+      editedIssueKey,
+      {
+        status: newStatus.id,
+        beforeIssueKey: issueBefore?.issueKey,
+        afterIssueKey: issueAfter?.issueKey,
+      },
+    ]);
   };
 
   if (issueLoading || statusLoading) {
