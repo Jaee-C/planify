@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Issue, IssueResponse } from "lib/types";
-import { IssueRequest, createIssueRequest } from "@/lib/service/Issue";
+import { IssueRequest, createIssueRequest } from "@/lib/types/Issue";
 import Project from "@/lib/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
 import AppError from "@/lib/service/AppError";
-import { INVALID_TOKEN } from "@/lib/client-data/errors";
+import { INVALID_TOKEN } from "@/lib/client-fetch/errors";
 
 export default async function handler(
   req: NextApiRequest,

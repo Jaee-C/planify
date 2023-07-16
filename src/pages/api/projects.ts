@@ -7,7 +7,7 @@ import { IProjectDB } from "@/server/domain/interfaces";
 import ProjectRequest from "@/lib/service/ProjectRequest";
 import NextjsProjectRequest from "@/lib/service/NextjsProjectRequest";
 import AppError from "@/lib/service/AppError";
-import { INVALID_TOKEN } from "@/lib/client-data/errors";
+import { INVALID_TOKEN } from "@/lib/client-fetch/errors";
 
 export default async function handler(
   req: NextApiRequest,

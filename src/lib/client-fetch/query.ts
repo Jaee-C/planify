@@ -1,12 +1,13 @@
 import { QueryClient, useQuery, UseQueryResult } from "react-query";
-import { Issue, IssueResponse, PriorityType, StatusType } from "@/lib/types";
+import { Issue, PriorityType, StatusType } from "@/lib/types";
 import {
   fetchIssueList,
   fetchPriorities,
   fetchStatuses,
   getIssue,
-} from "@/lib/client-data/issues";
+} from "@/lib/client-fetch/issues";
 import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
+import { IssueData } from "@/lib/types/Issue";
 
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
@@ -16,7 +17,7 @@ export const queryClient: QueryClient = new QueryClient({
   },
 });
 
-export function queryIssues(projectKey: string): UseQueryResult<IssueResponse> {
+export function queryIssues(projectKey: string): UseQueryResult<IssueData[]> {
   return useQuery(["issues", projectKey], () => fetchIssueList(projectKey), {
     staleTime: ISSUE_STALE_TIME,
   });
@@ -26,7 +27,7 @@ export function queryIssuesConverted(
   projectKey: string
 ): UseQueryResult<Issue[]> {
   return useQuery(["issuesConverted", projectKey], () =>
-    fetchIssueList(projectKey).then(res => res.data)
+    fetchIssueList(projectKey).then(res => res)
   );
 }
 

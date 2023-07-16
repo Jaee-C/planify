@@ -5,7 +5,7 @@ import {
   DroppableProvided,
   DropResult,
 } from "@hello-pangea/dnd";
-import { queryIssuesConverted, queryStatuses } from "@/lib/client-data/query";
+import { queryIssuesConverted, queryStatuses } from "@/lib/client-fetch/query";
 import { verifyUrlParam } from "@/lib/utils";
 import {
   ColumnDefinition,
@@ -20,7 +20,8 @@ import { useRouter } from "next/router";
 import { styled } from "@mui/material";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import { useMutation } from "react-query";
-import { editIssue } from "@/lib/client-data/issues";
+import { editIssue } from "@/lib/client-fetch/issues";
+import { convertDataToIssue } from "@/lib/types/Issue";
 
 const Container = styled("div")(() => ({
   display: "inline-flex",
@@ -75,7 +76,7 @@ export default function Board(props: BoardProps): JSX.Element {
 
   useEffect(() => {
     if (!issues || !statuses) return;
-    setAllIssues(issues);
+    setAllIssues(issues.map(entry => convertDataToIssue(entry)));
   }, [issues, statuses]);
 
   const onDragEnd = (result: DropResult): void => {
@@ -114,7 +115,7 @@ export default function Board(props: BoardProps): JSX.Element {
       issueBefore = destIssues[issueDestIndex - 1];
     }
     if (issueDestIndex < destIssues.length - 1) {
-      issueAfter = destIssues[issueDestIndex];
+      issueAfter = destIssues[issueDestIndex + 1];
     }
 
     const [updated, order] = clientUpdateIssueStatus(

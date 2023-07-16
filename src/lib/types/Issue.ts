@@ -20,19 +20,8 @@ export default class Issue {
   get order(): string | undefined {
     return this._order?.toString();
   }
-
   set order(value: string | undefined) {
     if (value) this._order = LexoRank.parse(value);
-  }
-
-  public static compareTo(current: Issue, other: Issue): number {
-    if (!current.order || !other.order) {
-      return 0;
-    }
-
-    return -LexoRank.parse(current.order).compareTo(
-      LexoRank.parse(other.order)
-    );
   }
 
   public placeAfter(other: Issue): void {
@@ -41,14 +30,12 @@ export default class Issue {
     }
     this._order = LexoRank.parse(other.order!).genNext();
   }
-
   public placeBefore(other: Issue): void {
     if (!other.order) {
       other.initializeOrder();
     }
     this._order = LexoRank.parse(other.order!).genPrev();
   }
-
   public initializeOrder(): void {
     this._order = LexoRank.middle();
   }
@@ -62,18 +49,31 @@ export function compareIssue(current: Issue, other: Issue): number {
   return LexoRank.parse(current.order).compareTo(LexoRank.parse(other.order));
 }
 
-export function placeAfter(current: Issue, other: Issue): void {
-  if (!other.order) {
-    other.order = LexoRank.middle().toString();
-  }
-  current.order = LexoRank.parse(other.order!).genNext().toString();
+/**
+ * react-query does not support class as a return type. This interface is
+ * converted to Issue class after passed to react components.
+ */
+export interface IssueData {
+  id: number;
+  title: string | undefined;
+  description?: string;
+  status: StatusType | undefined;
+  issueKey: string | undefined;
+  priority?: PriorityType;
+  order: string | undefined;
 }
 
-export function placeBefore(current: Issue, other: Issue): void {
-  if (!other.order) {
-    other.order = LexoRank.middle().toString();
-  }
-  current.order = LexoRank.parse(other.order!).genPrev().toString();
+export function convertDataToIssue(data: IssueData): Issue {
+  const newIssue: Issue = new Issue(data.id);
+
+  newIssue.title = data.title;
+  newIssue.description = data.description;
+  newIssue.status = data.status;
+  newIssue.issueKey = data.issueKey;
+  newIssue.priority = data.priority;
+  newIssue.order = data.order;
+
+  return newIssue;
 }
 
 export class IssueResponse {

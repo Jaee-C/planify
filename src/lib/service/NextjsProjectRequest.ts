@@ -1,7 +1,7 @@
 import ProjectRequest from "./ProjectRequest";
 import { NextApiRequest } from "next";
 import AppError from "@/lib/service/AppError";
-import { INVALID_DATA_TYPES } from "@/lib/client-data/errors";
+import { INVALID_DATA_TYPES } from "@/lib/client-fetch/errors";
 
 export default class NextjsProjectRequest extends ProjectRequest {
   public constructor(req: NextApiRequest) {

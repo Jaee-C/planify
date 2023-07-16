@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 import TableToolbar from "@/components/Table/TableToolbar";
 import { IconContext } from "react-icons";
 import TableAlert from "@/components/Backlog/TableAlert";
-import { queryClient } from "@/lib/client-data/query";
+import { queryClient } from "@/lib/client-fetch/query";
 
 interface SidebarContextProps {
   action: (id: string) => void;

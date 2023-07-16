@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
 import { GridRowId, useGridApiContext } from "@mui/x-data-grid";
 import { PriorityType } from "@/lib/types";
-import { queryPriorities } from "@/lib/client-data/query";
+import { queryPriorities } from "@/lib/client-fetch/query";
 import { UseQueryResult } from "react-query";
 import React from "react";
 import { NONE_PRIORITY } from "@/lib/constants";

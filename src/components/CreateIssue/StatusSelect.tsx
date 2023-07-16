@@ -2,7 +2,7 @@ import * as React from "react";
 import { NextRouter, useRouter } from "next/router";
 import { UseQueryResult } from "react-query";
 import { StatusType } from "@/lib/types";
-import { queryStatuses } from "@/lib/client-data/query";
+import { queryStatuses } from "@/lib/client-fetch/query";
 import { verifyUrlParam } from "@/lib/utils";
 import StatusChip from "@/components/Form/StatusChip";
 import {

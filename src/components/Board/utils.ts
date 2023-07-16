@@ -1,5 +1,5 @@
 import { Issue, StatusType } from "@/lib/types";
-import { placeAfter, placeBefore } from "@/lib/types/Issue";
+import { compareIssue } from "@/lib/types/Issue";
 
 export interface ColumnDefinition {
   name: string;
@@ -13,7 +13,9 @@ export function getIssuesByStatus(
 ): Issue[] {
   if (!issues) return [];
 
-  return issues.filter((issue: Issue) => issue.status?.id === status.id);
+  return issues
+    .filter((issue: Issue) => issue.status?.id === status.id)
+    .sort(compareIssue);
 }
 
 export function clientUpdateIssue(issues: Issue[], update: Issue): Issue[] {
@@ -38,9 +40,9 @@ export function clientUpdateIssueStatus(
   edited.status = status;
 
   if (issueBefore) {
-    placeAfter(edited, issueBefore);
+    edited.placeAfter(issueBefore);
   } else if (issueAfter) {
-    placeBefore(edited, issueAfter);
+    edited.placeBefore(issueAfter);
   } else {
     edited.initializeOrder();
   }
