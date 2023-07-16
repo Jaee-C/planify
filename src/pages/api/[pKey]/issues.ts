@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Issue, IssueResponse } from "lib/types";
-import { IssueRequest, createIssueRequest } from "@/lib/types/Issue";
+import { IssueRequest, createIssueRequest } from "@/lib/service/Issue";
 import Project from "@/lib/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
