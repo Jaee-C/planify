@@ -1,4 +1,4 @@
-import AppError from "@/server/service/AppError";
+import AppError from "@/lib/service/AppError";
 import { Alert } from "@mui/material";
 import { useAtomValue, useSetAtom } from "jotai";
 import {

@@ -1,6 +1,8 @@
 import { Issue } from "@/lib/types";
 import { styled } from "@mui/material";
 import IssueList from "@/components/Board/IssueList";
+import { useEffect, useState } from "react";
+import { compareIssue } from "@/lib/types/Issue";
 
 // Column header
 const Header = styled("div")(() => ({
@@ -49,6 +51,11 @@ interface ColumnProps {
 }
 
 export default function Column(props: ColumnProps): JSX.Element {
+  const [sortedIssues, setSortedIssues] = useState<Issue[]>([]);
+
+  useEffect(() => {
+    setSortedIssues(props.issues.sort(compareIssue));
+  }, [props.issues]);
   return (
     <ColumnContainer>
       <Header>
@@ -56,7 +63,7 @@ export default function Column(props: ColumnProps): JSX.Element {
       </Header>
       <IssueList
         listId={props.title}
-        issues={props.issues}
+        issues={sortedIssues}
         internalScroll={props.isScrollable}
         isCombineEnabled={Boolean(props.isCombineEnabled)}
         useClone={Boolean(props.useClone)}

@@ -1,4 +1,4 @@
-import IssueRequest from "@/server/service/Issue/IssueRequest";
+import IssueRequest from "@/lib/service/Issue/IssueRequest";
 
 describe("saveStatus", (): void => {
   it("valid status", (): void => {

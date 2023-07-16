@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Issue, IssueResponse } from "lib/types";
-import { IssueRequest, NextjsIssueRequest } from "@/server/service/Issue";
-import Project from "@/server/service/Project";
+import { IssueRequest, createIssueRequest } from "@/lib/service/Issue";
+import Project from "@/lib/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
-import AppError from "@/server/service/AppError";
-import { INVALID_TOKEN } from "@/lib/data/errors";
+import AppError from "@/lib/service/AppError";
+import { INVALID_TOKEN } from "@/lib/client-data/errors";
 
 export default async function handler(
   req: NextApiRequest,
@@ -33,19 +33,19 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       const allIssues: Issue[] = await project.getAllIssues();
-      const response: IssueResponse = { data: allIssues };
+      const response: IssueResponse = new IssueResponse(allIssues);
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(response));
+      res.end(response.toJSONString());
       break;
     case "POST":
-      const request: IssueRequest = new NextjsIssueRequest(req);
+      const request: IssueRequest = createIssueRequest(req);
       try {
         const newIssue: Issue = await project.saveIssue(request);
-        const response: IssueResponse = { data: [newIssue] };
+        const response: IssueResponse = new IssueResponse([newIssue]);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.end(JSON.stringify(response));
+        res.end(response.toJSONString());
       } catch (e) {
         if (e instanceof AppError) {
           res.statusCode = 400;

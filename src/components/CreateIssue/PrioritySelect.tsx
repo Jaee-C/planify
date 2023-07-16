@@ -4,7 +4,7 @@ import { NextRouter, useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
 import React from "react";
 import { NONE_PRIORITY } from "@/lib/constants";
-import { queryPriorities } from "@/lib/data/query";
+import { queryPriorities } from "@/lib/client-data/query";
 import { UseQueryResult } from "react-query";
 import StyledSelect from "@/components/Form/FormSelectField";
 

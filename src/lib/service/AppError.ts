@@ -1,4 +1,4 @@
-import { UNKNOWN_ERROR } from "@/lib/data/errors";
+import { UNKNOWN_ERROR } from "@/lib/client-data/errors";
 
 export default class AppError extends Error {
   public readonly code: number;

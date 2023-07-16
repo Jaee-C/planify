@@ -5,13 +5,14 @@ import {
   DroppableProvided,
   DropResult,
 } from "@hello-pangea/dnd";
-import { queryIssuesConverted, queryStatuses } from "@/lib/data/query";
+import { queryIssuesConverted, queryStatuses } from "@/lib/client-data/query";
 import { verifyUrlParam } from "@/lib/utils";
 import {
   ColumnDefinition,
   findIssueKeyById,
   getIssuesByStatus,
-  updateIssueStatus,
+  clientUpdateIssueStatus,
+  clientUpdateIssue,
 } from "@/components/Board/utils";
 import { Issue, StatusType } from "@/lib/types";
 import Column from "@/components/Board/Column";
@@ -19,7 +20,7 @@ import { useRouter } from "next/router";
 import { styled } from "@mui/material";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import { useMutation } from "react-query";
-import { editIssue } from "@/lib/data/issues";
+import { editIssue } from "@/lib/client-data/issues";
 
 const Container = styled("div")(() => ({
   display: "inline-flex",
@@ -51,12 +52,7 @@ export default function Board(props: BoardProps): JSX.Element {
       await editIssue(projectKey, issueKey, data),
     {
       onSuccess: (updated: Issue) => {
-        const editedIssueId = String(updated.id);
-        const newIssues = updateIssueStatus(
-          editedIssueId,
-          allIssues,
-          updated.status
-        );
+        const newIssues = clientUpdateIssue(allIssues, updated);
         setAllIssues(newIssues);
       },
     }
@@ -79,7 +75,6 @@ export default function Board(props: BoardProps): JSX.Element {
 
   useEffect(() => {
     if (!issues || !statuses) return;
-
     setAllIssues(issues);
   }, [issues, statuses]);
 
@@ -119,17 +114,22 @@ export default function Board(props: BoardProps): JSX.Element {
       issueBefore = destIssues[issueDestIndex - 1];
     }
     if (issueDestIndex < destIssues.length - 1) {
-      issueAfter = destIssues[issueDestIndex + 1];
+      issueAfter = destIssues[issueDestIndex];
     }
 
-    const updated = updateIssueStatus(result.draggableId, allIssues, newStatus);
+    const [updated, order] = clientUpdateIssueStatus(
+      result.draggableId,
+      allIssues,
+      newStatus,
+      issueBefore,
+      issueAfter
+    );
     setAllIssues(updated);
     editIssueMutation.mutate([
       editedIssueKey,
       {
         status: newStatus.id,
-        beforeIssueKey: issueBefore?.issueKey,
-        afterIssueKey: issueAfter?.issueKey,
+        order: order,
       },
     ]);
   };

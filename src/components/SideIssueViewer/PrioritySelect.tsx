@@ -7,11 +7,11 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "react-query";
-import { queryPriorities } from "@/lib/data/query";
+import { queryPriorities } from "@/lib/client-data/query";
 import FormAutocomplete from "@/components/Form/FormAutocomplete";
 import * as React from "react";
 import { TextField } from "@mui/material";
-import { editIssue } from "@/lib/data/issues";
+import { editIssue } from "@/lib/client-data/issues";
 import { NONE_PRIORITY } from "@/lib/constants";
 import { SyntheticEvent } from "react";
 

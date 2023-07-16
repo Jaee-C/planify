@@ -1,5 +1,4 @@
-export { default as Issue } from "./Issue";
-export type { IssueResponse } from "./Issue";
+export { default as Issue, IssueResponse } from "./Issue";
 
 export { default as Project } from "./Project";
 

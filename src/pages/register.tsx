@@ -12,7 +12,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { useRouter } from "next/router";
-import AppError from "@/server/service/AppError";
+import AppError from "@/lib/service/AppError";
 import { useState } from "react";
 import { Alert } from "@mui/material";
 

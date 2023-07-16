@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Project from "@/server/service/Project";
+import Project from "@/lib/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
 import { Issue, IssueResponse } from "@/lib/types";
-import { IssueRequest } from "@/server/service/Issue";
-import AppError from "@/server/service/AppError";
+import { createIssueRequest, IssueRequest } from "@/lib/service/Issue";
+import AppError from "@/lib/service/AppError";
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,18 +27,14 @@ export default async function handler(
       }
       break;
     case "PUT":
-      const issueRequest: IssueRequest = new IssueRequest();
+      const issueRequest: IssueRequest = createIssueRequest(req);
       issueRequest.key = issueKey;
-      issueRequest.title = req.body.title;
-      issueRequest.description = req.body.description;
-      issueRequest.status = req.body.status;
-      issueRequest.priority = req.body.priority;
       try {
         const newIssue: Issue = await project.saveIssue(issueRequest);
-        const response: IssueResponse = { data: [newIssue] };
+        const response: IssueResponse = new IssueResponse([newIssue]);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.status(200).send(JSON.stringify(response));
+        res.status(200).send(response.toJSONString());
       } catch (e) {
         if (e instanceof AppError) {
           res.status(404).send(e.toJSONString());

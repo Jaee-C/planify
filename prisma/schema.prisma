@@ -34,6 +34,7 @@ model Issue {
   projectId   Int
   priority    PriorityType? @relation(fields: [priorityId], references: [id])
   priorityId  Int?
+  boardOrder  String?
 
   @@id([id, projectId])
 }

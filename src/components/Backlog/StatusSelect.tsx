@@ -4,7 +4,7 @@ import { MenuItem, Select, SelectChangeEvent, styled } from "@mui/material";
 import { UseQueryResult } from "react-query";
 import { verifyUrlParam } from "@/lib/utils";
 import { StatusType } from "@/lib/types";
-import { queryStatuses } from "@/lib/data/query";
+import { queryStatuses } from "@/lib/client-data/query";
 import StatusChip from "@/components/Form/StatusChip";
 import { GridRowId, useGridApiContext } from "@mui/x-data-grid";
 

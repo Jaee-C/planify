@@ -5,7 +5,7 @@ import {
   fetchPriorities,
   fetchStatuses,
   getIssue,
-} from "@/lib/data/issues";
+} from "@/lib/client-data/issues";
 import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
 
 export const queryClient: QueryClient = new QueryClient({

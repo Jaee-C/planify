@@ -1,6 +1,6 @@
 import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
-import { FormValues } from "@/components/CreateIssue/FormConstants";
-import AppError from "@/server/service/AppError";
+import AppError from "@/lib/service/AppError";
+import { IssueFormValues } from "@/lib/service/Issue/IssueRequest";
 
 export function toStatusString(
   status: number | undefined,
@@ -21,7 +21,7 @@ export async function serverDeleteIssue(
 
 export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
   if (pKey == undefined || Array.isArray(pKey)) {
-    return { data: [] };
+    return new IssueResponse([]);
   }
 
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
@@ -40,11 +40,12 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
     newIssue.status = item.status;
     newIssue.issueKey = item.issueKey;
     newIssue.priority = item.priority;
+    newIssue.order = item.order;
 
     return newIssue;
   });
 
-  return { data: issues };
+  return new IssueResponse(issues);
 }
 
 export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
@@ -115,7 +116,10 @@ export async function getIssue(
   return newIssue;
 }
 
-export async function addIssue(pKey: string, data: FormValues): Promise<any> {
+export async function addIssue(
+  pKey: string,
+  data: IssueFormValues
+): Promise<any> {
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
     method: "POST",
     headers: {
@@ -167,6 +171,7 @@ export async function editIssue(
   newIssue.status = jsonData.status;
   newIssue.issueKey = jsonData.issueKey;
   newIssue.priority = jsonData.priority;
+  newIssue.order = jsonData.order;
 
   return newIssue;
 }
