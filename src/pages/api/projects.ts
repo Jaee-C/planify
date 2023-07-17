@@ -4,10 +4,10 @@ import ProjectRepository from "@/server/domain/ProjectRepository";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { IProjectDB } from "@/server/domain/interfaces";
-import ProjectRequest from "@/server/service/ProjectRequest";
-import NextjsProjectRequest from "@/server/service/NextjsProjectRequest";
-import AppError from "@/server/service/AppError";
-import { INVALID_TOKEN } from "@/lib/data/errors";
+import ProjectRequest from "@/lib/service/ProjectRequest";
+import NextjsProjectRequest from "@/lib/service/NextjsProjectRequest";
+import AppError from "@/lib/service/AppError";
+import { INVALID_TOKEN } from "@/lib/client-fetch/errors";
 
 export default async function handler(
   req: NextApiRequest,

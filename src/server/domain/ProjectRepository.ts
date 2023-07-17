@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
 import { Project } from "lib/types";
 import { IProjectDB } from "./interfaces";
-import ProjectRequest from "@/server/service/ProjectRequest";
+import ProjectRequest from "@/lib/service/ProjectRequest";
 
 const projectSelect = {
   id: true,

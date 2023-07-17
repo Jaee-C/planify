@@ -14,7 +14,7 @@ import { IconContext } from "react-icons";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
 import { useMutation } from "react-query";
-import { editIssue, serverDeleteIssue } from "@/lib/data/issues";
+import { editIssue, serverDeleteIssue } from "@/lib/client-fetch/issues";
 import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
@@ -22,7 +22,7 @@ import {
   SidebarEditContext,
 } from "@/components/Backlog/index";
 import { verifyUrlParam } from "@/lib/utils";
-import { queryIssues, queryStatuses } from "@/lib/data/query";
+import { queryIssues, queryStatuses } from "@/lib/client-fetch/query";
 import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
 import PrioritySelect from "@/components/Backlog/PrioritySelect";
@@ -35,7 +35,8 @@ import {
   setBacklogErrorAtom,
 } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
-import AppError from "@/server/service/AppError";
+import AppError from "@/lib/service/AppError";
+import { IssueData } from "@/lib/types/Issue";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};
@@ -83,6 +84,7 @@ export default function BacklogTable(): JSX.Element {
     if (changes.priority) {
       changes.priority = changes.priority.id;
     }
+    changes.rowUnchanged = true;
     editIssueMutation.mutate([updatedRow.key, changes]);
     return updatedRow;
   };
@@ -93,8 +95,8 @@ export default function BacklogTable(): JSX.Element {
   // Load table rows
   React.useEffect((): void => {
     if (!isLoading && issues) {
-      if (issues.data.length > 0) {
-        const newRows: GridRowsProp = issues.data.map((row: Issue) => {
+      if (issues.length > 0) {
+        const newRows: GridRowsProp = issues.map((row: IssueData) => {
           return {
             id: row.id,
             key: row.issueKey,

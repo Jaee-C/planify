@@ -1,6 +1,7 @@
-import { Issue, IssueResponse, PriorityType, StatusType } from "lib/types";
-import { FormValues } from "@/components/CreateIssue/FormConstants";
-import AppError from "@/server/service/AppError";
+import { Issue, PriorityType, StatusType } from "lib/types";
+import AppError from "@/lib/service/AppError";
+import { IssueFormValues } from "@/lib/service/Issue/IssueRequest";
+import { IssueData } from "@/lib/types/Issue";
 
 export function toStatusString(
   status: number | undefined,
@@ -19,9 +20,9 @@ export async function serverDeleteIssue(
   return issueKey;
 }
 
-export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
+export async function fetchIssueList(pKey: string): Promise<IssueData[]> {
   if (pKey == undefined || Array.isArray(pKey)) {
-    return { data: [] };
+    return [];
   }
 
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
@@ -33,18 +34,16 @@ export async function fetchIssueList(pKey: string): Promise<IssueResponse> {
   }
 
   const json = await httpResponse.json();
-  const issues: Issue[] = json.data.map((item: any): Issue => {
-    const newIssue: Issue = new Issue(item.id);
-
-    newIssue.title = item.title;
-    newIssue.status = item.status;
-    newIssue.issueKey = item.issueKey;
-    newIssue.priority = item.priority;
-
-    return newIssue;
+  return json.data.map((item: any): IssueData => {
+    return {
+      id: item.id,
+      title: item.title,
+      status: item.status,
+      issueKey: item.issueKey,
+      priority: item.priority,
+      order: item.order,
+    };
   });
-
-  return { data: issues };
 }
 
 export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
@@ -115,7 +114,10 @@ export async function getIssue(
   return newIssue;
 }
 
-export async function addIssue(pKey: string, data: FormValues): Promise<any> {
+export async function addIssue(
+  pKey: string,
+  data: IssueFormValues
+): Promise<any> {
   const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
     method: "POST",
     headers: {
@@ -167,6 +169,7 @@ export async function editIssue(
   newIssue.status = jsonData.status;
   newIssue.issueKey = jsonData.issueKey;
   newIssue.priority = jsonData.priority;
+  newIssue.order = jsonData.order;
 
   return newIssue;
 }

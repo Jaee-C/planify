@@ -5,6 +5,8 @@ import TopNavigation, {
   NavigationPage,
 } from "@/components/TopNavigation/TopNavigation";
 import BacklogContent from "@/components/Backlog";
+import SideNavigation from "@/components/SideNavigationBar/SideNavigation";
+import { PageType } from "@/lib/types";
 
 export default function BacklogPage(): JSX.Element {
   return (
@@ -18,6 +20,7 @@ export default function BacklogPage(): JSX.Element {
             minHeight: "400px",
             maxWidth: "100%",
           }}>
+          <SideNavigation currentPage={PageType.BACKLOG} />
           <BacklogContent />
         </div>
       </ProSidebarProvider>

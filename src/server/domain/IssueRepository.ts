@@ -1,18 +1,19 @@
-import IssueRequest from "@/server/service/Issue/IssueRequest";
+import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
 import { Issue } from "lib/types";
 import { IIssueDB } from "./interfaces";
-import AppError from "@/server/service/AppError";
+import AppError from "@/lib/service/AppError";
 import {
   INVALID_DATA_TYPES,
   INVALID_SELECT,
   NOT_FOUND_IN_DB,
-} from "@/lib/data/errors";
+} from "@/lib/client-fetch/errors";
 
 const issueSelect = {
   id: true,
   title: true,
+  boardOrder: true,
   status: {
     select: {
       id: true,
@@ -129,7 +130,7 @@ export default class IssueRepository implements IIssueDB {
 
     try {
       payload = await prisma.issue.create({
-        data: this.createIssue(issueCount, req.title, req.status, req),
+        data: this.createDBIssue(issueCount, req.title, req.status, req),
         select: issueSelect,
       });
     } catch (e) {
@@ -180,6 +181,7 @@ export default class IssueRepository implements IIssueDB {
           description: req.description,
           statusId: req.status,
           priorityId: req.priority,
+          boardOrder: req.order,
         },
       });
     } catch (e) {
@@ -249,6 +251,7 @@ export default class IssueRepository implements IIssueDB {
     if ("description" in payload && payload.description) {
       result.description = payload.description;
     }
+    if (payload.boardOrder) result.order = payload.boardOrder;
 
     return result;
   }
@@ -261,7 +264,7 @@ export default class IssueRepository implements IIssueDB {
    * @param {IssueRequest} [req] remaining (optional) request values
    * @private
    */
-  private createIssue(
+  private createDBIssue(
     id: number,
     title: string,
     status?: number,

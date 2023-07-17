@@ -1,6 +1,6 @@
 import IssueRepository from "@/server/domain/IssueRepository";
-import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { Issue, StatusType, PriorityType } from "lib/types";
+import IssueRequest from "@/lib/service/Issue/IssueRequest";
+import { Issue } from "@/lib/types";
 import { IIssueDB } from "@/server/domain/interfaces";
 import StatusRepository from "@/server/domain/StatusRepository";
 

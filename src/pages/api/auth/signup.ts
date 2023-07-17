@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import userRegister from "@/lib/auth/UserAuth";
 import { NewUser } from "@/lib/types/User";
-import AppError from "@/server/service/AppError";
-import { USER_CREATION_ERROR, USERNAME_TAKEN } from "@/lib/data/errors";
+import AppError from "@/lib/service/AppError";
+import { USER_CREATION_ERROR, USERNAME_TAKEN } from "@/lib/client-fetch/errors";
 
 export default async function handler(
   req: NextApiRequest,

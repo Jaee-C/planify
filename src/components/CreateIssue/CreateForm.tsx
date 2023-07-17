@@ -4,7 +4,7 @@ import { NextRouter, useRouter } from "next/router";
 import { useMutation } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { Alert, Button, Divider, Grid, styled } from "@mui/material";
-import { addIssue } from "@/lib/data/issues";
+import { addIssue } from "@/lib/client-fetch/issues";
 import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
 import FormTextField from "../Form/FormTextField";
@@ -15,8 +15,9 @@ import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
 import { useSetAtom } from "jotai";
 import { addOneIssueAtom } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
-import AppError from "@/server/service/AppError";
+import AppError from "@/lib/service/AppError";
 import { LoadingButton } from "@mui/lab";
+import { IssueFormValues } from "@/lib/service/Issue/IssueRequest";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -36,7 +37,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const { pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
   const newIssueMutation = useMutation(
-    (data: FormValues) => addIssue(projectKey, data),
+    (data: IssueFormValues) => addIssue(projectKey, data),
     {
       onError: (err: AppError): void => {
         setError(err);
@@ -47,7 +48,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
   const [error, setError] = React.useState<AppError | null>(null);
   const [formSubmit, setFormSubmit] = React.useState<boolean>(false);
 
-  const baseForm: FormValues = EMPTY_FORM;
+  const baseForm: IssueFormValues = EMPTY_FORM;
 
   const issueValidation = yup.object({
     title: yup.string().required("Enter a title"),
@@ -56,10 +57,10 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
     priority: yup.number().optional(),
   });
 
-  const formik: FormikProps<FormValues> = useFormik<FormValues>({
+  const formik: FormikProps<IssueFormValues> = useFormik<IssueFormValues>({
     initialValues: baseForm,
     validationSchema: issueValidation,
-    onSubmit: (values: FormValues): void => {
+    onSubmit: (values: IssueFormValues): void => {
       if (values.priority === -1) {
         delete values.priority;
       }
