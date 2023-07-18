@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
 import { NewUser, User } from "@/lib/types/User";
 import { IUserDB } from "@/server/domain/interfaces";
-import { USER_CREATION_ERROR } from "@/lib/client-fetch/errors";
+import { USER_CREATION_ERROR } from "@/lib/client-data/errors";
 import AppError from "@/lib/service/AppError";
 
 const userSelect = {

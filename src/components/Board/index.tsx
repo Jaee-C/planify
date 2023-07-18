@@ -1,7 +1,7 @@
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import Board from "@/components/Board/Board";
 import { QueryClientProvider } from "react-query";
-import { queryClient } from "@/lib/client-fetch/query";
+import { queryClient } from "@/lib/client-data/query";
 import BoardHeader from "@/components/Board/BoardHeader";
 
 interface Props {

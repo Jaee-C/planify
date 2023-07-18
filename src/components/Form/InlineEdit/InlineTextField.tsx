@@ -6,9 +6,10 @@ import { css, jsx } from "@emotion/react";
 import Buttons from "./Buttons";
 import useButtonFocusHook from "./use-button-focus-hook";
 import ReadView from "./ReadView";
-import { TextField } from "@mui/material";
-import { Form, Formik, FormikProps, useFormik } from "formik";
+import { TextFieldProps } from "@mui/material";
+import { useFormik } from "formik";
 import * as Yup from "yup";
+import DefaultEditView from "@/components/Form/InlineEdit/DefaultEditView";
 
 const inputStyles = css({
   maxWidth: "100%",
@@ -20,6 +21,11 @@ const buttonStyles = css({
 });
 
 interface InlineEditProps {
+  /** The component shown when user is editing (when the inline edit is not in `readView`). */
+  editView?: (
+    fieldProps: TextFieldProps,
+    ref: React.RefObject<any>
+  ) => React.ReactNode;
   /** Sets whether the component shows the `readView` or the `editView`. This is used to manage the state of the input in stateless inline edit. */
   isEditing?: boolean;
   startWithEditViewOpen?: boolean;
@@ -54,6 +60,9 @@ const noop = (): void => {};
 
 export default function InlineTextField(props: InlineEditProps): JSX.Element {
   const {
+    editView = (fieldProps: TextFieldProps, ref: React.RefObject<any>) => (
+      <DefaultEditView {...fieldProps} inputRef={ref} />
+    ),
     startWithEditViewOpen = false,
     keepEditViewOpenOnBlur = false,
     hideActionButtons = false,
@@ -229,24 +238,20 @@ export default function InlineTextField(props: InlineEditProps): JSX.Element {
       ref={formRef}>
       {shouldBeEditing ? (
         <div css={inputStyles}>
-          <TextField
-            autoFocus
-            value={formik.values.inlineEdit}
-            required={isRequired}
-            name="inlineEdit"
-            onChange={formik.handleChange}
-            onFocus={onEditViewWrapperFocus}
-            key="edit-view" // used for reset to default value
-            sx={[
-              {
-                "& .MuiOutlinedInput-input": {
-                  padding: "8px 6px",
-                },
-              },
-            ]}
-            multiline={multiline}
-            fullWidth
-          />
+          {editView(
+            {
+              value: formik.values.inlineEdit,
+              name: "inlineEdit",
+              required: isRequired,
+              autoFocus: true,
+              onChange: formik.handleChange,
+              onFocus: onEditViewWrapperFocus,
+              key: "edit-view",
+              multiline: multiline,
+              fullWidth: true,
+            },
+            editViewRef
+          )}
           {!hideActionButtons ? (
             <Buttons
               cancelButtonLabel={cancelButtonLabel}

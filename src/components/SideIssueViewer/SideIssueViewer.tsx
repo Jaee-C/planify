@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { Divider, Grid, styled, Typography } from "@mui/material";
 import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
-import { queryIssue } from "@/lib/client-fetch/query";
+import { queryIssue } from "@/lib/client-data/query";
 import { SidebarEditContext } from "@/components/Backlog";
 import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 import {
@@ -14,7 +14,7 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "react-query";
-import { editIssue } from "@/lib/client-fetch/issues";
+import { editIssue } from "@/lib/client-data/issues";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
 

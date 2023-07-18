@@ -8,7 +8,7 @@ import {
   INVALID_DATA_TYPES,
   INVALID_SELECT,
   NOT_FOUND_IN_DB,
-} from "@/lib/client-fetch/errors";
+} from "@/lib/client-data/errors";
 
 const issueSelect = {
   id: true,

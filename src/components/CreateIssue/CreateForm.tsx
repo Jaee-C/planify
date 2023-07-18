@@ -4,7 +4,7 @@ import { NextRouter, useRouter } from "next/router";
 import { useMutation } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { Alert, Button, Divider, Grid, styled } from "@mui/material";
-import { addIssue } from "@/lib/client-fetch/issues";
+import { addIssue } from "@/lib/client-data/issues";
 import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
 import FormTextField from "../Form/FormTextField";
