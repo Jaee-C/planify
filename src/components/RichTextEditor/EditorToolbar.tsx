@@ -73,8 +73,11 @@ import { getSelectedNode } from "./utils/getSelectedNode";
 import { sanitizeUrl } from "./utils/url";
 
 import {
+  BsArrowClockwise,
+  BsArrowCounterclockwise,
   BsCheckSquare,
   BsCode,
+  BsDashLg,
   BsLink,
   BsListOl,
   BsListUl,
@@ -84,6 +87,8 @@ import {
   BsSuperscript,
   BsTable,
   BsTextCenter,
+  BsTextIndentLeft,
+  BsTextIndentRight,
   BsTextLeft,
   BsTextParagraph,
   BsTextRight,
@@ -214,7 +219,8 @@ function BlockFormatDropDown({
     }
   };
 
-  const formatBulletList = () => {
+  const formatBulletList = (): void => {
+    console.log("Bullet");
     if (blockType !== "bullet") {
       editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
     } else {
@@ -615,7 +621,7 @@ export default function ToolbarPlugin(): JSX.Element {
 
   return (
     <div className={styles.toolbar}>
-      <button
+      <ToolbarButton
         disabled={!canUndo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -624,9 +630,9 @@ export default function ToolbarPlugin(): JSX.Element {
         type="button"
         className="toolbar-item spaced"
         aria-label="Undo">
-        <i className="format undo" />
-      </button>
-      <button
+        <BsArrowCounterclockwise />
+      </ToolbarButton>
+      <ToolbarButton
         disabled={!canRedo || !isEditable}
         onClick={() => {
           activeEditor.dispatchCommand(REDO_COMMAND, undefined);
@@ -635,8 +641,8 @@ export default function ToolbarPlugin(): JSX.Element {
         type="button"
         className="toolbar-item"
         aria-label="Redo">
-        <i className="format redo" />
-      </button>
+        <BsArrowClockwise />
+      </ToolbarButton>
       <Divider />
       {blockType in blockTypeToBlockName && activeEditor === editor && (
         <>
@@ -806,8 +812,8 @@ export default function ToolbarPlugin(): JSX.Element {
                   INSERT_HORIZONTAL_RULE_COMMAND,
                   undefined
                 );
-              }}>
-              <i className="icon horizontal-rule" />
+              }}
+              icon={<BsDashLg />}>
               <span className="text">Horizontal Rule</span>
             </DropDownItem>
           </DropDown>
@@ -852,15 +858,15 @@ export default function ToolbarPlugin(): JSX.Element {
         <DropDownItem
           onClick={() => {
             activeEditor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
-          }}>
-          <i className={"icon " + (isRTL ? "indent" : "outdent")} />
+          }}
+          icon={<BsTextIndentRight />}>
           <span className="text">Outdent</span>
         </DropDownItem>
         <DropDownItem
           onClick={() => {
             activeEditor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
-          }}>
-          <i className={"icon " + (isRTL ? "outdent" : "indent")} />
+          }}
+          icon={<BsTextIndentLeft />}>
           <span className="text">Indent</span>
         </DropDownItem>
       </DropDown>

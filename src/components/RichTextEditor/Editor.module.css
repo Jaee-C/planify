@@ -1,9 +1,45 @@
-/** Editor text field styles. Class names defined in the `theme` object */
+/** Editor container styling */
+.editorContainer {
+    width: 100%;
+    height: 400px;
+    padding: 8px 12px;
+    border-top: 1px solid lightgray;
+    box-shadow: none;
+}
+.editorContainer:focus-visible {
+    outline: none;
+}
+
+
+/** Styles for content within the editor. Class names defined in the `theme` object */
 .editorBold {
     font-weight: bold;
 }
 .editorItalic {
     font-style: italic;
+}
+.editorUnderline {
+    text-decoration: underline;
+}
+.editorUnderlineStrikethrough {
+    text-decoration: underline line-through;
+}
+.editorStrikethrough {
+    text-decoration: line-through;
+}
+.editorSubscript {
+    font-size: 0.8em;
+    vertical-align: sub !important;
+}
+.editorSuperscript {
+    font-size: 0.8em;
+    vertical-align: super;
+}
+.editorTextCode {
+    background-color: rgb(240, 242, 245);
+    padding: 1px 0.25rem;
+    font-family: Menlo, Consolas, Monaco, monospace;
+    font-size: 94%;
 }
 
 .editorH1 {
@@ -11,4 +47,130 @@
     color: rgb(5, 5, 5);
     font-weight: 400;
     margin: 0;
+}
+.editorH2 {
+    font-size: 15px;
+    color: rgb(101, 103, 107);
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+}
+.editorH3 {
+    font-size: 12px;
+    margin: 0;
+    text-transform: uppercase;
+}
+.editorParagraph {
+    margin: 0;
+    position: relative;
+}
+.editorQuote {
+    margin: 0 0 10px 20px;
+    font-size: 15px;
+    color: rgb(101, 103, 107);
+    border-left-color: rgb(206, 208, 212);
+    border-left-width: 4px;
+    border-left-style: solid;
+    padding-left: 16px;
+}
+.editorListItem {
+    margin: 0 32px;
+}
+.editorListItemChecked,
+.editorListItemUnchecked {
+    position: relative;
+    margin-left: 8px;
+    margin-right: 8px;
+    padding-left: 24px;
+    padding-right: 24px;
+    list-style-type: none;
+    outline: none;
+}
+.editorListItemChecked {
+    text-decoration: line-through;
+}
+.editorListItemChecked:before,
+.editorListItemUnchecked:before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    top: 2px;
+    left: 0;
+    cursor: pointer;
+    display: block;
+    background-size: cover;
+    position: absolute;
+}
+.editorListItemChecked:focus:before,
+.editorListItemUnchecked:focus:before {
+    box-shadow: 0 0 0 2px #a6cdfe;
+    border-radius: 2px;
+}
+.editorListItemUnchecked:before {
+    border: 1px solid #999;
+    border-radius: 2px;
+}
+.editorListItemChecked:before{
+    border: 1px solid rgb(61, 135, 245);
+    border-radius: 2px;
+    background-color: #3d87f5;
+    background-repeat: no-repeat;
+}
+.editorListItemChecked:after {
+    content: '';
+    cursor: pointer;
+    border-color: #fff;
+    border-style: solid;
+    position: absolute;
+    display: block;
+    top: 6px;
+    width: 3px;
+    left: 7px;
+    right: 7px;
+    height: 6px;
+    transform: rotate(45deg);
+    border-width: 0 2px 2px 0;
+}
+.editorNestedListItem {
+    list-style-type: none;
+}
+.editorNestedListItem:before,
+.editorNestedListItem:after {
+    display: none;
+}
+.editorUl {
+    padding: 0;
+    margin: 0;
+    list-style-type: disc;
+    list-style-position: inside;
+}
+.editorOl1 {
+    padding: 0;
+    margin: 0;
+    list-style-type: decimal;
+    list-style-position: inside;
+}
+.editorOl2 {
+    padding: 0;
+    margin: 0;
+    list-style-type: upper-alpha;
+    list-style-position: inside;
+}
+.editorOl3 {
+    padding: 0;
+    margin: 0;
+    list-style-type: lower-alpha;
+    list-style-position: inside;
+}
+.editorOl4 {
+    padding: 0;
+    margin: 0;
+    list-style-type: upper-roman;
+    list-style-position: inside;
+}
+.editorOl5 {
+    padding: 0;
+    margin: 0;
+    list-style-type: lower-roman;
+    list-style-position: inside;
 }

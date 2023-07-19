@@ -17,7 +17,6 @@ export default function CreateProjectDialog(): JSX.Element {
 
   useEffect(() => {
     setOpen(createProjectContext.value);
-    console.log(createProjectContext.value);
   }, [createProjectContext]);
 
   return (

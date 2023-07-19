@@ -1,7 +1,8 @@
-import { Button, styled } from "@mui/material";
+import { Button, ButtonProps, styled } from "@mui/material";
 import colors from "tailwindcss/colors";
+import { PropsWithChildren } from "react";
 
-const ToolbarButton = styled(Button)(() => ({
+const StyledButton = styled(Button)(() => ({
   color: colors.gray[500],
   fontWeight: 400,
   fontSize: "18px",
@@ -18,4 +19,12 @@ const ToolbarButton = styled(Button)(() => ({
   },
 }));
 
-export default ToolbarButton;
+export default function ToolbarButton(
+  props: ButtonProps & PropsWithChildren
+): JSX.Element {
+  return (
+    <StyledButton {...props} disableRipple>
+      {props.children}
+    </StyledButton>
+  );
+}

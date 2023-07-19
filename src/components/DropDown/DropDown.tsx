@@ -52,14 +52,16 @@ export default function DropDown(
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
         endIcon={<BsChevronDown />}
-        startIcon={props.buttonIcon}>
+        startIcon={props.buttonIcon}
+        disableRipple>
         {props.buttonLabel}
       </DropDownButton>
       <Menu
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}
-        transitionDuration={0}>
+        transitionDuration={0}
+        className="rounded">
         {props.children}
       </Menu>
     </>
