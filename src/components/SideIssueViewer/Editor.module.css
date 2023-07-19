@@ -2,14 +2,21 @@
 .editorContainer {
     width: 100%;
     min-height: 25px;
-    padding: 8px 12px;
+    padding: 20px;
     box-shadow: none;
+    border-radius: 4px;
+}
+.editorContainer:hover {
+    background-color: theme(colors.gray.100);
 }
 .editorContainer:focus-visible {
     outline: none;
 }
 .editorContainer.expanded {
-    min-height: 200px;
+    min-height: 150px;
+}
+.editorContainer.expanded:hover {
+    background-color: transparent;
 }
 .editorPlaceholder {
     position: absolute;

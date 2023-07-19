@@ -37,7 +37,9 @@ export default function SaveEditorPlugin(
   return (
     <div className={display + " w-full justify-end"}>
       <Button onClick={cancel}>Cancel</Button>
-      <Button onClick={save}>Save</Button>
+      <Button onClick={save} variant="contained">
+        Save
+      </Button>
     </div>
   );
 }
