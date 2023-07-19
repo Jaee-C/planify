@@ -1,39 +1,71 @@
+import { EditorState } from "lexical";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
-import { PlainTextPlugin } from "@lexical/react/LexicalPlainTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
-import { $getRoot, EditorState } from "lexical";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { HeadingNode } from "@lexical/rich-text";
 
-interface Props {}
+import styles from "./Editor.module.css";
+import { styled } from "@mui/material";
+import colors from "tailwindcss/colors";
+import EditorToolbarPlugin from "./EditorToolbar";
 
-const theme = {};
+const EditorContainer = styled("div")(() => ({
+  position: "relative",
+}));
+
+const Placeholder = styled("div")(() => ({
+  position: "absolute",
+  top: "48px",
+  left: "16px",
+  color: colors.gray[400],
+}));
+
+interface Props {
+  placeholder?: string;
+}
+
+const theme = {
+  heading: {
+    h1: styles.editorH1,
+  },
+  text: {
+    bold: styles.editorBold,
+    italic: styles.editorItalic,
+  },
+};
 
 function onError(error: Error): void {
   console.error(error);
 }
 
-function onChange(editor: EditorState): void {
-  console.log(editor);
-}
+function onChange(editor: EditorState): void {}
 
 export default function Editor(props: Props): JSX.Element {
+  const { placeholder = "Enter some text" } = props;
   const initialConfig = {
     namespace: "MyEditor",
     theme,
     onError,
+    nodes: [HeadingNode],
   };
 
   return (
-    <LexicalComposer initialConfig={initialConfig}>
-      <PlainTextPlugin
-        contentEditable={<ContentEditable />}
-        placeholder={<div>Enter some text...</div>}
-        ErrorBoundary={LexicalErrorBoundary}
-      />
-      <HistoryPlugin />
-      <OnChangePlugin onChange={onChange} />
-    </LexicalComposer>
+    <EditorContainer>
+      <LexicalComposer initialConfig={initialConfig}>
+        <EditorToolbarPlugin />
+        <RichTextPlugin
+          contentEditable={
+            <ContentEditable className="w-full h-80 px-3 py-2" />
+          }
+          placeholder={<Placeholder>{placeholder}</Placeholder>}
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+        <HistoryPlugin />
+        <OnChangePlugin onChange={onChange} />
+      </LexicalComposer>
+    </EditorContainer>
   );
 }

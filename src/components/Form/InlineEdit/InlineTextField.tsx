@@ -4,7 +4,7 @@ import React, { useCallback, useRef, useState, useEffect } from "react";
 import { css, jsx } from "@emotion/react";
 
 import Buttons from "./Buttons";
-import useButtonFocusHook from "./use-button-focus-hook";
+import useButtonFocusHook from "../../../hooks/use-button-focus-hook";
 import ReadView from "./ReadView";
 import { TextFieldProps } from "@mui/material";
 import { useFormik } from "formik";

@@ -2,8 +2,9 @@ import "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Button, Card } from "@mui/material";
 import ProjectTable from "@/components/Projects/ProjectTable";
-import { createContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import TableToolbar from "@/components/Table/TableToolbar";
+import RichTextEditor from "@/components/RichTextEditor/Editor";
 
 const queryClient: QueryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ export default function ProjectsPage(): JSX.Element {
             <ProjectTable />
           </CreateProjectContext.Provider>
         </Card>
+        <RichTextEditor />
       </div>
     </QueryClientProvider>
   );

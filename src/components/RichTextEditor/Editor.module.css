@@ -1,0 +1,14 @@
+/** Editor text field styles. Class names defined in the `theme` object */
+.editorBold {
+    font-weight: bold;
+}
+.editorItalic {
+    font-style: italic;
+}
+
+.editorH1 {
+    font-size: 24px;
+    color: rgb(5, 5, 5);
+    font-weight: 400;
+    margin: 0;
+}
