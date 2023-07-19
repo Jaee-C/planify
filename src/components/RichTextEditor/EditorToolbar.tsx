@@ -348,7 +348,7 @@ function Divider(): JSX.Element {
   return <div className="divider" />;
 }
 
-export default function ToolbarPlugin(): JSX.Element {
+export default function ToolbarPlugin(): JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   const [activeEditor, setActiveEditor] = useState(editor);
   const [blockType, setBlockType] =
@@ -619,11 +619,15 @@ export default function ToolbarPlugin(): JSX.Element {
     [activeEditor, selectedElementKey]
   );
 
+  if (!editor.isEditable()) {
+    return null;
+  }
+
   return (
     <div className={styles.toolbar}>
       <ToolbarButton
         disabled={!canUndo || !isEditable}
-        onClick={() => {
+        onClick={(): void => {
           activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
         }}
         title={IS_APPLE ? "Undo (⌘Z)" : "Undo (Ctrl+Z)"}

@@ -19,6 +19,8 @@ import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
 
 // No SSR for toolbar, since keyboard shortcut hints depends on client type
 import dynamic from "next/dynamic";
+import SaveEditorPlugin from "./plugins/SaveEditorPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 const EditorToolbarPlugin = dynamic(() => import("./EditorToolbar"), {
   ssr: false,
 });
@@ -27,12 +29,16 @@ const EditorContainer = styled("div")(() => ({
   position: "relative",
 }));
 
-const Placeholder = styled("div")(() => ({
-  position: "absolute",
-  top: "46px",
-  left: "16px",
-  color: colors.gray[400],
-}));
+function MyContentEditable(props: any): JSX.Element {
+  const [editor] = useLexicalComposerContext();
+  return (
+    <ContentEditable
+      {...props}
+      onClick={(): void => editor.setEditable(true)}
+      onBlur={(): void => editor.setEditable(false)}
+    />
+  );
+}
 
 interface Props {
   placeholder?: string;
@@ -82,6 +88,7 @@ function onChange(editor: EditorState): void {}
 export default function Editor(props: Props): JSX.Element {
   const { placeholder = "Enter some text" } = props;
   const initialConfig = {
+    editable: false,
     namespace: "MyEditor",
     theme,
     onError,
@@ -103,15 +110,22 @@ export default function Editor(props: Props): JSX.Element {
         <EditorToolbarPlugin />
         <RichTextPlugin
           contentEditable={
-            <ContentEditable className={styles.editorContainer} />
+            <MyContentEditable className={styles.editorContainer} />
           }
-          placeholder={<Placeholder>{placeholder}</Placeholder>}
+          placeholder={
+            <div className={styles.editorPlaceholder}>{placeholder}</div>
+          }
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
         <ListPlugin />
         <CheckListPlugin />
         <OnChangePlugin onChange={onChange} />
+        <SaveEditorPlugin
+          onSave={(data: string): void => {
+            console.log(data);
+          }}
+        />
       </LexicalComposer>
     </EditorContainer>
   );

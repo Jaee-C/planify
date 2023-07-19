@@ -3,11 +3,17 @@
     width: 100%;
     height: 400px;
     padding: 8px 12px;
-    border-top: 1px solid lightgray;
     box-shadow: none;
 }
 .editorContainer:focus-visible {
     outline: none;
+}
+.editorPlaceholder {
+    position: absolute;
+    top: 46px;
+    left: 16px;
+    pointer-events: none;
+    color: theme(colors.gray.400);
 }
 
 
