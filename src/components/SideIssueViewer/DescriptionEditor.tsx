@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { EditorState } from "lexical";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -5,6 +6,7 @@ import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeHighlightNode, CodeNode } from "@lexical/code";
@@ -13,17 +15,21 @@ import { AutoLinkNode, LinkNode } from "@lexical/link";
 
 import styles from "./Editor.module.css";
 import { styled } from "@mui/material";
-import colors from "tailwindcss/colors";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
+import SaveEditorPlugin from "../RichTextEditor/plugins/SaveEditorPlugin";
+import EditorTheme from "@/components/RichTextEditor/themes/EditorTheme";
 
 // No SSR for toolbar, since keyboard shortcut hints depends on client type
 import dynamic from "next/dynamic";
-import SaveEditorPlugin from "./plugins/SaveEditorPlugin";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-const EditorToolbarPlugin = dynamic(() => import("./EditorToolbar"), {
-  ssr: false,
-});
+import Placeholder from "@/components/RichTextEditor/Placeholder";
+import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
+const EditorToolbarPlugin = dynamic(
+  () => import("../RichTextEditor/EditorToolbar"),
+  {
+    ssr: false,
+  }
+);
 
 const EditorContainer = styled("div")(() => ({
   position: "relative",
@@ -31,11 +37,21 @@ const EditorContainer = styled("div")(() => ({
 
 function MyContentEditable(props: any): JSX.Element {
   const [editor] = useLexicalComposerContext();
+  const [expanded, setExpanded] = useState<boolean>(false);
+
+  editor.registerEditableListener((editable: boolean) => {
+    if (editable) {
+      setExpanded(true);
+    } else {
+      setExpanded(false);
+    }
+  });
   return (
     <ContentEditable
       {...props}
       onClick={(): void => editor.setEditable(true)}
       onBlur={(): void => editor.setEditable(false)}
+      className={`${styles.editorContainer} ${expanded ? styles.expanded : ""}`}
     />
   );
 }
@@ -44,53 +60,18 @@ interface Props {
   placeholder?: string;
 }
 
-const theme = {
-  heading: {
-    h1: styles.editorH1,
-    h2: styles.editorH2,
-    h3: styles.editorH3,
-  },
-  paragraph: styles.editorParagraph,
-  quote: styles.editorQuote,
-  text: {
-    bold: styles.editorBold,
-    italic: styles.editorItalic,
-    underline: styles.editorUnderline,
-    code: styles.editorTextCode,
-    subscript: styles.editorSubscript,
-    superscript: styles.editorSuperscript,
-    underlineStrikethrough: styles.editorUnderlineStrikethrough,
-  },
-  list: {
-    listitem: styles.editorListItem,
-    listitemChecked: styles.editorListItemChecked,
-    listitemUnchecked: styles.editorListItemUnchecked,
-    nested: {
-      listitem: styles.editorNestedListItem,
-    },
-    olDepth: [
-      styles.editorOl1,
-      styles.editorOl2,
-      styles.editorOl3,
-      styles.editorOl4,
-      styles.editorOl5,
-    ],
-    ul: styles.editorUl,
-  },
-};
-
 function onError(error: Error): void {
   console.error(error);
 }
 
 function onChange(editor: EditorState): void {}
 
-export default function Editor(props: Props): JSX.Element {
+export default function DescriptionEditor(props: Props): JSX.Element {
   const { placeholder = "Enter some text" } = props;
   const initialConfig = {
     editable: false,
     namespace: "MyEditor",
-    theme,
+    theme: EditorTheme,
     onError,
     nodes: [
       HeadingNode,
@@ -109,18 +90,15 @@ export default function Editor(props: Props): JSX.Element {
       <LexicalComposer initialConfig={initialConfig}>
         <EditorToolbarPlugin />
         <RichTextPlugin
-          contentEditable={
-            <MyContentEditable className={styles.editorContainer} />
-          }
-          placeholder={
-            <div className={styles.editorPlaceholder}>{placeholder}</div>
-          }
+          contentEditable={<MyContentEditable />}
+          placeholder={<Placeholder>{placeholder}</Placeholder>}
           ErrorBoundary={LexicalErrorBoundary}
         />
         <HistoryPlugin />
         <ListPlugin />
         <CheckListPlugin />
         <OnChangePlugin onChange={onChange} />
+        <ClearEditorPlugin />
         <SaveEditorPlugin
           onSave={(data: string): void => {
             console.log(data);

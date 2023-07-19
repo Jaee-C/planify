@@ -1,5 +1,5 @@
 import React from "react";
-import { EditorState } from "lexical";
+import { CLEAR_EDITOR_COMMAND, EditorState } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { Button } from "@mui/material";
@@ -21,6 +21,11 @@ export default function SaveEditorPlugin(
     onSave(JSON.stringify(state));
   }, [onSave]);
 
+  const cancel = () => {
+    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+    editor.setEditable(false);
+  };
+
   editor.registerEditableListener((editable: boolean) => {
     if (editable) {
       setDisplay("flex");
@@ -31,7 +36,7 @@ export default function SaveEditorPlugin(
 
   return (
     <div className={display + " w-full justify-end"}>
-      <Button onClick={(): void => editor.setEditable(false)}>Cancel</Button>
+      <Button onClick={cancel}>Cancel</Button>
       <Button onClick={save}>Save</Button>
     </div>
   );

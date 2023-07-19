@@ -20,10 +20,10 @@ const StyledButton = styled(Button)(() => ({
 }));
 
 export default function ToolbarButton(
-  props: ButtonProps & PropsWithChildren
+  props: { className?: string } & ButtonProps & PropsWithChildren
 ): JSX.Element {
   return (
-    <StyledButton {...props} disableRipple>
+    <StyledButton {...props} disableRipple className={props.className}>
       {props.children}
     </StyledButton>
   );

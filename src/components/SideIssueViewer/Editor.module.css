@@ -1,0 +1,20 @@
+/** Editor container styling */
+.editorContainer {
+    width: 100%;
+    min-height: 25px;
+    padding: 8px 12px;
+    box-shadow: none;
+}
+.editorContainer:focus-visible {
+    outline: none;
+}
+.editorContainer.expanded {
+    min-height: 200px;
+}
+.editorPlaceholder {
+    position: absolute;
+    top: 46px;
+    left: 16px;
+    pointer-events: none;
+    color: theme(colors.gray.400);
+}

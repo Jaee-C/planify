@@ -6,6 +6,7 @@ interface DropDownItemProps {
   icon?: React.ReactNode;
   title?: string;
   selected?: boolean;
+  className?: string;
 }
 
 export default function DropDownItem(
@@ -14,6 +15,7 @@ export default function DropDownItem(
   return (
     <MenuItem
       dense
+      className={props.className}
       onClick={props.onClick}
       title={props.title}
       selected={props.selected}>

@@ -102,7 +102,7 @@ import {
   BsTypeStrikethrough,
   BsTypeUnderline,
 } from "react-icons/bs";
-import { Button } from "@mui/material";
+import { IconContext } from "react-icons";
 import ToolbarButton from "@/components/RichTextEditor/ToolbarButton";
 
 const blockTypeToBlockName = {
@@ -624,258 +624,273 @@ export default function ToolbarPlugin(): JSX.Element | null {
   }
 
   return (
-    <div className={styles.toolbar}>
-      <ToolbarButton
-        disabled={!canUndo || !isEditable}
-        onClick={(): void => {
-          activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
-        }}
-        title={IS_APPLE ? "Undo (⌘Z)" : "Undo (Ctrl+Z)"}
-        type="button"
-        className="toolbar-item spaced"
-        aria-label="Undo">
-        <BsArrowCounterclockwise />
-      </ToolbarButton>
-      <ToolbarButton
-        disabled={!canRedo || !isEditable}
-        onClick={() => {
-          activeEditor.dispatchCommand(REDO_COMMAND, undefined);
-        }}
-        title={IS_APPLE ? "Redo (⌘Y)" : "Redo (Ctrl+Y)"}
-        type="button"
-        className="toolbar-item"
-        aria-label="Redo">
-        <BsArrowClockwise />
-      </ToolbarButton>
-      <Divider />
-      {blockType in blockTypeToBlockName && activeEditor === editor && (
-        <>
-          <BlockFormatDropDown
+    <IconContext.Provider value={{ style: { width: "20px", height: "20px" } }}>
+      <div className={styles.toolbar}>
+        <ToolbarButton
+          disabled={!canUndo || !isEditable}
+          onClick={(): void => {
+            activeEditor.dispatchCommand(UNDO_COMMAND, undefined);
+          }}
+          title={IS_APPLE ? "Undo (⌘Z)" : "Undo (Ctrl+Z)"}
+          type="button"
+          className={`${styles.toolbarItem} ${styles.spaced}`}
+          aria-label="Undo">
+          <BsArrowCounterclockwise />
+        </ToolbarButton>
+        <ToolbarButton
+          disabled={!canRedo || !isEditable}
+          onClick={(): void => {
+            activeEditor.dispatchCommand(REDO_COMMAND, undefined);
+          }}
+          title={IS_APPLE ? "Redo (⌘Y)" : "Redo (Ctrl+Y)"}
+          type="button"
+          className={styles.toolbarItem}
+          aria-label="Redo">
+          <BsArrowClockwise />
+        </ToolbarButton>
+        <Divider />
+        {blockType in blockTypeToBlockName && activeEditor === editor && (
+          <>
+            <BlockFormatDropDown
+              disabled={!isEditable}
+              blockType={blockType}
+              rootType={rootType}
+              editor={editor}
+            />
+            <Divider />
+          </>
+        )}
+        {blockType === "code" ? (
+          <DropDown
             disabled={!isEditable}
-            blockType={blockType}
-            rootType={rootType}
-            editor={editor}
-          />
-          <Divider />
-        </>
-      )}
-      {blockType === "code" ? (
+            buttonClassName={`${styles.toolbarItem} ${styles.codeLanguage}`}
+            buttonLabel={getLanguageFriendlyName(codeLanguage)}
+            buttonAriaLabel="Select language">
+            {CODE_LANGUAGE_OPTIONS.map(([value, name]) => {
+              return (
+                <DropDownItem
+                  selected={codeLanguage === value}
+                  onClick={(): void => onCodeLanguageSelect(value)}
+                  key={value}>
+                  <span className={styles.text}>{name}</span>
+                </DropDownItem>
+              );
+            })}
+          </DropDown>
+        ) : (
+          <>
+            <Divider />
+            <ToolbarButton
+              disabled={!isEditable}
+              onClick={() => {
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+              }}
+              className={`${styles.toolbarItem} ${styles.spaced} ${
+                isBold ? styles.active : ""
+              }`}
+              title={IS_APPLE ? "Bold (⌘B)" : "Bold (Ctrl+B)"}
+              type="button"
+              aria-label={`Format text as bold. Shortcut: ${
+                IS_APPLE ? "⌘B" : "Ctrl+B"
+              }`}>
+              <BsTypeBold />
+            </ToolbarButton>
+            <ToolbarButton
+              disabled={!isEditable}
+              onClick={() => {
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+              }}
+              className={`${styles.toolbarItem} ${styles.spaced} ${
+                isItalic ? styles.active : ""
+              }`}
+              title={IS_APPLE ? "Italic (⌘I)" : "Italic (Ctrl+I)"}
+              type="button"
+              aria-label={`Format text as italics. Shortcut: ${
+                IS_APPLE ? "⌘I" : "Ctrl+I"
+              }`}>
+              <BsTypeItalic />
+            </ToolbarButton>
+            <ToolbarButton
+              disabled={!isEditable}
+              onClick={() => {
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
+              }}
+              className={`${styles.toolbarItem} ${styles.spaced} ${
+                isUnderline ? styles.active : ""
+              }`}
+              title={IS_APPLE ? "Underline (⌘U)" : "Underline (Ctrl+U)"}
+              type="button"
+              aria-label={`Format text to underlined. Shortcut: ${
+                IS_APPLE ? "⌘U" : "Ctrl+U"
+              }`}>
+              <BsTypeUnderline />
+            </ToolbarButton>
+            <ToolbarButton
+              disabled={!isEditable}
+              onClick={() => {
+                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
+              }}
+              className={`${styles.toolbarItem} ${styles.spaced} ${
+                isCode ? styles.active : ""
+              }`}
+              title="Insert code block"
+              type="button"
+              aria-label="Insert code block">
+              <BsCode />
+            </ToolbarButton>
+            <ToolbarButton
+              disabled={!isEditable}
+              onClick={insertLink}
+              className={`${styles.toolbarItem} ${styles.spaced} ${
+                isLink ? styles.active : ""
+              }`}
+              aria-label="Insert link"
+              title="Insert link"
+              type="button">
+              <BsLink />
+            </ToolbarButton>
+            <DropDown
+              disabled={!isEditable}
+              buttonClassName={`${styles.toolbarItem} ${styles.spaced}`}
+              buttonLabel=""
+              buttonAriaLabel="Formatting options for additional text styles"
+              buttonIcon={<BsType />}>
+              <DropDownItem
+                onClick={() => {
+                  activeEditor.dispatchCommand(
+                    FORMAT_TEXT_COMMAND,
+                    "strikethrough"
+                  );
+                }}
+                icon={<BsTypeStrikethrough />}
+                title="Strikethrough"
+                aria-label="Format text with a strikethrough">
+                <span className={styles.text}>Strikethrough</span>
+              </DropDownItem>
+              <DropDownItem
+                onClick={() => {
+                  activeEditor.dispatchCommand(
+                    FORMAT_TEXT_COMMAND,
+                    "subscript"
+                  );
+                }}
+                icon={<BsSubscript />}
+                title="Subscript"
+                aria-label="Format text with a subscript">
+                <span className="text">Subscript</span>
+              </DropDownItem>
+              <DropDownItem
+                onClick={() => {
+                  activeEditor.dispatchCommand(
+                    FORMAT_TEXT_COMMAND,
+                    "superscript"
+                  );
+                }}
+                icon={<BsSuperscript />}
+                title="Superscript"
+                aria-label="Format text with a superscript">
+                <span className="text">Superscript</span>
+              </DropDownItem>
+              <DropDownItem
+                onClick={clearFormatting}
+                icon={<BsTrash />}
+                title="Clear text formatting"
+                aria-label="Clear all text formatting">
+                <span className="text">Clear Formatting</span>
+              </DropDownItem>
+            </DropDown>
+            <Divider />
+            {rootType === "table" && (
+              <>
+                <DropDown
+                  disabled={!isEditable}
+                  buttonClassName="toolbar-item spaced"
+                  buttonLabel="Table"
+                  buttonAriaLabel="Open table toolkit"
+                  buttonIcon={<BsTable />}>
+                  <DropDownItem
+                    onClick={() => {
+                      /**/
+                    }}>
+                    <span className="text">TODO</span>
+                  </DropDownItem>
+                </DropDown>
+                <Divider />
+              </>
+            )}
+            <DropDown
+              disabled={!isEditable}
+              buttonClassName="toolbar-item spaced"
+              buttonLabel="Insert"
+              buttonAriaLabel="Insert specialized editor node"
+              buttonIcon={<BsPlus />}>
+              <DropDownItem
+                onClick={() => {
+                  activeEditor.dispatchCommand(
+                    INSERT_HORIZONTAL_RULE_COMMAND,
+                    undefined
+                  );
+                }}
+                icon={<BsDashLg />}>
+                <span className="text">Horizontal Rule</span>
+              </DropDownItem>
+            </DropDown>
+          </>
+        )}
+        <Divider />
         <DropDown
           disabled={!isEditable}
-          buttonClassName="toolbar-item code-language"
-          buttonLabel={getLanguageFriendlyName(codeLanguage)}
-          buttonAriaLabel="Select language">
-          {CODE_LANGUAGE_OPTIONS.map(([value, name]) => {
-            return (
-              <DropDownItem
-                selected={codeLanguage === value}
-                onClick={() => onCodeLanguageSelect(value)}
-                key={value}>
-                <span className="text">{name}</span>
-              </DropDownItem>
-            );
-          })}
+          buttonLabel="Align"
+          buttonIcon={<BsTextLeft />}
+          buttonClassName="toolbar-item spaced alignment"
+          buttonAriaLabel="Formatting options for text alignment">
+          <DropDownItem
+            icon={<BsTextLeft />}
+            onClick={() => {
+              activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+            }}>
+            <span className="text">Left Align</span>
+          </DropDownItem>
+          <DropDownItem
+            icon={<BsTextCenter />}
+            onClick={() => {
+              activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+            }}>
+            <span className="text">Center Align</span>
+          </DropDownItem>
+          <DropDownItem
+            icon={<BsTextRight />}
+            onClick={() => {
+              activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+            }}>
+            <span className="text">Right Align</span>
+          </DropDownItem>
+          <DropDownItem
+            onClick={() => {
+              activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+            }}>
+            <i className="icon justify-align" />
+            <span className="text">Justify Align</span>
+          </DropDownItem>
+          <Divider />
+          <DropDownItem
+            onClick={() => {
+              activeEditor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
+            }}
+            icon={<BsTextIndentRight />}>
+            <span className="text">Outdent</span>
+          </DropDownItem>
+          <DropDownItem
+            onClick={() => {
+              activeEditor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
+            }}
+            icon={<BsTextIndentLeft />}>
+            <span className="text">Indent</span>
+          </DropDownItem>
         </DropDown>
-      ) : (
-        <>
-          <Divider />
-          <ToolbarButton
-            disabled={!isEditable}
-            onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
-            }}
-            className={"toolbar-item spaced " + (isBold ? "active" : "")}
-            title={IS_APPLE ? "Bold (⌘B)" : "Bold (Ctrl+B)"}
-            type="button"
-            aria-label={`Format text as bold. Shortcut: ${
-              IS_APPLE ? "⌘B" : "Ctrl+B"
-            }`}>
-            <BsTypeBold />
-          </ToolbarButton>
-          <ToolbarButton
-            disabled={!isEditable}
-            onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
-            }}
-            className={"toolbar-item spaced " + (isItalic ? "active" : "")}
-            title={IS_APPLE ? "Italic (⌘I)" : "Italic (Ctrl+I)"}
-            type="button"
-            aria-label={`Format text as italics. Shortcut: ${
-              IS_APPLE ? "⌘I" : "Ctrl+I"
-            }`}>
-            <BsTypeItalic />
-          </ToolbarButton>
-          <ToolbarButton
-            disabled={!isEditable}
-            onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
-            }}
-            className={"toolbar-item spaced " + (isUnderline ? "active" : "")}
-            title={IS_APPLE ? "Underline (⌘U)" : "Underline (Ctrl+U)"}
-            type="button"
-            aria-label={`Format text to underlined. Shortcut: ${
-              IS_APPLE ? "⌘U" : "Ctrl+U"
-            }`}>
-            <BsTypeUnderline />
-          </ToolbarButton>
-          <ToolbarButton
-            disabled={!isEditable}
-            onClick={() => {
-              activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "code");
-            }}
-            className={"toolbar-item spaced " + (isCode ? "active" : "")}
-            title="Insert code block"
-            type="button"
-            aria-label="Insert code block">
-            <BsCode />
-          </ToolbarButton>
-          <ToolbarButton
-            disabled={!isEditable}
-            onClick={insertLink}
-            className={"toolbar-item spaced " + (isLink ? "active" : "")}
-            aria-label="Insert link"
-            title="Insert link"
-            type="button">
-            <BsLink />
-          </ToolbarButton>
-          <DropDown
-            disabled={!isEditable}
-            buttonClassName="toolbar-item spaced"
-            buttonLabel=""
-            buttonAriaLabel="Formatting options for additional text styles"
-            buttonIcon={<BsType />}>
-            <DropDownItem
-              onClick={() => {
-                activeEditor.dispatchCommand(
-                  FORMAT_TEXT_COMMAND,
-                  "strikethrough"
-                );
-              }}
-              icon={<BsTypeStrikethrough />}
-              title="Strikethrough"
-              aria-label="Format text with a strikethrough">
-              <span className="text">Strikethrough</span>
-            </DropDownItem>
-            <DropDownItem
-              onClick={() => {
-                activeEditor.dispatchCommand(FORMAT_TEXT_COMMAND, "subscript");
-              }}
-              icon={<BsSubscript />}
-              title="Subscript"
-              aria-label="Format text with a subscript">
-              <span className="text">Subscript</span>
-            </DropDownItem>
-            <DropDownItem
-              onClick={() => {
-                activeEditor.dispatchCommand(
-                  FORMAT_TEXT_COMMAND,
-                  "superscript"
-                );
-              }}
-              icon={<BsSuperscript />}
-              title="Superscript"
-              aria-label="Format text with a superscript">
-              <span className="text">Superscript</span>
-            </DropDownItem>
-            <DropDownItem
-              onClick={clearFormatting}
-              icon={<BsTrash />}
-              title="Clear text formatting"
-              aria-label="Clear all text formatting">
-              <span className="text">Clear Formatting</span>
-            </DropDownItem>
-          </DropDown>
-          <Divider />
-          {rootType === "table" && (
-            <>
-              <DropDown
-                disabled={!isEditable}
-                buttonClassName="toolbar-item spaced"
-                buttonLabel="Table"
-                buttonAriaLabel="Open table toolkit"
-                buttonIcon={<BsTable />}>
-                <DropDownItem
-                  onClick={() => {
-                    /**/
-                  }}>
-                  <span className="text">TODO</span>
-                </DropDownItem>
-              </DropDown>
-              <Divider />
-            </>
-          )}
-          <DropDown
-            disabled={!isEditable}
-            buttonClassName="toolbar-item spaced"
-            buttonLabel="Insert"
-            buttonAriaLabel="Insert specialized editor node"
-            buttonIcon={<BsPlus />}>
-            <DropDownItem
-              onClick={() => {
-                activeEditor.dispatchCommand(
-                  INSERT_HORIZONTAL_RULE_COMMAND,
-                  undefined
-                );
-              }}
-              icon={<BsDashLg />}>
-              <span className="text">Horizontal Rule</span>
-            </DropDownItem>
-          </DropDown>
-        </>
-      )}
-      <Divider />
-      <DropDown
-        disabled={!isEditable}
-        buttonLabel="Align"
-        buttonIcon={<BsTextLeft />}
-        buttonClassName="toolbar-item spaced alignment"
-        buttonAriaLabel="Formatting options for text alignment">
-        <DropDownItem
-          icon={<BsTextLeft />}
-          onClick={() => {
-            activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
-          }}>
-          <span className="text">Left Align</span>
-        </DropDownItem>
-        <DropDownItem
-          icon={<BsTextCenter />}
-          onClick={() => {
-            activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
-          }}>
-          <span className="text">Center Align</span>
-        </DropDownItem>
-        <DropDownItem
-          icon={<BsTextRight />}
-          onClick={() => {
-            activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
-          }}>
-          <span className="text">Right Align</span>
-        </DropDownItem>
-        <DropDownItem
-          onClick={() => {
-            activeEditor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
-          }}>
-          <i className="icon justify-align" />
-          <span className="text">Justify Align</span>
-        </DropDownItem>
-        <Divider />
-        <DropDownItem
-          onClick={() => {
-            activeEditor.dispatchCommand(OUTDENT_CONTENT_COMMAND, undefined);
-          }}
-          icon={<BsTextIndentRight />}>
-          <span className="text">Outdent</span>
-        </DropDownItem>
-        <DropDownItem
-          onClick={() => {
-            activeEditor.dispatchCommand(INDENT_CONTENT_COMMAND, undefined);
-          }}
-          icon={<BsTextIndentLeft />}>
-          <span className="text">Indent</span>
-        </DropDownItem>
-      </DropDown>
 
-      {modal}
-    </div>
+        {modal}
+      </div>
+    </IconContext.Provider>
   );
 }

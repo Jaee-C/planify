@@ -8,14 +8,8 @@ const DropDownButton = styled(Button)(() => ({
   color: colors.gray[500],
   fontWeight: 400,
   fontSize: "11px",
-  padding: "14px",
-  border: 0,
-  display: "flex",
-  borderRadius: "10px",
-  cursor: "pointer",
-  verticalAlign: "middle",
-  marginRight: "2px",
   minWidth: 0,
+  flexShrink: 0,
   "&:hover": {
     backgroundColor: colors.gray[200],
   },
@@ -33,7 +27,7 @@ interface DropDownProps {
  * Button component that triggers a dropdown menu
  */
 export default function DropDown(
-  props: DropDownProps & React.PropsWithChildren
+  props: { buttonClassName?: string } & DropDownProps & React.PropsWithChildren
 ): JSX.Element {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -47,6 +41,7 @@ export default function DropDown(
   return (
     <>
       <DropDownButton
+        className={props.buttonClassName}
         disabled={props.disabled}
         aria-haspopup="true"
         aria-expanded={open ? "true" : undefined}

@@ -21,6 +21,7 @@ import TextFieldLabel from "@/components/Form/TextFieldLabel";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "./PrioritySelect";
 import SideActionBar from "./SideActionBar";
+import DescriptionEditor from "@/components/SideIssueViewer/DescriptionEditor";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -138,13 +139,7 @@ export default function SideIssueViewer(): JSX.Element {
               <Typography className="font-medium text-sm text-stone-700 mb-2">
                 Description
               </Typography>
-              <InlineTextField
-                multiline={true}
-                defaultValue={editingIssue.description}
-                onConfirm={editDescription}
-                readView={createDescriptionReadView(description)}
-                readViewFitContainerWidth
-              />
+              <DescriptionEditor />
             </FormRow>
             <br />
             <Divider />
