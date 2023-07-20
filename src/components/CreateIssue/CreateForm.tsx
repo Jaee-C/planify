@@ -106,6 +106,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
             <FormRow item xs={12}>
               <TextFieldLabel textLabel="Description: ">
                 <FormTextField
+                  disabled
                   name="description"
                   multiline={true}
                   placeholder="Enter a description"
@@ -116,7 +117,7 @@ export default function CreateForm(props: IssueFormProps): JSX.Element {
                     Boolean(formik.errors.description)
                   }
                   helperText={
-                    formik.touched.description && formik.errors.description
+                    "Description can be added by editing the issue after creation"
                   }
                 />
               </TextFieldLabel>
