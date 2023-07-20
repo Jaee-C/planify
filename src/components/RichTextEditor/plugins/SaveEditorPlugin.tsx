@@ -3,6 +3,7 @@ import { CLEAR_EDITOR_COMMAND, EditorState } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { Button } from "@mui/material";
+import { LOAD_INITIAL_STATE_COMMAND } from "@/components/RichTextEditor/commands";
 
 interface SaveEditorProps {
   onSave: (data: string) => void;
@@ -22,7 +23,7 @@ export default function SaveEditorPlugin(
   }, [onSave]);
 
   const cancel = () => {
-    editor.dispatchCommand(CLEAR_EDITOR_COMMAND, undefined);
+    editor.dispatchCommand(LOAD_INITIAL_STATE_COMMAND, undefined);
     editor.setEditable(false);
   };
 

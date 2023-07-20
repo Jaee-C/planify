@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { EditorState } from "lexical";
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import {
+  InitialConfigType,
+  LexicalComposer,
+} from "@lexical/react/LexicalComposer";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import LexicalErrorBoundary from "@lexical/react/LexicalErrorBoundary";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
@@ -24,6 +27,11 @@ import EditorTheme from "@/components/RichTextEditor/themes/EditorTheme";
 import dynamic from "next/dynamic";
 import Placeholder from "@/components/RichTextEditor/Placeholder";
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
+import { useMutation } from "react-query";
+import { editIssue } from "@/lib/client-data/issues";
+import { NextRouter, useRouter } from "next/router";
+import { verifyUrlParam } from "@/lib/utils";
+import LoadInitialDataPlugin from "@/components/RichTextEditor/plugins/LoadInitialDataPlugin";
 const EditorToolbarPlugin = dynamic(
   () => import("../RichTextEditor/EditorToolbar"),
   {
@@ -50,7 +58,6 @@ function MyContentEditable(props: any): JSX.Element {
     <ContentEditable
       {...props}
       onClick={(): void => editor.setEditable(true)}
-      onBlur={(): void => editor.setEditable(false)}
       className={`${styles.editorContainer} ${expanded ? styles.expanded : ""}`}
     />
   );
@@ -58,6 +65,8 @@ function MyContentEditable(props: any): JSX.Element {
 
 interface Props {
   placeholder?: string;
+  defaultValue?: string;
+  issueKey: string;
 }
 
 function onError(error: Error): void {
@@ -67,8 +76,13 @@ function onError(error: Error): void {
 function onChange(editor: EditorState): void {}
 
 export default function DescriptionEditor(props: Props): JSX.Element {
+  const router: NextRouter = useRouter();
+  const projectKey: string = verifyUrlParam(router.query.pKey);
+  const editMutation = useMutation(async (data: any) => {
+    await editIssue(projectKey, props.issueKey, { description: data });
+  });
   const { placeholder = "Enter some text" } = props;
-  const initialConfig = {
+  const initialConfig: InitialConfigType = {
     editable: false,
     namespace: "MyEditor",
     theme: EditorTheme,
@@ -94,16 +108,13 @@ export default function DescriptionEditor(props: Props): JSX.Element {
           placeholder={<Placeholder>{placeholder}</Placeholder>}
           ErrorBoundary={LexicalErrorBoundary}
         />
+        <LoadInitialDataPlugin defaultValue={props.defaultValue} />
         <HistoryPlugin />
         <ListPlugin />
         <CheckListPlugin />
         <OnChangePlugin onChange={onChange} />
         <ClearEditorPlugin />
-        <SaveEditorPlugin
-          onSave={(data: string): void => {
-            console.log(data);
-          }}
-        />
+        <SaveEditorPlugin onSave={data => editMutation.mutate(data)} />
       </LexicalComposer>
     </EditorContainer>
   );

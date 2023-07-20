@@ -39,6 +39,7 @@ export default async function handler(
         if (e instanceof AppError) {
           res.status(404).send(e.toJSONString());
         } else {
+          console.log(AppError.generateAppError(e));
           res.status(500).send(AppError.generateAppError(e).toJSONString());
         }
       }
