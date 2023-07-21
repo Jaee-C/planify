@@ -10,48 +10,6 @@ import {
   NOT_FOUND_IN_DB,
 } from "@/lib/client-data/errors";
 
-const issueSelect = {
-  id: true,
-  title: true,
-  boardOrder: true,
-  status: {
-    select: {
-      id: true,
-      name: true,
-    },
-  },
-  priority: {
-    select: {
-      id: true,
-      name: true,
-    },
-  },
-  project: {
-    select: {
-      key: true,
-    },
-  },
-} satisfies Prisma.IssueSelect;
-
-type IssuePayload = Prisma.IssueGetPayload<{ select: typeof issueSelect }>;
-
-const detailedIssue = {
-  ...issueSelect,
-  description: true,
-};
-
-type DetailedIssuePayload = Prisma.IssueGetPayload<{
-  select: typeof detailedIssue;
-}>;
-
-const issueNumberSelect = {
-  numIssues: true,
-} satisfies Prisma.ProjectSelect;
-
-type IssueNumberPayload = Prisma.ProjectGetPayload<{
-  select: typeof issueNumberSelect;
-}>;
-
 export default class IssueRepository implements IIssueDB {
   private readonly _projectKey: string;
   private readonly _userId: string;
@@ -72,12 +30,10 @@ export default class IssueRepository implements IIssueDB {
       select: issueSelect,
     });
 
-    return dbIssues.map((dbIssue: IssuePayload) => {
-      return this.dbToServerIssue(dbIssue);
-    });
+    return this.dbToServerIssueList(dbIssues);
   }
 
-  public async fetchIssue(id: number): Promise<Issue | null> {
+  public async fetchOneIssueWithId(id: number): Promise<Issue | null> {
     const dbIssue: DetailedIssuePayload | null = await prisma.issue.findFirst({
       where: {
         project: {
@@ -96,7 +52,7 @@ export default class IssueRepository implements IIssueDB {
     return this.dbToServerIssue(dbIssue);
   }
 
-  public async saveIssue(req: IssueRequest): Promise<Issue> {
+  public async saveNewIssue(req: IssueRequest): Promise<Issue> {
     if (!(req.title && req.status)) {
       throw new AppError(
         INVALID_DATA_TYPES,
@@ -109,7 +65,7 @@ export default class IssueRepository implements IIssueDB {
 
     try {
       payload = await prisma.issue.create({
-        data: this.createDBIssuePayload(issueCount, req.title, req.status, req),
+        data: this.createDBIssuePayload(issueCount, req),
         select: issueSelect,
       });
     } catch (e) {
@@ -122,7 +78,7 @@ export default class IssueRepository implements IIssueDB {
     return this.dbToServerIssue(payload);
   }
 
-  public async editIssue(req: IssueRequest): Promise<Issue> {
+  public async editExistingIssue(req: IssueRequest): Promise<Issue> {
     if (req.id === undefined || req.id < 0) {
       throw new AppError(NOT_FOUND_IN_DB, "Invalid issue id.");
     }
@@ -141,7 +97,7 @@ export default class IssueRepository implements IIssueDB {
         select: issueSelect,
         data: {
           title: req.title,
-          description: Buffer.from(req.description ?? ""),
+          description: req.getEncodedDescription(),
           statusId: req.status,
           priorityId: req.priority,
           boardOrder: req.order,
@@ -167,6 +123,12 @@ export default class IssueRepository implements IIssueDB {
           projectId: pid,
         },
       },
+    });
+  }
+
+  private dbToServerIssueList(payload: IssuePayload[]): Issue[] {
+    return payload.map((dbIssue: IssuePayload) => {
+      return this.dbToServerIssue(dbIssue);
     });
   }
 
@@ -201,13 +163,12 @@ export default class IssueRepository implements IIssueDB {
   /** Create issue payload for db */
   private createDBIssuePayload(
     id: number,
-    title: string,
-    status?: number,
-    req?: IssueRequest
+    req: IssueRequest
   ): Prisma.IssueCreateInput {
     const createPayload: any = {
       id,
-      title,
+      title: req.title,
+      description: req.getEncodedDescription(),
       project: {
         connect: {
           key_ownerId: {
@@ -218,7 +179,7 @@ export default class IssueRepository implements IIssueDB {
       },
       status: {
         connect: {
-          id: status,
+          id: req.status,
         },
       },
       priority: undefined,
@@ -233,12 +194,16 @@ export default class IssueRepository implements IIssueDB {
       };
     }
 
-    if (req) {
-      createPayload.description = Buffer.from(req.description ?? "");
-    }
     return Prisma.validator<Prisma.IssueCreateInput>()(createPayload);
   }
 
+  /**
+   * Issue count is stored in the project table, so we need to fetch it and
+   * increment it by one whenever a new issue is created.
+   * I haven't found a way to incorporate this with the `INSERT` query, so
+   * this is the best I can do for now.
+   * @private
+   */
   private async getAndIncrementIssueCount(): Promise<number> {
     const countPayload: IssueNumberPayload | null = await prisma.project.update(
       {
@@ -265,23 +230,21 @@ export default class IssueRepository implements IIssueDB {
   }
 
   private async findProjectId(): Promise<number> {
-    const pid: number | null = await prisma.project
-      .findFirst({
-        where: {
-          ownerId: Number(this._userId),
-          key: this._projectKey,
-        },
-        select: {
-          id: true,
-        },
-      })
-      ?.then(project => project?.id ?? null);
+    const projectPayload: any | null = await prisma.project.findFirst({
+      where: {
+        ownerId: Number(this._userId),
+        key: this._projectKey,
+      },
+      select: {
+        id: true,
+      },
+    });
 
-    if (!pid) {
+    if (projectPayload === null) {
       throw new AppError(NOT_FOUND_IN_DB, "Project not found");
     }
 
-    return pid;
+    return projectPayload.id;
   }
 
   private handlePrismaErrors(e: Prisma.PrismaClientKnownRequestError): void {
@@ -293,3 +256,43 @@ export default class IssueRepository implements IIssueDB {
     }
   }
 }
+
+/** Prisma Types */
+const issueSelect = {
+  id: true,
+  title: true,
+  boardOrder: true,
+  status: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  priority: {
+    select: {
+      id: true,
+      name: true,
+    },
+  },
+  project: {
+    select: {
+      key: true,
+    },
+  },
+} satisfies Prisma.IssueSelect;
+type IssuePayload = Prisma.IssueGetPayload<{ select: typeof issueSelect }>;
+
+const detailedIssue = {
+  ...issueSelect,
+  description: true,
+};
+type DetailedIssuePayload = Prisma.IssueGetPayload<{
+  select: typeof detailedIssue;
+}>;
+
+const issueNumberSelect = {
+  numIssues: true,
+} satisfies Prisma.ProjectSelect;
+type IssueNumberPayload = Prisma.ProjectGetPayload<{
+  select: typeof issueNumberSelect;
+}>;

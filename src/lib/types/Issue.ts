@@ -2,6 +2,13 @@ import StatusType from "./StatusType";
 import PriorityType from "./PriorityType";
 import { LexoRank } from "lexorank";
 
+export interface IssueFormValues {
+  title?: string;
+  description?: string;
+  status?: number;
+  priority?: number;
+}
+
 export default class Issue {
   public id: number;
   public title: string | undefined;

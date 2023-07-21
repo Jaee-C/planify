@@ -1,7 +1,6 @@
-import IssueRequest, {
-  IssueFormValues,
-} from "@/lib/service/Issue/IssueRequest";
+import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { NextApiRequest } from "next";
+import { IssueFormValues } from "@/lib/types/Issue";
 
 export default function createIssueRequest(req: NextApiRequest): IssueRequest {
   const form: IssueFormValues = {

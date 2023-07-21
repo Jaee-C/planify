@@ -1,7 +1,6 @@
 import { Issue, PriorityType, StatusType } from "lib/types";
 import AppError from "@/lib/service/AppError";
-import { IssueFormValues } from "@/lib/service/Issue/IssueRequest";
-import { IssueData } from "@/lib/types/Issue";
+import { IssueData, IssueFormValues } from "@/lib/types/Issue";
 
 export function toStatusString(
   status: number | undefined,
