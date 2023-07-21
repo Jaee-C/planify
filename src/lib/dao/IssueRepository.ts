@@ -1,7 +1,7 @@
 import IssueRequest from "@/lib/service/Issue/IssueRequest";
-import { prisma } from "@/server/domain/prisma";
+import { prisma } from "@/lib/dao/prisma";
 import { Prisma } from "@prisma/client";
-import { Issue } from "lib/types";
+import { Issue } from "@/lib/types";
 import { IIssueDB } from "./interfaces";
 import AppError from "@/lib/service/AppError";
 import {
@@ -73,7 +73,7 @@ export default class IssueRepository implements IIssueDB {
     });
 
     return dbIssues.map((dbIssue: IssuePayload) => {
-      return this.convertToIssue(dbIssue);
+      return this.dbToServerIssue(dbIssue);
     });
   }
 
@@ -93,7 +93,7 @@ export default class IssueRepository implements IIssueDB {
       return null;
     }
 
-    return this.convertToIssue(dbIssue);
+    return this.dbToServerIssue(dbIssue);
   }
 
   public async saveIssue(req: IssueRequest): Promise<Issue> {
@@ -104,45 +104,22 @@ export default class IssueRepository implements IIssueDB {
       );
     }
 
-    const countPayload: IssueNumberPayload | null = await prisma.project.update(
-      {
-        where: {
-          key_ownerId: {
-            ownerId: Number(this._userId),
-            key: this._projectKey,
-          },
-        },
-        data: {
-          numIssues: {
-            increment: 1,
-          },
-        },
-        select: issueNumberSelect,
-      }
-    );
-
-    if (countPayload === null) {
-      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
-    }
-
-    const issueCount: number = countPayload.numIssues;
+    const issueCount: number = await this.getAndIncrementIssueCount();
     let payload: IssuePayload;
 
     try {
       payload = await prisma.issue.create({
-        data: this.createDBIssue(issueCount, req.title, req.status, req),
+        data: this.createDBIssuePayload(issueCount, req.title, req.status, req),
         select: issueSelect,
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === "P2003") {
-          throw new AppError(INVALID_SELECT, e.message);
-        }
+        this.handlePrismaErrors(e);
       }
     }
 
     // @ts-ignore
-    return this.convertToIssue(payload);
+    return this.dbToServerIssue(payload);
   }
 
   public async editIssue(req: IssueRequest): Promise<Issue> {
@@ -150,21 +127,7 @@ export default class IssueRepository implements IIssueDB {
       throw new AppError(NOT_FOUND_IN_DB, "Invalid issue id.");
     }
 
-    const pid: number | null = await prisma.project
-      .findFirst({
-        where: {
-          ownerId: Number(this._userId),
-          key: this._projectKey,
-        },
-        select: {
-          id: true,
-        },
-      })
-      ?.then(project => project?.id ?? null);
-
-    if (!pid) {
-      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
-    }
+    const pid: number | null = await this.findProjectId();
 
     let dbPayload: IssuePayload;
     try {
@@ -186,38 +149,16 @@ export default class IssueRepository implements IIssueDB {
       });
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === "P2003") {
-          throw new AppError(
-            INVALID_SELECT,
-            "Selected invalid option from dropdown"
-          );
-        }
-        if (e.code === "P2025") {
-          throw new AppError(NOT_FOUND_IN_DB, "Modified issue not found");
-        }
+        this.handlePrismaErrors(e);
       }
     }
 
     // @ts-ignore
-    return this.convertToIssue(dbPayload);
+    return this.dbToServerIssue(dbPayload);
   }
 
   public async deleteIssue(id: number): Promise<void> {
-    const pid: number | null = await prisma.project
-      .findFirst({
-        where: {
-          ownerId: Number(this._userId),
-          key: this._projectKey,
-        },
-        select: {
-          id: true,
-        },
-      })
-      ?.then(project => project?.id ?? null);
-
-    if (!pid) {
-      throw new Error("Project not found");
-    }
+    const pid: number | null = await this.findProjectId();
 
     await prisma.issue.delete({
       where: {
@@ -230,12 +171,9 @@ export default class IssueRepository implements IIssueDB {
   }
 
   /**
-   * Convert payload from db so internal representation that can be reused
-   * @param {IssuePayload | DetailedIssuePayload} payload payload from db
-   * @returns {Issue}
-   * @private
+   * Convert payload from db to internal representation that can be reused
    */
-  private convertToIssue(payload: IssuePayload | DetailedIssuePayload): Issue {
+  private dbToServerIssue(payload: IssuePayload | DetailedIssuePayload): Issue {
     const result: Issue = new Issue(payload.id);
 
     result.title = payload.title;
@@ -260,21 +198,14 @@ export default class IssueRepository implements IIssueDB {
     return result;
   }
 
-  /**
-   * Create issue payload for db
-   * @param {number} id     issue id, provided by db
-   * @param {string} title  issue title
-   * @param {number} status id of status
-   * @param {IssueRequest} [req] remaining (optional) request values
-   * @private
-   */
-  private createDBIssue(
+  /** Create issue payload for db */
+  private createDBIssuePayload(
     id: number,
     title: string,
     status?: number,
     req?: IssueRequest
   ): Prisma.IssueCreateInput {
-    const createPayload = {
+    const createPayload: any = {
       id,
       title,
       project: {
@@ -295,7 +226,6 @@ export default class IssueRepository implements IIssueDB {
 
     // Dynamically add fields if provided
     if (req && typeof req.priority === "number") {
-      // @ts-ignore
       createPayload.priority = {
         connect: {
           id: req.priority,
@@ -303,10 +233,63 @@ export default class IssueRepository implements IIssueDB {
       };
     }
 
-    if (req && typeof req.description === "string") {
-      // @ts-ignore
-      createPayload.description = req.description;
+    if (req) {
+      createPayload.description = Buffer.from(req.description ?? "");
     }
     return Prisma.validator<Prisma.IssueCreateInput>()(createPayload);
+  }
+
+  private async getAndIncrementIssueCount(): Promise<number> {
+    const countPayload: IssueNumberPayload | null = await prisma.project.update(
+      {
+        where: {
+          key_ownerId: {
+            ownerId: Number(this._userId),
+            key: this._projectKey,
+          },
+        },
+        data: {
+          numIssues: {
+            increment: 1,
+          },
+        },
+        select: issueNumberSelect,
+      }
+    );
+
+    if (countPayload === null) {
+      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
+    }
+
+    return countPayload.numIssues;
+  }
+
+  private async findProjectId(): Promise<number> {
+    const pid: number | null = await prisma.project
+      .findFirst({
+        where: {
+          ownerId: Number(this._userId),
+          key: this._projectKey,
+        },
+        select: {
+          id: true,
+        },
+      })
+      ?.then(project => project?.id ?? null);
+
+    if (!pid) {
+      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
+    }
+
+    return pid;
+  }
+
+  private handlePrismaErrors(e: Prisma.PrismaClientKnownRequestError): void {
+    switch (e.code) {
+      case "P2003":
+        throw new AppError(INVALID_SELECT, e.message);
+      case "P2025":
+        throw new AppError(NOT_FOUND_IN_DB, "Modified issue not found");
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { PriorityType, StatusType } from "@/lib/types";
-import StatusRepository from "@/server/domain/StatusRepository";
+import StatusRepository from "@/lib/dao/StatusRepository";
 import { LexoRank } from "lexorank";
 import Issue from "./index";
 

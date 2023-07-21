@@ -1,8 +1,8 @@
-import IssueRepository from "@/server/domain/IssueRepository";
+import IssueRepository from "@/lib/dao/IssueRepository";
 import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { Issue } from "@/lib/types";
-import { IIssueDB } from "@/server/domain/interfaces";
-import StatusRepository from "@/server/domain/StatusRepository";
+import { IIssueDB } from "@/lib/dao/interfaces";
+import StatusRepository from "@/lib/dao/StatusRepository";
 
 /**
  * Project is a service class that handles the business logic for the project.
