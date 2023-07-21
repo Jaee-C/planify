@@ -7,8 +7,8 @@ export default function createIssueRequest(req: NextApiRequest): IssueRequest {
   const form: IssueFormValues = {
     title: req.body.title,
     description: req.body.description,
-    status: parseInt(req.body.status),
-    priority: parseInt(req.body.priority),
+    status: toNumber(req.body.status),
+    priority: toNumber(req.body.priority),
   };
   const newRequest = new IssueRequest(form);
 
@@ -17,4 +17,18 @@ export default function createIssueRequest(req: NextApiRequest): IssueRequest {
   }
 
   return newRequest;
+}
+
+/**
+ * Converts a string to a number. If the string is not a number, returns undefined.
+ * Prevents NaN values to exist within the issue request to preserve known values.
+ * @param {string} value string to convert
+ * @returns {number | undefined} number or undefined
+ */
+function toNumber(value: string): number | undefined {
+  const numberedValue: number = Number(value);
+  if (Number.isNaN(numberedValue)) {
+    return undefined;
+  }
+  return numberedValue;
 }

@@ -8,7 +8,7 @@ import {
   INVALID_DATA_TYPES,
   INVALID_SELECT,
   NOT_FOUND_IN_DB,
-} from "@/lib/client-fetch/errors";
+} from "@/lib/client-data/errors";
 
 const issueSelect = {
   id: true,
@@ -178,7 +178,7 @@ export default class IssueRepository implements IIssueDB {
         select: issueSelect,
         data: {
           title: req.title,
-          description: req.description,
+          description: Buffer.from(req.description ?? ""),
           statusId: req.status,
           priorityId: req.priority,
           boardOrder: req.order,
@@ -248,8 +248,12 @@ export default class IssueRepository implements IIssueDB {
       };
     }
 
-    if ("description" in payload && payload.description) {
-      result.description = payload.description;
+    if (
+      "description" in payload &&
+      payload.description &&
+      payload.description.length > 0
+    ) {
+      result.description = payload.description.toString("utf-8");
     }
     if (payload.boardOrder) result.order = payload.boardOrder;
 

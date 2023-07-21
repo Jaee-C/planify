@@ -9,8 +9,8 @@ import {
 } from "react-query";
 import { verifyUrlParam } from "@/lib/utils";
 import { StatusType } from "@/lib/types";
-import { queryStatuses } from "@/lib/client-fetch/query";
-import { editIssue } from "@/lib/client-fetch/issues";
+import { queryStatuses } from "@/lib/client-data/query";
+import { editIssue } from "@/lib/client-data/issues";
 import StatusChip from "@/components/Form/StatusChip";
 
 interface StatusSelectProps {

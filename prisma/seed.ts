@@ -72,7 +72,6 @@ async function main(): Promise<void> {
     data: {
       id: 1,
       title: "Issue 1",
-      description: "Issue 1 description",
       statusId: 1,
       projectId: 1,
     },

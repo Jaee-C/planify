@@ -5,7 +5,7 @@ import {
   DroppableProvided,
   DropResult,
 } from "@hello-pangea/dnd";
-import { queryIssuesConverted, queryStatuses } from "@/lib/client-fetch/query";
+import { queryIssuesConverted, queryStatuses } from "@/lib/client-data/query";
 import { verifyUrlParam } from "@/lib/utils";
 import {
   ColumnDefinition,
@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import { styled } from "@mui/material";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import { useMutation } from "react-query";
-import { editIssue } from "@/lib/client-fetch/issues";
+import { editIssue } from "@/lib/client-data/issues";
 import { convertDataToIssue } from "@/lib/types/Issue";
 
 const Container = styled("div")(() => ({

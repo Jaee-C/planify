@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import { Divider, Grid, styled, Typography } from "@mui/material";
 import { Issue } from "@/lib/types";
 import { verifyUrlParam } from "@/lib/utils";
-import { queryIssue } from "@/lib/client-fetch/query";
+import { queryIssue } from "@/lib/client-data/query";
 import { SidebarEditContext } from "@/components/Backlog";
 import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
 import {
@@ -14,13 +14,14 @@ import {
   useQueryClient,
   UseQueryResult,
 } from "react-query";
-import { editIssue } from "@/lib/client-fetch/issues";
+import { editIssue } from "@/lib/client-data/issues";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
 
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "./PrioritySelect";
 import SideActionBar from "./SideActionBar";
+import DescriptionEditor from "@/components/SideIssueViewer/DescriptionEditor";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -82,11 +83,6 @@ export default function SideIssueViewer(): JSX.Element {
     editIssueMutation.mutate({ title: newTitle });
     setTitle(newTitle);
   };
-  const editDescription = (newDescription: string): void => {
-    if (newDescription === description) return;
-    editIssueMutation.mutate({ description: newDescription });
-    setDescription(newDescription);
-  };
   const createReadView = (value?: string): React.ReactNode => {
     return (
       <Typography
@@ -97,23 +93,6 @@ export default function SideIssueViewer(): JSX.Element {
           "flex max-w-full break-words border-solid border-2 border-transparent text-xl"
         }>
         {value ? value : "No value"}
-      </Typography>
-    );
-  };
-
-  const createDescriptionReadView = (value?: string): React.ReactNode => {
-    const isPlaceholder: boolean = value === "" || value === undefined;
-    const placeholderText: string = "Enter a description...";
-    const textColor: string = isPlaceholder ? "text-gray-400" : "text-black";
-    return (
-      <Typography
-        paragraph
-        className={
-          "flex max-w-full break-words border-solid border-transparent base" +
-          " border-2 mb-0 " +
-          textColor
-        }>
-        {isPlaceholder ? placeholderText : value}
       </Typography>
     );
   };
@@ -138,12 +117,9 @@ export default function SideIssueViewer(): JSX.Element {
               <Typography className="font-medium text-sm text-stone-700 mb-2">
                 Description
               </Typography>
-              <InlineTextField
-                multiline={true}
+              <DescriptionEditor
+                issueKey={issueKey}
                 defaultValue={editingIssue.description}
-                onConfirm={editDescription}
-                readView={createDescriptionReadView(description)}
-                readViewFitContainerWidth
               />
             </FormRow>
             <br />

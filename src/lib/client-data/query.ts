@@ -5,7 +5,7 @@ import {
   fetchPriorities,
   fetchStatuses,
   getIssue,
-} from "@/lib/client-fetch/issues";
+} from "@/lib/client-data/issues";
 import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
 import { IssueData } from "@/lib/types/Issue";
 

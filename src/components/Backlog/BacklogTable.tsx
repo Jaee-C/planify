@@ -14,7 +14,7 @@ import { IconContext } from "react-icons";
 import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
 import { useMutation } from "react-query";
-import { editIssue, serverDeleteIssue } from "@/lib/client-fetch/issues";
+import { editIssue, serverDeleteIssue } from "@/lib/client-data/issues";
 import { Issue } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
@@ -22,7 +22,7 @@ import {
   SidebarEditContext,
 } from "@/components/Backlog/index";
 import { verifyUrlParam } from "@/lib/utils";
-import { queryIssues, queryStatuses } from "@/lib/client-fetch/query";
+import { queryIssues, queryStatuses } from "@/lib/client-data/query";
 import StatusSelect from "./StatusSelect";
 import StatusChip from "@/components/Form/StatusChip";
 import PrioritySelect from "@/components/Backlog/PrioritySelect";

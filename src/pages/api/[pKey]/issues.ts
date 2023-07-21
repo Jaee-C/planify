@@ -6,7 +6,7 @@ import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
 import AppError from "@/lib/service/AppError";
-import { INVALID_TOKEN } from "@/lib/client-fetch/errors";
+import { INVALID_TOKEN } from "@/lib/client-data/errors";
 
 export default async function handler(
   req: NextApiRequest,

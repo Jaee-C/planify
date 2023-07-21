@@ -14,7 +14,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
 import { useQuery } from "react-query";
 import { Project } from "lib/types";
-import { fetchProjectList } from "@/lib/client-fetch/projects";
+import { fetchProjectList } from "@/lib/client-data/projects";
 import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
 
 const columns: GridColDef[] = [

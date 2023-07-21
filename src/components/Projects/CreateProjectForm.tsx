@@ -7,7 +7,7 @@ import { CreateProjectContext } from "@/components/Projects";
 import { Button, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
-import { addProject } from "@/lib/client-fetch/projects";
+import { addProject } from "@/lib/client-data/projects";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
