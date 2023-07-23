@@ -1,5 +1,5 @@
 import { PriorityType } from "@/lib/types";
-import { prisma } from "@/lib/dao/prisma";
+import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
 
 export default class PriorityRepository {
