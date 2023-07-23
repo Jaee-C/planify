@@ -1,0 +1,79 @@
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    padding: 32px 40px;
+    border-radius: 3px;
+    box-shadow: 0 0 3px lightgray;
+    margin: auto;
+}
+
+.loginContainer header {
+    margin-bottom: 16px;
+}
+
+.form {
+    width: 100%;
+}
+
+.headerText {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgb(23, 43, 77);
+}
+
+.textField {
+    margin-bottom: 8px;
+}
+
+.socialsContainer {
+    margin-top: 24px;
+    width: 100%;
+    text-align: center;
+}
+
+.socialsDividerText {
+    font-weight: 500;
+    color: rgb(94, 108, 132);
+    display: block;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.socialButton {
+    text-transform: none;
+    margin-bottom: 16px;
+}
+.socialButton:last-of-type {
+    margin-bottom: 0;
+}
+
+.authHelpContainer {
+    margin-top: 24px;
+    font-size: 14px;
+    text-align: center;
+    line-height: 20px;
+}
+
+.authHelpContainer ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.authHelpContainer p {
+    margin: 0 8px;
+}
+
+.authHelpContainer a {
+    color: #0052cc;
+}
+
+.authHelpContainer a:hover {
+    color: #0065ff;
+    text-decoration: underline;
+}
