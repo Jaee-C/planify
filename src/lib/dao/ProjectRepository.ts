@@ -8,6 +8,11 @@ const projectSelect = {
   id: true,
   name: true,
   key: true,
+  owner: {
+    select: {
+      displayName: true,
+    },
+  },
 } satisfies Prisma.ProjectSelect;
 
 type ProjectPayload = Prisma.ProjectGetPayload<{
@@ -53,6 +58,9 @@ export default class ProjectRepository implements IProjectDB {
       id: dbProject.id,
       name: dbProject.name,
       key: dbProject.key,
+      owner: {
+        name: dbProject.owner.displayName,
+      },
     };
   }
 
