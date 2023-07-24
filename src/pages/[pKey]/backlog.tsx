@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
 import TopNavigation, {
@@ -11,6 +12,9 @@ import { PageType } from "@/lib/types";
 export default function BacklogPage(): JSX.Element {
   return (
     <>
+      <Head>
+        <title>Planify: Backlog</title>
+      </Head>
       <TopNavigation activePage={NavigationPage.BACKLOG} />
       <ProSidebarProvider>
         <div
