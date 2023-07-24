@@ -19,7 +19,7 @@ export default function CredentialsForm(): JSX.Element {
 
     const res = await signIn("credentials", {
       redirect: false,
-      email: event.currentTarget.email.value,
+      username: event.currentTarget.username.value,
       password: event.currentTarget.password.value,
       callbackUrl,
     });
@@ -34,9 +34,9 @@ export default function CredentialsForm(): JSX.Element {
   return (
     <form className={styles.form} onSubmit={onSubmit}>
       <TextField
-        placeholder="Enter your email"
-        name="email"
-        type="email"
+        placeholder="Enter your username"
+        name="username"
+        type="text"
         fullWidth
         className={styles.textField}
       />
@@ -47,7 +47,11 @@ export default function CredentialsForm(): JSX.Element {
         fullWidth
         className={styles.textField}
       />
-      <Button variant="contained" hoverColor={blue[600]} fullWidth>
+      <Button
+        variant="contained"
+        hoverColor={blue[600]}
+        type="submit"
+        fullWidth>
         Log In
       </Button>
     </form>

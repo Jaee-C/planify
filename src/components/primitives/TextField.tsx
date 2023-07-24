@@ -2,9 +2,7 @@ import { styled } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 const MyTextField = styled(TextField)(({ theme }) => ({
-  display: "block",
   "& input": {
-    padding: "8px 6px",
     fontSize: "14px",
     backgroundColor: "transparent",
     fontWeight: 400,
@@ -26,6 +24,16 @@ const MyTextField = styled(TextField)(({ theme }) => ({
   "&.Mui-focused input, & .Mui-focused:hover input": {
     backgroundColor: "transparent",
   },
+
+  // Label
+  "& .MuiInputLabel-root": {
+    fontSize: "14px",
+  },
 }));
+
+MyTextField.defaultProps = {
+  ...MyTextField.defaultProps,
+  size: "small",
+};
 
 export default MyTextField;

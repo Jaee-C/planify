@@ -4,7 +4,7 @@ import styles from "./login.module.css";
 
 export default function AuthHelp(): JSX.Element {
   return (
-    <div className={styles.authHelpContainer}>
+    <div className={styles.helpContainer}>
       <ul>
         <li>
           <a href="#">Can't log in?</a>

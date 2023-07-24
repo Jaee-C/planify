@@ -11,6 +11,7 @@ export default function SocialLogin(): JSX.Element {
         variant="outlined"
         startIcon={<FaGoogle />}
         fullWidth
+        disabled
         className={styles.socialButton}>
         Google
       </Button>
@@ -18,6 +19,7 @@ export default function SocialLogin(): JSX.Element {
         variant="outlined"
         startIcon={<FaApple />}
         fullWidth
+        disabled
         className={styles.socialButton}>
         Apple
       </Button>
@@ -25,6 +27,7 @@ export default function SocialLogin(): JSX.Element {
         variant="outlined"
         startIcon={<FaGithub />}
         fullWidth
+        disabled
         className={styles.socialButton}>
         Github
       </Button>

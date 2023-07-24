@@ -50,14 +50,14 @@
     margin-bottom: 0;
 }
 
-.authHelpContainer {
+.helpContainer {
     margin-top: 24px;
     font-size: 14px;
     text-align: center;
     line-height: 20px;
 }
 
-.authHelpContainer ul {
+.helpContainer ul {
     display: flex;
     justify-content: center;
     list-style: none;
@@ -65,15 +65,15 @@
     margin: 0;
 }
 
-.authHelpContainer p {
+.helpContainer p {
     margin: 0 8px;
 }
 
-.authHelpContainer a {
+.helpContainer a {
     color: #0052cc;
 }
 
-.authHelpContainer a:hover {
+.helpContainer a:hover {
     color: #0065ff;
     text-decoration: underline;
 }

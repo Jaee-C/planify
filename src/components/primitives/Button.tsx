@@ -35,6 +35,10 @@ const MyButton = styled(Button, {
       background: "rgba(9, 30, 66, 0.02)",
     },
   },
+
+  "&.Mui-disabled": {
+    backgroundColor: "#F2F2F2",
+  },
 }));
 
 export default MyButton;
