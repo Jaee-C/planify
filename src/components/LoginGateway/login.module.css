@@ -45,6 +45,7 @@
 .socialButton {
     text-transform: none;
     margin-bottom: 16px;
+    display: none;
 }
 .socialButton:last-of-type {
     margin-bottom: 0;

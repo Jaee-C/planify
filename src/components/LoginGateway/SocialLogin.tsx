@@ -6,7 +6,9 @@ import { FaApple, FaGithub, FaGoogle } from "react-icons/fa6";
 export default function SocialLogin(): JSX.Element {
   return (
     <div className={styles.socialsContainer}>
-      <div className={styles.socialsDividerText}>Or continue with:</div>
+      <div className={styles.socialsDividerText}>
+        More login methods to be added soon...
+      </div>
       <Button
         variant="outlined"
         startIcon={<FaGoogle />}
