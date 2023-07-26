@@ -1,4 +1,4 @@
-import { Button } from "@/components/primitives";
+import { Button } from "@/core/ui";
 
 import styles from "./login.module.css";
 import { FaApple, FaGithub, FaGoogle } from "react-icons/fa6";

@@ -54,6 +54,10 @@ export default class IssueRequest {
     this.values.status = value;
   }
 
+  public async verifyEditEntries(db: StatusRepository): Promise<boolean> {
+    return Boolean(this._key) && this.verifyEntries(db);
+  }
+
   public async verifyEntries(db: StatusRepository): Promise<boolean> {
     return (await this.verifyStatus(db)) && this.verifyTitle();
   }

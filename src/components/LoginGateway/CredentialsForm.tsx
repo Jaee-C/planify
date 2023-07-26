@@ -4,7 +4,7 @@ import { FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-import { Button, TextField } from "@/components/primitives";
+import { Button, TextField } from "@/core/ui";
 import { blue } from "@mui/material/colors";
 
 import styles from "./login.module.css";

@@ -1,7 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import { Skeleton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
-import { Button } from "@/components/primitives";
+import { Button } from "@/core/ui";
 
 export default function AccountSpace(): JSX.Element {
   const { data: session, status } = useSession();

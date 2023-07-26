@@ -4,7 +4,7 @@ import AppError from "@/lib/service/AppError";
 import RegisterFormData from "./RegisterFormData";
 import { UNKNOWN_ERROR } from "@/lib/client-data/errors";
 
-import { Button, TextField } from "@/components/primitives";
+import { Button, TextField } from "@/core/ui";
 import { blue } from "@mui/material/colors";
 
 import styles from "../LoginGateway/login.module.css";

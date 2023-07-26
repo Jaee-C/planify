@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+}
+
+.form > div {
+    margin-top: 20px;
+    width: 18pc;
+}
+
+.form > button {
+    margin-top: 16px;
+    width: 24px;
+}
