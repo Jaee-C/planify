@@ -29,8 +29,9 @@ export default async function handler(
     case "PUT":
       const issueRequest: IssueRequest = createIssueRequest(req);
       issueRequest.key = issueKey;
+      console.log(issueRequest);
       try {
-        const newIssue: Issue = await project.saveIssue(issueRequest);
+        const newIssue: Issue = await project.editIssue(issueRequest);
         const response: IssueResponse = new IssueResponse([newIssue]);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");

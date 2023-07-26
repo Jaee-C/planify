@@ -35,10 +35,11 @@ export default class Project {
   }
 
   public async saveIssue(issue: IssueRequest): Promise<Issue> {
-    if (issue.key !== undefined) {
-      return this._store.editExistingIssue(issue);
-    }
     return this._store.saveNewIssue(issue);
+  }
+
+  public async editIssue(issue: IssueRequest): Promise<Issue> {
+    return this._store.editExistingIssue(issue);
   }
 
   public async getAllIssues(): Promise<Issue[]> {
