@@ -16,6 +16,7 @@ export async function fetchProjectList(): Promise<Project[]> {
 
     newProject.name = item.name;
     newProject.key = item.key;
+    newProject.owner = item.owner;
 
     return newProject;
   });

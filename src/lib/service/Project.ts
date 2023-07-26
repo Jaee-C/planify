@@ -1,8 +1,8 @@
-import IssueRepository from "@/server/domain/IssueRepository";
+import IssueRepository from "@/lib/dao/IssueRepository";
 import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { Issue } from "@/lib/types";
-import { IIssueDB } from "@/server/domain/interfaces";
-import StatusRepository from "@/server/domain/StatusRepository";
+import { IIssueDB } from "@/lib/dao/interfaces";
+import StatusRepository from "@/lib/dao/StatusRepository";
 
 /**
  * Project is a service class that handles the business logic for the project.
@@ -35,13 +35,10 @@ export default class Project {
   }
 
   public async saveIssue(issue: IssueRequest): Promise<Issue> {
-    if (issue.id !== undefined || issue.key !== undefined) {
-      if (issue.key !== undefined) {
-        issue.id = this.getIssueId(issue.key);
-      }
-      return this._store.editIssue(issue);
+    if (issue.key !== undefined) {
+      return this._store.editExistingIssue(issue);
     }
-    return this._store.saveIssue(issue);
+    return this._store.saveNewIssue(issue);
   }
 
   public async getAllIssues(): Promise<Issue[]> {
@@ -51,7 +48,9 @@ export default class Project {
   public async getIssue(key: string): Promise<Issue> {
     const issueId: number = this.getIssueId(key);
 
-    const foundIssue: Issue | null = await this._store.fetchIssue(issueId);
+    const foundIssue: Issue | null = await this._store.fetchOneIssueWithId(
+      issueId
+    );
 
     if (foundIssue === null) {
       throw new Error("Issue not found");

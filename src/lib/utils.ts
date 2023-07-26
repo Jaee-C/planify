@@ -13,3 +13,9 @@ export function verifyUrlParam(param: string | string[] | undefined): string {
   }
   return param;
 }
+
+export function serverOnly(): void {
+  if (typeof window !== "undefined") {
+    throw new Error("this class should only be used on the server");
+  }
+}

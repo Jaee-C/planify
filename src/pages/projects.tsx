@@ -1,15 +1,18 @@
 import React from "react";
+import Head from "next/head";
 
 import ProjectsPage from "@/components/Projects";
 import TopNavigation, {
   NavigationPage,
 } from "@/components/TopNavigation/TopNavigation";
 import { ProSidebarProvider } from "react-pro-sidebar";
-import SideNavigation from "@/components/SideNavigationBar/SideNavigation";
 
 export default function Projects(): JSX.Element {
   return (
     <>
+      <Head>
+        <title>Planify: Projects</title>
+      </Head>
       <TopNavigation activePage={NavigationPage.PROJECTS} />
       <ProSidebarProvider>
         <div

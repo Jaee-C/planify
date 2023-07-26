@@ -1,89 +1,49 @@
-import { PriorityType, StatusType } from "@/lib/types";
-import StatusRepository from "@/server/domain/StatusRepository";
+import { StatusType } from "@/lib/types";
+import StatusRepository from "@/lib/dao/StatusRepository";
 import { LexoRank } from "lexorank";
-import Issue from "./index";
+import { serverOnly } from "@/lib/utils";
+import { IssueFormValues } from "@/lib/types/Issue";
 
-export interface IssueFormValues {
-  title?: string;
-  description?: string;
-  status?: number;
-  priority?: number;
-}
-
-export default class IssueRequest implements IssueFormValues {
-  public id?: number = undefined;
-  public title?: string = undefined;
-  public description?: string = undefined;
-  public status?: number;
-  public priority?: number;
-  public assignee?: string;
-  public key?: string;
+export default class IssueRequest {
+  private _id?: number = undefined;
+  private readonly values: IssueFormValues = {};
   private _order?: LexoRank;
-  private _validStatuses?: StatusType[];
-  private _validPriorities?: PriorityType[];
+  private _statusDb: StatusRepository | null = null;
+  private _key?: string = undefined;
+
+  public constructor(value: IssueFormValues) {
+    serverOnly();
+    this.values = { ...value };
+  }
+
+  public get id(): number | undefined {
+    return this._id;
+  }
+  public get order(): string {
+    return this._order?.toString() || "";
+  }
+  public get priority(): number | undefined {
+    return this.values.priority;
+  }
+  public get status(): number | undefined {
+    return this.values.status;
+  }
+  public get title(): string | undefined {
+    return this.values.title;
+  }
 
   public set order(value: string) {
     this._order = LexoRank.parse(value);
   }
-  public set validStatuses(value: StatusType[]) {
-    this._validStatuses = value;
-  }
-  public set validPriorities(value: PriorityType[]) {
-    this._validPriorities = value;
-  }
-
-  public constructor(value: IssueFormValues) {
-    this.title = value.title;
-    this.description = value.description;
-    this.status = value.status;
-    this.priority = value.priority;
+  public set key(value: string) {
+    if (value.length > 5) return;
+    this._key = value;
+    this.saveIdWithKey(value);
   }
 
-  public get order(): string {
-    return this._order?.toString() || "";
-  }
-
-  public createIssue(): Issue | undefined {
-    let newIssue: Issue | undefined = undefined;
-    if (!this._validPriorities || !this._validStatuses) {
-      return undefined;
-    }
-
-    // Find issue and priority type
-    const foundPriority = this._validPriorities.find(
-      priority => priority.id === this.priority
-    );
-    const foundStatus = this._validStatuses.find(
-      status => status.id === this.status
-    );
-
-    if (
-      this.id &&
-      this.title &&
-      foundStatus &&
-      foundPriority &&
-      this.key &&
-      this._order
-    ) {
-      newIssue = new Issue(
-        this.id,
-        this.title,
-        foundStatus,
-        foundPriority,
-        this.key,
-        this._order
-      );
-    }
-
-    if (newIssue) {
-      if (this.assignee) {
-        newIssue.assignee = this.assignee;
-      }
-      if (this.description) {
-        newIssue.description = this.description;
-      }
-    }
-    return newIssue;
+  public getEncodedDescription(): Buffer | undefined {
+    if (!this.validDescription()) return undefined;
+    return Buffer.from(this.values.description!);
   }
 
   public saveStatus(value: number): void {
@@ -91,7 +51,7 @@ export default class IssueRequest implements IssueFormValues {
       return;
     }
 
-    this.status = value;
+    this.values.status = value;
   }
 
   public async verifyEntries(db: StatusRepository): Promise<boolean> {
@@ -99,17 +59,13 @@ export default class IssueRequest implements IssueFormValues {
   }
 
   private async verifyStatus(db: StatusRepository): Promise<boolean> {
-    if (Number.isNaN(this.status) || this.status === undefined) {
-      console.log("Status is not a number.");
-      return false;
-    }
+    this._statusDb = db;
+    if (!this.isNumber(this.status)) return false;
 
     // Status provided is not defined in database
-    const validStatuses: number[] = (await db.fetchStatuses()).map(
-      (value: StatusType): number => value.id
-    );
-    if (validStatuses.indexOf(this.status) === -1) {
-      console.log("Invalid status");
+    const validStatuses: number[] = await this.getValidStatuses();
+    if (!validStatuses.includes(Number(this.status))) {
+      console.error("Invalid status");
       return false;
     }
 
@@ -117,14 +73,47 @@ export default class IssueRequest implements IssueFormValues {
   }
 
   private verifyTitle(): boolean {
-    if (this.title === undefined) {
+    return !(this.title === undefined || this.title.length === 0);
+  }
+
+  private isNumber(value?: number): boolean {
+    if (value === undefined || Number.isNaN(value)) {
+      console.error("Value is not a number");
       return false;
     }
-
-    if (this.title.length === 0) {
-      return false;
-    }
-
     return true;
+  }
+
+  private async getValidStatuses(): Promise<number[]> {
+    if (!this.statusDbExists()) return [];
+
+    return (await this._statusDb!.fetchStatuses()).map(
+      (value: StatusType): number => value.id
+    );
+  }
+
+  private statusDbExists(): boolean {
+    if (this._statusDb === null) {
+      console.error("Status repository not set");
+      return false;
+    }
+    return true;
+  }
+
+  private validDescription(): boolean {
+    return (
+      this.values.description !== undefined &&
+      this.values.description.length > 0
+    );
+  }
+
+  private saveIdWithKey(key: string): void {
+    const splitKey: string[] = key.split("-");
+    const extractedId: number = Number(splitKey[1]);
+
+    if (Number.isNaN(extractedId)) {
+      throw new Error("Invalid issue key");
+    }
+    this._id = extractedId;
   }
 }
