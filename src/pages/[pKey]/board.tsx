@@ -1,5 +1,4 @@
 import React from "react";
-import Head from "next/head";
 import Board from "@/components/Board";
 import TopNavigation, {
   NavigationPage,
@@ -11,9 +10,6 @@ import { PageType } from "@/lib/types";
 export default function BoardPage(): JSX.Element {
   return (
     <>
-      <Head>
-        <title>Planify: Board</title>
-      </Head>
       <TopNavigation activePage={NavigationPage.BACKLOG} />
       <ProSidebarProvider>
         <div

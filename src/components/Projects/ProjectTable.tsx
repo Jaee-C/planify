@@ -69,12 +69,11 @@ export default function ProjectTable(): JSX.Element {
   React.useEffect((): void => {
     if (!isLoading && data && data.length > 0) {
       const newRows: GridRowsProp = data.map((row: Project) => {
-        console.log(row);
         return {
           id: row.id,
           key: row.key,
           name: row.name,
-          owner: row.owner?.name || "unknown",
+          owner: "Guest",
         };
       });
       setRows(newRows);

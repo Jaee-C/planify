@@ -26,7 +26,7 @@ interface TopNavigationProps {
 export default function TopNavigation(props: TopNavigationProps): JSX.Element {
   return (
     <header
-      className="bg-slate-100 top-0 z-50 px-5 h-14 flex items-center
+      className="bg-slate-100 top-0 z-50 w-full px-5 h-14 flex items-center
                        justify-between text-sm font-medium border-b-2">
       <nav className="min-w-0 flex grow items-stretch relative shrink-0 h-full">
         <TopNavigationButton

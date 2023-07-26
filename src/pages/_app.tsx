@@ -1,7 +1,6 @@
 import "../../styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
-import { StyledEngineProvider } from "@mui/material";
 
 /**
  * Top level component used to initialise Nextjs pages. Sets up the
@@ -21,9 +20,7 @@ export default function App({
 }: AppProps): JSX.Element {
   return (
     <SessionProvider session={session}>
-      <StyledEngineProvider injectFirst>
-        <Component {...pageProps} />
-      </StyledEngineProvider>
+      <Component {...pageProps} />
     </SessionProvider>
   );
 }
