@@ -14,14 +14,15 @@ import {
   clientUpdateIssueStatus,
   clientUpdateIssue,
 } from "@/components/Board/utils";
-import { Issue, StatusType } from "@/lib/types";
+import { StatusType } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import Column from "@/components/Board/Column";
 import { useRouter } from "next/router";
 import { styled } from "@mui/material";
 import { PartialAutoScrollerOptions } from "@hello-pangea/dnd/src/state/auto-scroller/fluid-scroller/auto-scroller-options-types";
 import { useMutation } from "react-query";
 import { editIssue } from "@/lib/client-data/issues";
-import { convertDataToIssue } from "@/lib/types/Issue";
+import { convertDataToIssue } from "@/lib/shared/Issue";
 
 const Container = styled("div")(() => ({
   display: "inline-flex",

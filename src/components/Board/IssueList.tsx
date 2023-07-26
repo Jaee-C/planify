@@ -1,5 +1,5 @@
 import React from "react";
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import {
   Draggable,
   DraggableProvided,

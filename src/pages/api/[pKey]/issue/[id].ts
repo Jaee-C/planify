@@ -1,10 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import Project from "@/lib/service/Project";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
-import { Issue, IssueResponse } from "@/lib/types";
-import { createIssueRequest, IssueRequest } from "@/lib/service/Issue";
+import { Issue, IssueResponse } from "@/lib/shared";
+import {
+  createIssueRequest,
+  IssueRequest,
+  IssueService,
+} from "@/lib/service/Issue";
 import AppError from "@/lib/service/AppError";
 
 export default async function handler(
@@ -15,12 +18,12 @@ export default async function handler(
   const issueKey: string = getServerUrlParam(req, "id");
   const token: JWT = await getUserToken(req);
 
-  const project: Project = new Project(pKey, token.id);
+  const issueService: IssueService = new IssueService(pKey, token.id);
 
   switch (req.method) {
     case "GET":
       try {
-        const issue: Issue = await project.getIssue(issueKey);
+        const issue: Issue = await issueService.getIssue(issueKey);
         res.status(200).json(issue);
       } catch {
         res.status(404).end();
@@ -30,7 +33,7 @@ export default async function handler(
       const issueRequest: IssueRequest = createIssueRequest(req);
       issueRequest.key = issueKey;
       try {
-        const newIssue: Issue = await project.editIssue(issueRequest);
+        const newIssue: Issue = await issueService.editIssue(issueRequest);
         const response: IssueResponse = new IssueResponse([newIssue]);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
@@ -45,7 +48,7 @@ export default async function handler(
       }
       break;
     case "DELETE":
-      await project.deleteIssue(issueKey);
+      await issueService.deleteIssue(issueKey);
       res.status(200).send(`DELETE ${issueKey}`);
       break;
     default:

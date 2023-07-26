@@ -36,7 +36,7 @@ import {
 } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
 import AppError from "@/lib/service/AppError";
-import { IssueData } from "@/lib/types/Issue";
+import { IssueData } from "@/lib/shared";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};

@@ -13,7 +13,7 @@ import {
 import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { Project } from "lib/types";
+import { Project } from "@/lib/shared";
 import { fetchProjectList } from "@/lib/client-data/projects";
 import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
 
@@ -74,7 +74,7 @@ export default function ProjectTable(): JSX.Element {
           id: row.id,
           key: row.key,
           name: row.name,
-          owner: row.owner?.name || "unknown",
+          owner: row.ownerName,
         };
       });
       setRows(newRows);

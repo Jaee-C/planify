@@ -1,5 +1,6 @@
-import { Issue, StatusType } from "@/lib/types";
-import { compareIssue } from "@/lib/types/Issue";
+import { StatusType } from "@/lib/types";
+import { Issue } from "@/lib/shared";
+import { compareIssue } from "@/lib/shared/Issue";
 
 export interface ColumnDefinition {
   name: string;

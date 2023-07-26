@@ -2,7 +2,8 @@ import { StatusType } from "@/lib/types";
 import StatusRepository from "@/lib/dao/StatusRepository";
 import { LexoRank } from "lexorank";
 import { serverOnly } from "@/lib/utils";
-import { IssueFormValues } from "@/lib/types/Issue";
+import { IssueFormValues } from "@/lib/shared/Issue";
+import StatusService from "@/lib/service/StatusService";
 
 export default class IssueRequest {
   private _id?: number = undefined;
@@ -54,26 +55,12 @@ export default class IssueRequest {
     this.values.status = value;
   }
 
-  public async verifyEditEntries(db: StatusRepository): Promise<boolean> {
-    return Boolean(this._key) && this.verifyEntries(db);
+  public async verifyEditEntries(status: StatusService): Promise<boolean> {
+    return Boolean(this._key) && this.verifyEntries(status);
   }
 
-  public async verifyEntries(db: StatusRepository): Promise<boolean> {
-    return (await this.verifyStatus(db)) && this.verifyTitle();
-  }
-
-  private async verifyStatus(db: StatusRepository): Promise<boolean> {
-    this._statusDb = db;
-    if (!this.isNumber(this.status)) return false;
-
-    // Status provided is not defined in database
-    const validStatuses: number[] = await this.getValidStatuses();
-    if (!validStatuses.includes(Number(this.status))) {
-      console.error("Invalid status");
-      return false;
-    }
-
-    return true;
+  public async verifyEntries(status: StatusService): Promise<boolean> {
+    return (await status.statusExists(this.status)) && this.verifyTitle();
   }
 
   private verifyTitle(): boolean {

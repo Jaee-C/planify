@@ -1,6 +1,4 @@
-export { default as Issue, IssueResponse } from "@/lib/types/Issue";
-
-export { default as Project } from "./Project";
+export { default as Issue, IssueResponse } from "../shared/Issue";
 
 export type { default as StatusType } from "./StatusType";
 

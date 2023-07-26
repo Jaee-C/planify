@@ -1,4 +1,4 @@
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { CardActions, styled, Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 

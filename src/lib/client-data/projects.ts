@@ -1,4 +1,4 @@
-import { Project } from "lib/types";
+import { Project } from "lib/shared";
 import { ProjectFormValues } from "@/components/Projects/FormConstants";
 
 export async function fetchProjectList(): Promise<Project[]> {
@@ -16,7 +16,7 @@ export async function fetchProjectList(): Promise<Project[]> {
 
     newProject.name = item.name;
     newProject.key = item.key;
-    newProject.owner = item.owner;
+    newProject.ownerName = item.owner?.name;
 
     return newProject;
   });

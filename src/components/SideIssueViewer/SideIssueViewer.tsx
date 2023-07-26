@@ -3,7 +3,7 @@ import { NextRouter, useRouter } from "next/router";
 import { useContext, useEffect } from "react";
 import * as Yup from "yup";
 import { Divider, Grid, styled, Typography } from "@mui/material";
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssue } from "@/lib/client-data/query";
 import { SidebarEditContext } from "@/components/Backlog";

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Project } from "lib/types";
+import { Project } from "lib/shared";
 import ProjectRepository from "@/lib/dao/ProjectRepository";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";

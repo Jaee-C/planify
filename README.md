@@ -12,8 +12,14 @@ It was after venturing into commercial options that I was able to find a few tha
 
 Hence I decided to build my own, one that suits my use case and looks good (for me), as well as being open source and self-hostable so that others can use it too.
 
+## :warning: Warning
 
-## Getting Started
+This project is still under early-stage development. The security of this service is still untested, and there are still many features that are not implemented yet. Please keep this in mind when using it.
+
+**You should not put sensitive information, or use this service for anything important. Please do not re-use passwords for this service, only use unimportant credentials.**
+
+
+## Installation
 
 Before you start, you will need to create a new MySQL database. You can name it whatever you want.
 
@@ -57,12 +63,6 @@ npm run dev
 
 - [Node.js](https://nodejs.org/en/) (v14 or higher)
 - [MySQL](https://www.mysql.com/) (v8 or higher)
-
-## :warning: Warning
-
-This project is still under early-stage development. The security of this service is still untested, and there are still many features that are not implemented yet. Please keep this in mind when using it.
-
-**You should not put sensitive information, or use this service for anything important. Please do not re-use passwords for this service, only use unimportant credentials.**
 
 ## License
 

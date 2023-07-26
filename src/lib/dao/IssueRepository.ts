@@ -1,7 +1,7 @@
 import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { prisma } from "@/lib/dao/prisma";
 import { Prisma } from "@prisma/client";
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { IIssueDB } from "./interfaces";
 import AppError from "@/lib/service/AppError";
 import {

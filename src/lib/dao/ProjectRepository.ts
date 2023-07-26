@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/dao/prisma";
-import { Project } from "@/lib/types";
+import { Project } from "@/lib/shared";
 import { IProjectDB } from "./interfaces";
 import ProjectRequest from "@/lib/service/ProjectRequest";
 
@@ -53,15 +53,33 @@ export default class ProjectRepository implements IProjectDB {
     return this.convertToProject(dbProject);
   }
 
-  private convertToProject(dbProject: ProjectPayload): Project {
-    return {
-      id: dbProject.id,
-      name: dbProject.name,
-      key: dbProject.key,
-      owner: {
-        name: dbProject.owner.displayName,
+  public async getDetails(key: string): Promise<Project> {
+    const dbProject: ProjectPayload | null = await prisma.project.findUnique({
+      where: {
+        key_ownerId: {
+          key,
+          ownerId: Number(this._userId),
+        },
       },
-    };
+      select: projectSelect,
+    });
+
+    if (!dbProject) {
+      throw new Error("Project not found");
+    }
+
+    return this.convertToProject(dbProject);
+  }
+
+  private convertToProject(dbProject: ProjectPayload): Project {
+    const newProject: Project = new Project(dbProject.id);
+    newProject.name = dbProject.name;
+    newProject.key = dbProject.key;
+
+    if (dbProject.owner?.displayName) {
+      newProject.ownerName = dbProject.owner.displayName;
+    }
+    return newProject;
   }
 
   private createProject(
