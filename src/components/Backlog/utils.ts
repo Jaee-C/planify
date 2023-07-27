@@ -1,4 +1,4 @@
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { GridRowsProp } from "@mui/x-data-grid";
 import { NONE_PRIORITY } from "@/lib/constants";
 

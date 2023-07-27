@@ -1,6 +1,26 @@
-import StatusType from "./StatusType";
-import PriorityType from "./PriorityType";
+import { PriorityType, StatusType } from "@/lib/types";
 import { LexoRank } from "lexorank";
+
+export interface IssueFormValues {
+  title?: string;
+  description?: string;
+  status?: number;
+  priority?: number;
+}
+
+/**
+ * react-query does not support class as a return type. This interface is
+ * converted to Issue class after passed to react components.
+ */
+export interface IssueData {
+  id: number;
+  title: string | undefined;
+  description?: string;
+  status: StatusType | undefined;
+  issueKey: string | undefined;
+  priority?: PriorityType;
+  order: string | undefined;
+}
 
 export default class Issue {
   public id: number;
@@ -47,20 +67,6 @@ export function compareIssue(current: Issue, other: Issue): number {
   }
 
   return LexoRank.parse(current.order).compareTo(LexoRank.parse(other.order));
-}
-
-/**
- * react-query does not support class as a return type. This interface is
- * converted to Issue class after passed to react components.
- */
-export interface IssueData {
-  id: number;
-  title: string | undefined;
-  description?: string;
-  status: StatusType | undefined;
-  issueKey: string | undefined;
-  priority?: PriorityType;
-  order: string | undefined;
 }
 
 export function convertDataToIssue(data: IssueData): Issue {

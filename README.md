@@ -1,38 +1,69 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+**This project is still under development, please keep this in mind when using it.  [more below](#warning-warning)**
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+This is a project management software that is open source and self-hostable. It is built with [Next.js](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/).
+
+## Motivation
+
+While working on my various personal projects, I found the need for project management software to help with planning out my projects and tracking my progress. I tried a few different [FOSS](https://itsfoss.com/what-is-foss/) options, but most of them don't fit my needs, and the ones that do often doesn't look very modern or _aesthetically pleasing_. 
+
+It was after venturing into commercial options that I was able to find a few that I liked, but those often have features locked behind a paywall and most importantly, they store all my data on their servers. I put a lot of importance into having control over my data, and I don't want to be locked into a service that I can't control.
+
+Hence I decided to build my own, one that suits my use case and looks good (for me), as well as being open source and self-hostable so that others can use it too.
+
+## :warning: Warning
+
+This project is still under early-stage development. The security of this service is still untested, and there are still many features that are not implemented yet. Please keep this in mind when using it.
+
+**You should not put sensitive information, or use this service for anything important. Please do not re-use passwords for this service, only use unimportant credentials.**
+
+
+## Installation
+
+Before you start, you will need to create a new MySQL database. You can name it whatever you want.
+
+After you've done that, clone the repository and install the dependencies.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+$ git clone git@github.com:Jaee-C/planify.git
+$ cd planify
+$ npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Next, create a `.env` file in the root directory of the project and fill in the following fields (replacing the `xxxx` with valid values).
+```bash
+DATABASE_URL=mysql://xxxxxxxxx
+NEXTAUTH_SECRET=xxxxxxx
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Here are what the fields mean:
+- `DATABASE_URL`: This URL should be in the format of `mysql://<username>:<password>@<host>:<port>/<database>`, and it links to the MySQL database that you have created for this application
+- `NEXTAUTH_SECRET`: This is a secret key that is used by [next-auth](https://next-auth.js.org/) to encrypt the session token. You can generate one by running the following command.
+```bash
+$ openssl rand -base64 32
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Then, build the program and start the server.
+```bash
+$ npm run build
+$ npm run start
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Finally, open [http://localhost:3000](http://localhost:3000) with your browser to see the result. 
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Note that this method will only allow the server to be accessible from the machine you are running the commands on. To make it available to other machines, you can search up various guides online on how to do so.
 
-## Learn More
+To run the development server, run the following command instead.
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Prerequisites
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Node.js](https://nodejs.org/en/) (v14 or higher)
+- [MySQL](https://www.mysql.com/) (v8 or higher)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) file for details.

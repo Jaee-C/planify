@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getServerUrlParam } from "@/lib/utils";
-import StatusRepository from "@/server/domain/StatusRepository";
+import StatusRepository from "@/lib/dao/StatusRepository";
 import { StatusType } from "@/lib/types";
 
 export default async function handler(

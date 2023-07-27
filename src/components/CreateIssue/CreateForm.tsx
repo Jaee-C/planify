@@ -5,11 +5,11 @@ import { useMutation } from "react-query";
 import { FormikProps, useFormik } from "formik";
 import { Alert, Button, Divider, Grid, styled } from "@mui/material";
 import { addIssue } from "@/lib/client-data/issues";
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { verifyUrlParam } from "@/lib/utils";
 import FormTextField from "../Form/FormTextField";
 import TextFieldLabel from "../Form/TextFieldLabel";
-import { EMPTY_FORM, FormValues } from "./FormConstants";
+import { EMPTY_FORM } from "./FormConstants";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
 import { useSetAtom } from "jotai";
@@ -17,7 +17,7 @@ import { addOneIssueAtom } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
 import AppError from "@/lib/service/AppError";
 import { LoadingButton } from "@mui/lab";
-import { IssueFormValues } from "@/lib/service/Issue/IssueRequest";
+import { IssueFormValues } from "@/lib/shared/Issue";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {

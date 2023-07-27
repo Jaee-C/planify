@@ -1,8 +1,8 @@
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { styled } from "@mui/material";
 import IssueList from "@/components/Board/IssueList";
 import { useEffect, useState } from "react";
-import { compareIssue } from "@/lib/types/Issue";
+import { compareIssue } from "@/lib/shared/Issue";
 
 // Column header
 const Header = styled("div")(() => ({

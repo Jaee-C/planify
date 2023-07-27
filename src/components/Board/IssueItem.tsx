@@ -1,4 +1,4 @@
-import { Issue } from "@/lib/types";
+import { Issue } from "@/lib/shared";
 import { DraggableProvided } from "@hello-pangea/dnd";
 import { Card, CardContent, styled } from "@mui/material";
 import IssueInfo from "@/components/Board/IssueInfo";

@@ -1,5 +1,5 @@
 import { QueryClient, useQuery, UseQueryResult } from "react-query";
-import { Issue, PriorityType, StatusType } from "@/lib/types";
+import { PriorityType, StatusType } from "@/lib/types";
 import {
   fetchIssueList,
   fetchPriorities,
@@ -7,7 +7,7 @@ import {
   getIssue,
 } from "@/lib/client-data/issues";
 import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
-import { IssueData } from "@/lib/types/Issue";
+import { Issue, IssueData } from "@/lib/shared";
 
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {

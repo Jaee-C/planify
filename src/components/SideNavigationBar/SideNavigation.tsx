@@ -11,6 +11,8 @@ import { verifyUrlParam } from "@/lib/utils";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { AiOutlineDoubleLeft, AiOutlineDoubleRight } from "react-icons/ai";
+import { MdOutlineSettings } from "react-icons/md";
+import { SidebarDivider } from "@/core/ui";
 
 interface SideNavigationProps {
   currentPage?: PageType;
@@ -74,6 +76,19 @@ export default function SideNavigation(
               </MenuItem>
               <MenuItem icon={<GoChecklist />} disabled>
                 Issues
+              </MenuItem>
+              <SidebarDivider />
+              <MenuItem
+                icon={<MdOutlineSettings />}
+                component={
+                  <Link
+                    href={{
+                      pathname: `/[pKey]/settings`,
+                      query: { pKey: projectKey },
+                    }}
+                  />
+                }>
+                Project Settings
               </MenuItem>
             </Menu>
           </div>

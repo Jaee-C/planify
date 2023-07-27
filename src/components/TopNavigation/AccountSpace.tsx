@@ -1,6 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
-import { Button, Skeleton, Menu, MenuItem } from "@mui/material";
+import { Skeleton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
+import { Button } from "@/core/ui";
 
 export default function AccountSpace(): JSX.Element {
   const { data: session, status } = useSession();
@@ -24,7 +25,10 @@ export default function AccountSpace(): JSX.Element {
 
   if (status === "unauthenticated" || !session) {
     return (
-      <Button variant="contained" onClick={(): Promise<any> => signIn()}>
+      <Button
+        variant="contained"
+        onClick={(): Promise<any> => signIn()}
+        size="small">
         Sign in
       </Button>
     );

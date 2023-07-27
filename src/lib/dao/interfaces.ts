@@ -1,4 +1,5 @@
-import { Issue, Project, User } from "@/lib/types";
+import { User } from "@/lib/types";
+import { Issue, Project } from "@/lib/shared";
 import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { NewUser } from "@/lib/types/User";
 import ProjectRequest from "@/lib/service/ProjectRequest";
@@ -6,14 +7,16 @@ import ProjectRequest from "@/lib/service/ProjectRequest";
 export interface IProjectDB {
   fetchAllProjects(): Promise<Project[]>;
   saveProject(req: ProjectRequest): Promise<Project>;
+  getDetails(key: string): Promise<Project>;
+  editProject(req: ProjectRequest, key: string): Promise<Project>;
 }
 
 export interface IIssueDB {
   fetchAllIssues(): Promise<Issue[]>;
-  saveIssue(req: IssueRequest): Promise<Issue>;
-  editIssue(req: IssueRequest): Promise<Issue>;
+  saveNewIssue(req: IssueRequest): Promise<Issue>;
+  editExistingIssue(req: IssueRequest): Promise<Issue>;
   deleteIssue(id: number): Promise<void>;
-  fetchIssue(id: number): Promise<Issue | null>;
+  fetchOneIssueWithId(id: number): Promise<Issue | null>;
 }
 
 export interface IUserDB {

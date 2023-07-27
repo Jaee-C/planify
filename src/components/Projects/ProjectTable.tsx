@@ -13,7 +13,7 @@ import {
 import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { Project } from "lib/types";
+import { Project } from "@/lib/shared";
 import { fetchProjectList } from "@/lib/client-data/projects";
 import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
 
@@ -69,11 +69,12 @@ export default function ProjectTable(): JSX.Element {
   React.useEffect((): void => {
     if (!isLoading && data && data.length > 0) {
       const newRows: GridRowsProp = data.map((row: Project) => {
+        console.log(row);
         return {
           id: row.id,
           key: row.key,
           name: row.name,
-          owner: "Guest",
+          owner: row.ownerName,
         };
       });
       setRows(newRows);

@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Issue, IssueResponse } from "lib/types";
-import { IssueRequest, createIssueRequest } from "@/lib/service/Issue";
-import Project from "@/lib/service/Project";
+import {
+  IssueRequest,
+  createIssueRequest,
+  IssueListService,
+} from "@/lib/service/Issue";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
 import { getServerUrlParam } from "@/lib/utils";
@@ -21,7 +24,7 @@ export default async function handler(
 
   const userToken: JWT = await getUserToken(req);
   const userId: string = userToken.id;
-  const project: Project = new Project(projectKey, userId);
+  const issueList: IssueListService = new IssueListService(projectKey, userId);
 
   if (Number.isNaN(Number(userId))) {
     res.statusCode = 401;
@@ -32,7 +35,7 @@ export default async function handler(
 
   switch (req.method) {
     case "GET":
-      const allIssues: Issue[] = await project.getAllIssues();
+      const allIssues: Issue[] = await issueList.getAllIssues();
       const response: IssueResponse = new IssueResponse(allIssues);
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
@@ -41,7 +44,7 @@ export default async function handler(
     case "POST":
       const request: IssueRequest = createIssueRequest(req);
       try {
-        const newIssue: Issue = await project.saveIssue(request);
+        const newIssue: Issue = await issueList.saveIssue(request);
         const response: IssueResponse = new IssueResponse([newIssue]);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
