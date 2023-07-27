@@ -37,7 +37,7 @@ export default class IssueRequest {
     this._order = LexoRank.parse(value);
   }
   public set key(value: string) {
-    if (value.length > 5) return;
+    if (value.length > 10) return;
     this._key = value;
     this.saveIdWithKey(value);
   }

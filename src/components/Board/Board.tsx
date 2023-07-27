@@ -13,6 +13,9 @@ import {
   getIssuesByStatus,
   clientUpdateIssueStatus,
   clientUpdateIssue,
+  findStatusTypeByName,
+  isNotMoved,
+  handleSameStatus,
 } from "@/components/Board/utils";
 import { StatusType } from "@/lib/types";
 import { Issue } from "@/lib/shared";
@@ -81,14 +84,10 @@ export default function Board(props: BoardProps): JSX.Element {
   }, [issues, statuses]);
 
   const onDragEnd = (result: DropResult): void => {
-    // Dropped nowhere
-    if (!result.destination || !statuses) return;
+    console.log(result);
 
     // did not move anywhere - can bail early
-    if (
-      result.source.droppableId === result.destination.droppableId &&
-      result.source.index === result.destination.index
-    ) {
+    if (isNotMoved(result.source, result.destination) || !statuses) {
       return;
     }
 
@@ -100,29 +99,37 @@ export default function Board(props: BoardProps): JSX.Element {
     if (!editedIssueKey) return;
 
     // Check if issue status is updated
-    const destStatus: string = result.destination.droppableId;
-    const newStatus = statuses.find(
-      status => String(status.name) === destStatus
+    const destStatus: StatusType | undefined = findStatusTypeByName(
+      statuses,
+      result.destination!.droppableId
     );
-    if (!newStatus) return;
+    const srcStatus: StatusType | undefined = findStatusTypeByName(
+      statuses,
+      result.source.droppableId
+    );
+    if (!destStatus || !srcStatus) return;
 
     // Find issues before and after the moved issue, to determine the new order
-    const issueDestIndex: number = result.destination.index;
-    const destIssues: Issue[] = getIssuesByStatus(allIssues, newStatus);
+    const issueDestIndex: number = result.destination!.index;
+    const issueSrcIndex: number = result.source.index;
+    let destIssues: Issue[] = getIssuesByStatus(allIssues, destStatus);
+    if (srcStatus.id === destStatus.id) {
+      destIssues = handleSameStatus(destIssues, destIssues[issueSrcIndex]);
+    }
 
     let issueBefore: Issue | undefined;
     let issueAfter: Issue | undefined;
     if (issueDestIndex > 0) {
       issueBefore = destIssues[issueDestIndex - 1];
     }
-    if (issueDestIndex < destIssues.length - 1) {
-      issueAfter = destIssues[issueDestIndex + 1];
+    if (issueDestIndex < destIssues.length) {
+      issueAfter = destIssues[issueDestIndex];
     }
 
     const [updated, order] = clientUpdateIssueStatus(
       result.draggableId,
       allIssues,
-      newStatus,
+      destStatus,
       issueBefore,
       issueAfter
     );
@@ -130,7 +137,7 @@ export default function Board(props: BoardProps): JSX.Element {
     editIssueMutation.mutate([
       editedIssueKey,
       {
-        status: newStatus.id,
+        status: destStatus.id,
         order: order,
       },
     ]);

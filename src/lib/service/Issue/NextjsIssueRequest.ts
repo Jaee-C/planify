@@ -2,6 +2,15 @@ import IssueRequest from "@/lib/service/Issue/IssueRequest";
 import { NextApiRequest } from "next";
 import { IssueFormValues } from "@/lib/shared/Issue";
 
+export function createIssueRequestWithKey(
+  req: NextApiRequest,
+  key: string
+): IssueRequest {
+  const issueRequest = createIssueRequest(req);
+  issueRequest.key = key;
+  return issueRequest;
+}
+
 export default function createIssueRequest(req: NextApiRequest): IssueRequest {
   const form: IssueFormValues = {
     title: req.body.title,
