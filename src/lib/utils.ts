@@ -1,5 +1,4 @@
 import { NextApiRequest } from "next";
-import { ParsedUrlQuery } from "querystring";
 
 export function getServerUrlParam(req: NextApiRequest, key: string): string {
   const query: NextApiRequest["query"] = req.query;

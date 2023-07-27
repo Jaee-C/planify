@@ -1,10 +1,12 @@
 import Head from "next/head";
 import { Details, SettingsSidebar } from "@/components/ProjectSettings";
 import { ProSidebarProvider } from "react-pro-sidebar";
+import { queryClient } from "@/lib/client-data/query";
+import { QueryClientProvider } from "react-query";
 
 export default function Settings(): JSX.Element {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Head>
         <title>Planify: Settings</title>
       </Head>
@@ -20,6 +22,6 @@ export default function Settings(): JSX.Element {
           <Details />
         </div>
       </ProSidebarProvider>
-    </>
+    </QueryClientProvider>
   );
 }

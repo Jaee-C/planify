@@ -4,6 +4,8 @@ import ProjectService from "@/lib/service/ProjectService";
 import { getServerUrlParam } from "@/lib/utils";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/lib/auth/session";
+import ProjectRequest from "@/lib/service/ProjectRequest";
+import NextjsProjectRequest from "@/lib/service/NextjsProjectRequest";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,6 +27,21 @@ export default async function handler(
       res.setHeader("Content-Type", "application/json");
       try {
         const details: Project = await project.getProjectDetails();
+        res.statusCode = 200;
+        res.end(details.toJSONString());
+      } catch (e) {
+        const error = e as Error;
+        res.statusCode = 500;
+        res.end({ message: error.message });
+      }
+      break;
+    case "PUT":
+      try {
+        const editRequest: ProjectRequest = new NextjsProjectRequest(req);
+        const details: Project = await project.updateProjectDetails(
+          editRequest,
+          projectKey
+        );
         res.statusCode = 200;
         res.end(details.toJSONString());
       } catch (e) {

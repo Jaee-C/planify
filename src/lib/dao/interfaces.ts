@@ -8,6 +8,7 @@ export interface IProjectDB {
   fetchAllProjects(): Promise<Project[]>;
   saveProject(req: ProjectRequest): Promise<Project>;
   getDetails(key: string): Promise<Project>;
+  editProject(req: ProjectRequest, key: string): Promise<Project>;
 }
 
 export interface IIssueDB {

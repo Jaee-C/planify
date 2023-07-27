@@ -1,7 +1,7 @@
 export default class Project {
   public id: number;
-  public _name: string | undefined;
-  public _key: string | undefined;
+  public _name: string = "";
+  public _key: string = "";
   public owner: { name: string | null } | undefined;
 
   public constructor(id: number) {
@@ -19,10 +19,11 @@ export default class Project {
   }
 
   public get name(): string {
-    return this._name!;
+    return this._name;
   }
   public get key(): string {
-    return this._key!.toUpperCase();
+    if (!this._key) return "";
+    return this._key.toUpperCase();
   }
   public get ownerName(): string {
     if (!this.owner || !this.owner.name) return "None";

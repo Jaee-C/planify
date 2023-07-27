@@ -10,6 +10,11 @@ import { verifyUrlParam } from "@/lib/utils";
 export default function ReturnToProject(): JSX.Element {
   const router = useRouter();
   const projectKey = verifyUrlParam(router.query.pKey);
+
+  if (projectKey === "") {
+    return <></>;
+  }
+
   return (
     <>
       <MenuItem
