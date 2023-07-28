@@ -1,10 +1,14 @@
 import Head from "next/head";
-import { Details, SettingsSidebar } from "@/components/ProjectSettings";
+import {
+  Details,
+  SettingPages,
+  SettingsSidebar,
+} from "@/components/ProjectSettings";
 import { ProSidebarProvider } from "react-pro-sidebar";
 import { queryClient } from "@/lib/client-data/query";
 import { QueryClientProvider } from "react-query";
 
-export default function Settings(): JSX.Element {
+export default function DetailsPage(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <Head>
@@ -18,7 +22,7 @@ export default function Settings(): JSX.Element {
             minHeight: "400px",
             maxWidth: "100%",
           }}>
-          <SettingsSidebar />
+          <SettingsSidebar activePage={SettingPages.Details} />
           <Details />
         </div>
       </ProSidebarProvider>

@@ -3,8 +3,19 @@ import { IconContext } from "react-icons";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import colors from "tailwindcss/colors";
 import ReturnToProject from "@/components/ProjectSettings/Sidebar/ReturnToProject";
+import { useRouter } from "next/router";
+import { getSettingsPath, SettingPages, pagePaths } from "./utils";
 
-export default function SettingsSidebar(): JSX.Element {
+export { SettingPages };
+
+interface Props {
+  activePage: SettingPages;
+}
+
+export default function SettingsSidebar(props: Props): JSX.Element {
+  const router = useRouter();
+  const settingsPath: string = getSettingsPath(router.asPath);
+
   return (
     <IconContext.Provider value={{ size: "14px" }}>
       <Sidebar width="200px" transitionDuration={200}>
@@ -28,7 +39,16 @@ export default function SettingsSidebar(): JSX.Element {
               },
             }}>
             <ReturnToProject />
-            <MenuItem active={true}>Details</MenuItem>
+            <MenuItem
+              active={props.activePage === SettingPages.Details}
+              href={settingsPath + pagePaths[SettingPages.Details]}>
+              {SettingPages.Details}
+            </MenuItem>
+            <MenuItem
+              active={props.activePage === SettingPages.Users}
+              href={settingsPath + pagePaths[SettingPages.Users]}>
+              {SettingPages.Users}
+            </MenuItem>
           </Menu>
         </div>
       </Sidebar>

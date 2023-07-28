@@ -1,15 +1,16 @@
 import React from "react";
 
-import SettingsHeader from "../SettingsHeader";
-import Content from "./Content";
+import Layout from "../Layout";
+import Form from "./Form";
 
-import settingsStyles from "../settings.module.css";
+import styles from "./details.module.css";
 
 export default function Details(): JSX.Element {
   return (
-    <div className={settingsStyles.pageContainer}>
-      <SettingsHeader title="Details" />
-      <Content />
-    </div>
+    <Layout title="Details">
+      <div className={styles.container}>
+        <Form />
+      </div>
+    </Layout>
   );
 }

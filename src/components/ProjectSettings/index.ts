@@ -1,3 +1,5 @@
 export { default as Details } from "./Details";
 
-export { default as SettingsSidebar } from "./Sidebar";
+export { default as Users } from "./Users";
+
+export { default as SettingsSidebar, SettingPages } from "./Sidebar";
