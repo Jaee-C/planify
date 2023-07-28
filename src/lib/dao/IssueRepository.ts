@@ -155,7 +155,7 @@ export default class IssueRepository implements IIssueDB {
     ) {
       result.description = payload.description.toString("utf-8");
     }
-    if (payload.boardOrder) result.order = payload.boardOrder;
+    if (payload.boardOrder) result.serialisedOrder = payload.boardOrder;
 
     return result;
   }

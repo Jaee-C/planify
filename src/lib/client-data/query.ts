@@ -25,7 +25,7 @@ export function queryIssues(projectKey: string): UseQueryResult<IssueData[]> {
 
 export function queryIssuesConverted(
   projectKey: string
-): UseQueryResult<Issue[]> {
+): UseQueryResult<IssueData[]> {
   return useQuery(["issuesConverted", projectKey], () =>
     fetchIssueList(projectKey).then(res => res)
   );

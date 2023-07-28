@@ -31,33 +31,46 @@ export default class Issue {
   public status: StatusType | undefined;
   public issueKey: string | undefined;
   public priority: PriorityType | undefined;
-  private _order: LexoRank | undefined;
+  private _serialisedOrder: LexoRank | undefined;
 
   public constructor(id: number) {
     this.id = id;
   }
 
-  get order(): string | undefined {
-    return this._order?.toString();
+  get serialisedOrder(): string | undefined {
+    return this._serialisedOrder?.toString();
   }
-  set order(value: string | undefined) {
-    if (value) this._order = LexoRank.parse(value);
+  get order(): LexoRank | undefined {
+    return this._serialisedOrder;
+  }
+  set serialisedOrder(value: string | undefined) {
+    if (value) this._serialisedOrder = LexoRank.parse(value);
   }
 
   public placeAfter(other: Issue): void {
-    if (!other.order) {
+    if (!other.serialisedOrder) {
       other.initializeOrder();
     }
-    this._order = LexoRank.parse(other.order!).genNext();
+    this._serialisedOrder = other.order!.genNext();
   }
   public placeBefore(other: Issue): void {
-    if (!other.order) {
+    if (!other.serialisedOrder) {
       other.initializeOrder();
     }
-    this._order = LexoRank.parse(other.order!).genPrev();
+    this._serialisedOrder = other.order!.genPrev();
+  }
+  public placeBetween(before: Issue, after: Issue): void {
+    if (!before.serialisedOrder) {
+      before.initializeOrder();
+    }
+    if (!after.serialisedOrder) {
+      after.initializeOrder();
+    }
+
+    this._serialisedOrder = before.order!.between(after.order!);
   }
   public initializeOrder(): void {
-    this._order = LexoRank.middle();
+    this._serialisedOrder = LexoRank.middle();
   }
 }
 
@@ -66,7 +79,7 @@ export function compareIssue(current: Issue, other: Issue): number {
     return 0;
   }
 
-  return LexoRank.parse(current.order).compareTo(LexoRank.parse(other.order));
+  return current.order.compareTo(other.order);
 }
 
 export function convertDataToIssue(data: IssueData): Issue {
@@ -77,7 +90,7 @@ export function convertDataToIssue(data: IssueData): Issue {
   newIssue.status = data.status;
   newIssue.issueKey = data.issueKey;
   newIssue.priority = data.priority;
-  newIssue.order = data.order;
+  newIssue.serialisedOrder = data.order;
 
   return newIssue;
 }
@@ -92,7 +105,7 @@ export class IssueResponse {
       status: issue.status,
       issueKey: issue.issueKey,
       priority: issue.priority,
-      order: issue.order?.toString(),
+      order: issue.serialisedOrder?.toString(),
     }));
   }
 

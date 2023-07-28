@@ -1,6 +1,7 @@
 import { StatusType } from "@/lib/types";
 import { Issue } from "@/lib/shared";
 import { compareIssue } from "@/lib/shared/Issue";
+import { DropResult } from "@hello-pangea/dnd";
 
 export interface ColumnDefinition {
   name: string;
@@ -40,7 +41,9 @@ export function clientUpdateIssueStatus(
 
   edited.status = status;
 
-  if (issueBefore) {
+  if (issueBefore && issueAfter) {
+    edited.placeBetween(issueBefore, issueAfter);
+  } else if (issueBefore) {
     edited.placeAfter(issueBefore);
   } else if (issueAfter) {
     edited.placeBefore(issueAfter);
@@ -49,10 +52,39 @@ export function clientUpdateIssueStatus(
   }
   const updated = [...issues.filter(issue => issue.id !== edited.id)];
   updated.push(edited);
-  return [updated, edited.order!];
+  return [updated, edited.serialisedOrder!];
 }
 
 export function findIssueKeyById(issues: Issue[], id: string): string {
   const issue = issues.find(issue => String(issue.id) === id);
   return issue && issue.issueKey ? issue.issueKey : "";
+}
+
+export function findStatusTypeByName(
+  allStatuses: StatusType[],
+  name: string
+): StatusType | undefined {
+  return allStatuses.find(status => String(status.name) === name);
+}
+
+export function handleSameStatus(issues: Issue[], movedIssue: Issue): Issue[] {
+  return removeOneIssue(issues, movedIssue);
+}
+
+export function removeOneIssue(allIssues: Issue[], value: Issue): Issue[] {
+  const index = allIssues.indexOf(value);
+  if (index > -1) {
+    allIssues.splice(index, 1);
+  }
+  return allIssues;
+}
+
+export function isNotMoved(
+  source: DropResult["source"],
+  dest: DropResult["destination"]
+): boolean {
+  return (
+    !dest ||
+    (source.droppableId === dest.droppableId && source.index === dest.index)
+  );
 }

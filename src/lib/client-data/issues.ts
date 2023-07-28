@@ -168,7 +168,7 @@ export async function editIssue(
   newIssue.status = jsonData.status;
   newIssue.issueKey = jsonData.issueKey;
   newIssue.priority = jsonData.priority;
-  newIssue.order = jsonData.order;
+  newIssue.serialisedOrder = jsonData.order;
 
   return newIssue;
 }
