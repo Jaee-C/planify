@@ -1,8 +1,8 @@
-import userRepo from "@/lib/dao/UserRepository";
+import userRepo from "@/server/domain/UserRepository";
 import { User } from "@/lib/types";
 import bcrypt from "bcrypt";
 import { NewUser } from "@/lib/types/User";
-import AppError from "@/lib/service/AppError";
+import AppError from "@/server/service/AppError";
 
 const SALT_ROUNDS: number = 10;
 

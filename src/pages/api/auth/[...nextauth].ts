@@ -1,4 +1,4 @@
-import userAuth from "@/lib/auth/UserAuth";
+import userAuth from "@/server/auth/UserAuth";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";

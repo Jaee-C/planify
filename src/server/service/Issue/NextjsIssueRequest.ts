@@ -1,6 +1,7 @@
-import IssueRequest from "@/lib/service/Issue/IssueRequest";
+import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { NextApiRequest } from "next";
-import { IssueFormValues } from "@/lib/shared/Issue";
+
+import { IssueFormValues } from "@/lib/types";
 
 export function createIssueRequestWithKey(
   req: NextApiRequest,

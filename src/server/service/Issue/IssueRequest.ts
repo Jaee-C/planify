@@ -1,9 +1,8 @@
-import { StatusType } from "@/lib/types";
-import StatusRepository from "@/lib/dao/StatusRepository";
+import { IssueFormValues, StatusType } from "@/lib/types";
+import StatusRepository from "@/server/domain/StatusRepository";
 import { LexoRank } from "lexorank";
 import { serverOnly } from "@/lib/utils";
-import { IssueFormValues } from "@/lib/shared/Issue";
-import StatusService from "@/lib/service/StatusService";
+import StatusService from "@/server/service/StatusService";
 
 export default class IssueRequest {
   private _id?: number = undefined;

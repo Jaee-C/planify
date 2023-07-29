@@ -1,9 +1,10 @@
-import IssueRequest from "@/lib/service/Issue/IssueRequest";
-import { prisma } from "@/lib/dao/prisma";
+import "server-only";
+import { prisma } from "@/server/domain/prisma";
 import { Prisma } from "@prisma/client";
+import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue } from "@/lib/shared";
 import { IIssueDB } from "./interfaces";
-import AppError from "@/lib/service/AppError";
+import AppError from "@/server/service/AppError";
 import {
   INVALID_DATA_TYPES,
   INVALID_SELECT,

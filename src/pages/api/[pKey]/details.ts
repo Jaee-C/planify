@@ -1,15 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { IssueResponse, Project } from "@/lib/shared";
-import ProjectService from "@/lib/service/ProjectService";
+import { Project } from "@/lib/shared";
+import ProjectService from "@/server/service/ProjectService";
 import { getServerUrlParam } from "@/lib/utils";
 import { JWT } from "next-auth/jwt";
-import { getUserToken } from "@/lib/auth/session";
-import ProjectRequest from "@/lib/service/ProjectRequest";
-import NextjsProjectRequest from "@/lib/service/NextjsProjectRequest";
+import { getUserToken } from "@/server/auth/session";
+import ProjectRequest from "@/server/service/ProjectRequest";
+import NextjsProjectRequest from "@/server/service/NextjsProjectRequest";
+import { ProjectData } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IssueResponse[] | string | undefined>
+  res: NextApiResponse<ProjectData | undefined>
 ): Promise<void> {
   const projectKey: string = getServerUrlParam(req, "pKey");
 
@@ -28,7 +29,7 @@ export default async function handler(
       try {
         const details: Project = await project.getProjectDetails();
         res.statusCode = 200;
-        res.end(details.toJSONString());
+        res.end(details.serialiseToData());
       } catch (e) {
         const error = e as Error;
         res.statusCode = 500;
@@ -43,7 +44,7 @@ export default async function handler(
           projectKey
         );
         res.statusCode = 200;
-        res.end(details.toJSONString());
+        res.end(details.serialiseToData());
       } catch (e) {
         const error = e as Error;
         res.statusCode = 500;

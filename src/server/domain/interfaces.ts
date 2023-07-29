@@ -1,8 +1,8 @@
 import { User } from "@/lib/types";
 import { Issue, Project } from "@/lib/shared";
-import IssueRequest from "@/lib/service/Issue/IssueRequest";
+import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { NewUser } from "@/lib/types/User";
-import ProjectRequest from "@/lib/service/ProjectRequest";
+import ProjectRequest from "@/server/service/ProjectRequest";
 
 export interface IProjectDB {
   fetchAllProjects(): Promise<Project[]>;

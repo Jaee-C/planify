@@ -20,6 +20,7 @@ model Project {
   owner       User     @relation(fields: [ownerId], references: [id])
   ownerId     Int
   numIssues   Int      @default(0)
+  members     ProjectMember[]
 
   @@unique([key, ownerId])
 }
@@ -45,9 +46,10 @@ model User {
   lastName    String?
   username    String   @unique
   email       String?   @unique
-  projects    Project[]
+  ownedProjects    Project[]
   displayName String?
   password    String
+  projects    ProjectMember[]
 }
 
 model StatusType {
@@ -60,4 +62,13 @@ model PriorityType {
   id     Int    @id @default(autoincrement())
   name   String
   issues Issue[]
+}
+
+model ProjectMember {
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@id([projectId, userId])
 }

@@ -1,17 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Project } from "lib/shared";
-import ProjectRepository from "@/lib/dao/ProjectRepository";
+import ProjectRepository from "@/server/domain/ProjectRepository";
 import { JWT } from "next-auth/jwt";
-import { getUserToken } from "@/lib/auth/session";
-import { IProjectDB } from "@/lib/dao/interfaces";
-import ProjectRequest from "@/lib/service/ProjectRequest";
-import NextjsProjectRequest from "@/lib/service/NextjsProjectRequest";
-import AppError from "@/lib/service/AppError";
+import { getUserToken } from "@/server/auth/session";
+import { IProjectDB } from "@/server/domain/interfaces";
+import ProjectRequest from "@/server/service/ProjectRequest";
+import NextjsProjectRequest from "@/server/service/NextjsProjectRequest";
+import AppError from "@/server/service/AppError";
 import { INVALID_TOKEN } from "@/lib/client-data/errors";
+import { ProjectData } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Project[] | string | undefined>
+  res: NextApiResponse<ProjectData[] | string | undefined>
 ): Promise<void> {
   const token: JWT = await getUserToken(req);
   const userId: string = token.id;
@@ -28,9 +29,12 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       const allProjects: Project[] = await projectDb.fetchAllProjects();
+      const response: ProjectData[] = allProjects.map(project =>
+        project.serialiseToData()
+      );
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(allProjects));
+      res.end(response);
       break;
     case "POST":
       const projectRequest: ProjectRequest = new NextjsProjectRequest(req);
@@ -51,7 +55,7 @@ export default async function handler(
       );
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(JSON.stringify(createdProject));
+      res.end(createdProject.serialiseToData());
       break;
     default:
       res.statusCode = 405;

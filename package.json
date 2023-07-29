@@ -49,6 +49,7 @@
     "react-icons": "^4.10.1",
     "react-pro-sidebar": "^1.0.0",
     "react-query": "^3.39.3",
+    "server-only": "^0.0.1",
     "uuid": "^9.0.0",
     "yup": "^1.0.2"
   },

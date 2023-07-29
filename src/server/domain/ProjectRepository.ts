@@ -1,8 +1,10 @@
+import "server-only";
+
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/lib/dao/prisma";
+import { prisma } from "@/server/domain/prisma";
 import { Project } from "@/lib/shared";
 import { IProjectDB } from "./interfaces";
-import ProjectRequest from "@/lib/service/ProjectRequest";
+import ProjectRequest from "@/server/service/ProjectRequest";
 
 const projectSelect = {
   id: true,

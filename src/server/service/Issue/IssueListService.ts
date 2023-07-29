@@ -1,8 +1,8 @@
-import { IIssueDB, IProjectDB } from "@/lib/dao/interfaces";
-import StatusService from "@/lib/service/StatusService";
-import IssueRepository from "@/lib/dao/IssueRepository";
-import ProjectRepository from "@/lib/dao/ProjectRepository";
-import IssueRequest from "@/lib/service/Issue/IssueRequest";
+import { IIssueDB, IProjectDB } from "@/server/domain/interfaces";
+import StatusService from "@/server/service/StatusService";
+import IssueRepository from "@/server/domain/IssueRepository";
+import ProjectRepository from "@/server/domain/ProjectRepository";
+import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue } from "@/lib/shared";
 
 export default class IssueListService {

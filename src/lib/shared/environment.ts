@@ -1,4 +1,4 @@
-import { CAN_USE_DOM } from "shared/canUseDOM";
+import { CAN_USE_DOM } from "./canUseDOM";
 
 declare global {
   interface Document {

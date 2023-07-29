@@ -1,6 +1,7 @@
-import ProjectRequest from "./ProjectRequest";
+import "server-only";
 import { NextApiRequest } from "next";
-import AppError from "@/lib/service/AppError";
+import ProjectRequest from "./ProjectRequest";
+import AppError from "@/server/service/AppError";
 import { INVALID_DATA_TYPES } from "@/lib/client-data/errors";
 
 export default class NextjsProjectRequest extends ProjectRequest {

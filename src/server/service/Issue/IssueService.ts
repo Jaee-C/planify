@@ -1,7 +1,7 @@
 import { Issue } from "@/lib/shared";
-import { IIssueDB } from "@/lib/dao/interfaces";
-import IssueRepository from "@/lib/dao/IssueRepository";
-import IssueRequest from "@/lib/service/Issue/IssueRequest";
+import { IIssueDB } from "@/server/domain/interfaces";
+import IssueRepository from "@/server/domain/IssueRepository";
+import IssueRequest from "@/server/service/Issue/IssueRequest";
 
 export default class IssueService {
   private readonly _issueStore: IIssueDB;

@@ -1,4 +1,4 @@
-import StatusRepository from "@/lib/dao/StatusRepository";
+import StatusRepository from "@/server/domain/StatusRepository";
 import { StatusType } from "@/lib/types";
 
 export default class StatusService {

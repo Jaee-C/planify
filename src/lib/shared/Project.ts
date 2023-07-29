@@ -1,40 +1,47 @@
+import { ProjectData } from "@/lib/types";
+
 export default class Project {
-  public id: number;
-  public _name: string = "";
-  public _key: string = "";
-  public owner: { name: string | null } | undefined;
+  private readonly _data: ProjectData;
 
   public constructor(id: number) {
-    this.id = id;
+    this._data = { id };
   }
 
   public set name(name: string) {
-    this._name = name;
+    this._data.name = name;
   }
   public set key(value: string) {
-    this._key = value;
+    this._data.key = value;
   }
   public set ownerName(name: string) {
-    this.owner = { name };
+    this._data.owner = { name };
   }
 
+  public get id(): number {
+    return this._data.id;
+  }
   public get name(): string {
-    return this._name;
+    if (!this._data.name) return "";
+    return this._data.name;
   }
   public get key(): string {
-    if (!this._key) return "";
-    return this._key.toUpperCase();
+    if (!this._data.key) return "";
+    return this._data.key.toUpperCase();
   }
   public get ownerName(): string {
-    if (!this.owner || !this.owner.name) return "None";
-    return this.owner.name;
+    if (!this._data.owner || !this._data.owner.name) return "None";
+    return this._data.owner.name;
   }
 
-  public toJSONString(): string {
-    return JSON.stringify({
-      id: this.id,
-      name: this.name,
-      key: this.key,
-    });
+  public serialiseToData(): ProjectData {
+    return this._data;
   }
+}
+
+export function convertDataToProject(data: ProjectData): Project {
+  const project = new Project(data.id);
+  project.name = data.name ?? "";
+  project.key = data.key ?? "";
+  project.ownerName = data.owner?.name ?? "None";
+  return project;
 }
