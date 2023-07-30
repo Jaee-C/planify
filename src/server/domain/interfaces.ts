@@ -1,7 +1,7 @@
-import { User } from "@/lib/types";
+import { UserData } from "@/lib/types";
 import { Issue, Project } from "@/lib/shared";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { NewUser } from "@/lib/types/User";
+import { NewUser } from "@/lib/types";
 import ProjectRequest from "@/server/service/ProjectRequest";
 
 export interface IProjectDB {
@@ -20,7 +20,7 @@ export interface IIssueDB {
 }
 
 export interface IUserDB {
-  getUserByUsername(username: string): Promise<User | null>;
+  getUserByUsername(username: string): Promise<UserData | null>;
   getUserPassword(username: string): Promise<string | undefined>;
   saveUser(password: string, user: NewUser): Promise<void>;
 }

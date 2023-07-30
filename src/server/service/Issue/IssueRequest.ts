@@ -1,7 +1,8 @@
+import "server-only";
+
 import { IssueFormValues, StatusType } from "@/lib/types";
 import StatusRepository from "@/server/domain/StatusRepository";
 import { LexoRank } from "lexorank";
-import { serverOnly } from "@/lib/utils";
 import StatusService from "@/server/service/StatusService";
 
 export default class IssueRequest {
@@ -12,7 +13,6 @@ export default class IssueRequest {
   private _key?: string = undefined;
 
   public constructor(value: IssueFormValues) {
-    serverOnly();
     this.values = { ...value };
   }
 

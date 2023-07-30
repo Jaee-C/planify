@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/server/auth/session";
-import { getServerUrlParam } from "@/lib/utils";
 import { Issue } from "@/lib/shared";
 import {
   createIssueRequest,
@@ -10,13 +9,14 @@ import {
 } from "@/server/service/Issue";
 import AppError from "@/server/service/AppError";
 import { IssueData } from "@/lib/types";
+import { getUrlDynamicParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | IssueData>
 ): Promise<void> {
-  const pKey: string = getServerUrlParam(req, "pKey");
-  const issueKey: string = getServerUrlParam(req, "id");
+  const pKey: string = getUrlDynamicParam(req, "pKey");
+  const issueKey: string = getUrlDynamicParam(req, "id");
   const token: JWT = await getUserToken(req);
 
   const issueService: IssueService = new IssueService(pKey, token.id);

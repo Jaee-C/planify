@@ -1,13 +1,13 @@
 import userRepo from "@/server/domain/UserRepository";
-import { User } from "@/lib/types";
+import { UserData } from "@/lib/types";
 import bcrypt from "bcrypt";
-import { NewUser } from "@/lib/types/User";
+import { NewUser } from "@/lib/types";
 import AppError from "@/server/service/AppError";
 
 const SALT_ROUNDS: number = 10;
 
 class UserAuth {
-  public async checkUsernameExists(username: string): Promise<User | null> {
+  public async checkUsernameExists(username: string): Promise<UserData | null> {
     return await userRepo.getUserByUsername(username);
   }
 
@@ -28,7 +28,7 @@ class UserAuth {
   public async verifyUser(
     username: string,
     password: string
-  ): Promise<User | null> {
+  ): Promise<UserData | null> {
     const hash: string | undefined = await userRepo.getUserPassword(username);
 
     if (!hash) {

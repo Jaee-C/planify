@@ -2,7 +2,7 @@ import "server-only";
 
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/domain/prisma";
-import { NewUser, User } from "@/lib/types/User";
+import { NewUser, UserData, SessionUser } from "@/lib/types";
 import { IUserDB } from "@/server/domain/interfaces";
 import { USER_CREATION_ERROR } from "@/lib/client-data/errors";
 import AppError from "@/server/service/AppError";
@@ -20,6 +20,7 @@ type UserPayload = Prisma.UserGetPayload<{
 }>;
 
 class UserRepository implements IUserDB {
+  public constructor() {}
   public async getUsernameCount(username: string): Promise<number> {
     return prisma.user.count({
       where: {
@@ -41,7 +42,43 @@ class UserRepository implements IUserDB {
     return dbResult?.username;
   }
 
-  public async getUserByUsername(username: string): Promise<User | null> {
+  public async searchAllUsersWithUsername(
+    username: string
+  ): Promise<UserData[]> {
+    const dbResult: UserPayload[] = await prisma.user.findMany({
+      where: {
+        username: {
+          contains: username,
+        },
+      },
+      select: userSelect,
+    });
+
+    return dbResult.map(this.convertToSessionUser);
+  }
+
+  public async getAllUsersInProject(
+    projectKey: string,
+    userId: number
+  ): Promise<UserData[]> {
+    const dbResult: UserPayload[] = await prisma.user.findMany({
+      where: {
+        projects: {
+          some: {
+            project: {
+              key: projectKey,
+            },
+            userId: userId,
+          },
+        },
+      },
+      select: userSelect,
+    });
+
+    return dbResult.map(this.convertToSessionUser);
+  }
+
+  public async getUserByUsername(username: string): Promise<UserData | null> {
     const dbResult: UserPayload | null = await prisma.user.findUnique({
       where: {
         username: username,
@@ -53,7 +90,7 @@ class UserRepository implements IUserDB {
       return null;
     }
 
-    return this.convertToUser(dbResult);
+    return this.convertToSessionUser(dbResult);
   }
 
   public async getUserPassword(username: string): Promise<string | undefined> {
@@ -81,7 +118,7 @@ class UserRepository implements IUserDB {
     }
   }
 
-  private convertToUser(dbUser: UserPayload): User {
+  private convertToSessionUser(dbUser: UserPayload): SessionUser {
     let displayName: string;
     if (dbUser.displayName) {
       displayName = dbUser.displayName;

@@ -1,18 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Project } from "@/lib/shared";
 import ProjectService from "@/server/service/ProjectService";
-import { getServerUrlParam } from "@/lib/utils";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/server/auth/session";
 import ProjectRequest from "@/server/service/ProjectRequest";
 import NextjsProjectRequest from "@/server/service/NextjsProjectRequest";
 import { ProjectData } from "@/lib/types";
+import { getUrlDynamicParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ProjectData | undefined>
 ): Promise<void> {
-  const projectKey: string = getServerUrlParam(req, "pKey");
+  const projectKey: string = getUrlDynamicParam(req, "pKey");
 
   if (projectKey === "") {
     res.status(405).end();

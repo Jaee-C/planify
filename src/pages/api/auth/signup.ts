@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import userRegister from "@/server/auth/UserAuth";
-import { NewUser } from "@/lib/types/User";
+import { NewUser } from "@/lib/types";
 import AppError from "@/server/service/AppError";
 import { USER_CREATION_ERROR, USERNAME_TAKEN } from "@/lib/client-data/errors";
 

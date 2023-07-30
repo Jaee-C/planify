@@ -1,4 +1,4 @@
-export interface User {
+export interface SessionUser {
   id: string;
   displayName: string;
   firstName?: string | null;

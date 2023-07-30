@@ -1,8 +1,8 @@
-import { Project } from "@/lib/shared";
+import { ProjectData } from "@/lib/types";
 import { ProjectFormValues } from "@/components/Projects/FormConstants";
 
 export function convertProjectToFormValues(
-  project?: Project
+  project?: ProjectData
 ): ProjectFormValues {
   if (!project)
     return {
@@ -10,7 +10,7 @@ export function convertProjectToFormValues(
       name: "",
     };
   return {
-    key: project.key,
-    name: project.name,
+    key: project.key ?? "",
+    name: project.name ?? "",
   };
 }
