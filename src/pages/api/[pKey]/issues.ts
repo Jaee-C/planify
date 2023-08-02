@@ -1,21 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Issue, IssueResponse } from "lib/types";
+import { Issue, IssueData } from "lib/types";
 import {
   IssueRequest,
   createIssueRequest,
   IssueListService,
-} from "@/lib/service/Issue";
+} from "@/server/service/Issue";
 import { JWT } from "next-auth/jwt";
-import { getUserToken } from "@/lib/auth/session";
-import { getServerUrlParam } from "@/lib/utils";
-import AppError from "@/lib/service/AppError";
+import { getUserToken } from "@/server/auth/session";
+import AppError from "@/server/service/AppError";
 import { INVALID_TOKEN } from "@/lib/client-data/errors";
+import { getUrlParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IssueResponse[] | string | undefined>
+  res: NextApiResponse<IssueData[] | IssueData | undefined>
 ): Promise<void> {
-  const projectKey: string = getServerUrlParam(req, "pKey");
+  const projectKey: string = getUrlParam(req, "pKey");
 
   if (projectKey === "") {
     res.status(405).end();
@@ -36,19 +36,20 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       const allIssues: Issue[] = await issueList.getAllIssues();
-      const response: IssueResponse = new IssueResponse(allIssues);
+      const response: IssueData[] = allIssues.map(issue =>
+        issue.serialiseToData()
+      );
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(response.toJSONString());
+      res.end(JSON.stringify(response));
       break;
     case "POST":
       const request: IssueRequest = createIssueRequest(req);
       try {
         const newIssue: Issue = await issueList.saveIssue(request);
-        const response: IssueResponse = new IssueResponse([newIssue]);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.end(response.toJSONString());
+        res.end(newIssue.serialiseToData());
       } catch (e) {
         if (e instanceof AppError) {
           res.statusCode = 400;

@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import { GridRowsProp } from "@mui/x-data-grid";
-import AppError from "@/lib/service/AppError";
+import AppError from "@/server/service/AppError";
 import { ALERT_DURATION } from "@/lib/constants";
 
 export const issueRowsAtom = atom<GridRowsProp>([]);

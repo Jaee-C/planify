@@ -15,9 +15,10 @@ import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
 import { useSetAtom } from "jotai";
 import { addOneIssueAtom } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
-import AppError from "@/lib/service/AppError";
+import AppError from "@/server/service/AppError";
 import { LoadingButton } from "@mui/lab";
-import { IssueFormValues } from "@/lib/shared/Issue";
+
+import { IssueFormValues } from "@/lib/types";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {

@@ -55,7 +55,7 @@ export default function BacklogContent(): JSX.Element {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="max-w-full h-auto max-h-full overflow-x-hidden flex-shrink flex-grow">
+      <div className="flex max-w-full h-auto max-h-full overflow-x-hidden flex-shrink flex-grow flex-col">
         <div className="px-8 mt-6 mb-4">
           <IconContext.Provider value={{ size: "16px" }}>
             <TableAlert />

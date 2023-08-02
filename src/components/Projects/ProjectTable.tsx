@@ -7,15 +7,16 @@ import {
   GridActionsCellItem,
   GridColDef,
   GridRenderCellParams,
+  GridRowModel,
   GridRowParams,
   GridRowsProp,
 } from "@mui/x-data-grid";
 import { MdDelete, MdEdit } from "react-icons/md";
 import Link from "next/link";
 import { useQuery } from "react-query";
-import { Project } from "@/lib/shared";
 import { fetchProjectList } from "@/lib/client-data/projects";
 import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
+import { ProjectData } from "@/lib/types";
 
 const columns: GridColDef[] = [
   { field: "key", headerName: "Key", width: 100 },
@@ -64,19 +65,14 @@ const columns: GridColDef[] = [
 
 export default function ProjectTable(): JSX.Element {
   const [rows, setRows] = React.useState<GridRowsProp>([]);
-  const { data, isLoading } = useQuery<Project[]>("projects", fetchProjectList);
+  const { data, isLoading } = useQuery<ProjectData[]>(
+    "projects",
+    fetchProjectList
+  );
 
   React.useEffect((): void => {
     if (!isLoading && data && data.length > 0) {
-      const newRows: GridRowsProp = data.map((row: Project) => {
-        console.log(row);
-        return {
-          id: row.id,
-          key: row.key,
-          name: row.name,
-          owner: row.ownerName,
-        };
-      });
+      const newRows: GridRowsProp = data.map(convertProjectDataToRow);
       setRows(newRows);
     }
   }, [data]);
@@ -101,4 +97,13 @@ export default function ProjectTable(): JSX.Element {
       <CreateProjectDialog />
     </IconContext.Provider>
   );
+}
+
+function convertProjectDataToRow(data: ProjectData): GridRowModel {
+  return {
+    id: data.id,
+    key: data.key,
+    name: data.name,
+    owner: data.owner?.name ?? "",
+  };
 }

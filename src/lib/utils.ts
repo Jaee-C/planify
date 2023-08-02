@@ -1,20 +1,8 @@
-import { NextApiRequest } from "next";
-
-export function getServerUrlParam(req: NextApiRequest, key: string): string {
-  const query: NextApiRequest["query"] = req.query;
-
-  return verifyUrlParam(query[key]);
-}
-
-export function verifyUrlParam(param: string | string[] | undefined): string {
-  if (Array.isArray(param) || param === undefined) {
+export function verifyUrlParam(
+  param: string | string[] | undefined | null
+): string {
+  if (Array.isArray(param) || param === undefined || param === null) {
     return "";
   }
   return param;
-}
-
-export function serverOnly(): void {
-  if (typeof window !== "undefined") {
-    throw new Error("this class should only be used on the server");
-  }
 }

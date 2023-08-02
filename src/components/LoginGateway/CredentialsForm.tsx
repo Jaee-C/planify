@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent } from "react";
+import React, { FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import { useSearchParams, useRouter } from "next/navigation";
 
@@ -8,11 +8,13 @@ import { Button, TextField } from "@/core/ui";
 import { blue } from "@mui/material/colors";
 
 import styles from "./login.module.css";
+import { Alert } from "@mui/material";
 
 export default function CredentialsForm(): JSX.Element {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [serverError, setServerError] = React.useState<string | null>(null);
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
@@ -27,12 +29,31 @@ export default function CredentialsForm(): JSX.Element {
     if (!res?.error) {
       router.push(callbackUrl);
     } else {
-      console.error(res.error);
+      handleError(res.status);
     }
+  };
+
+  const handleError = (status: number): void => {
+    if (status === 401) {
+      setServerError("Invalid credentials");
+    } else {
+      setServerError("Something went wrong");
+    }
+  };
+
+  const displayError = (): React.ReactNode | null => {
+    if (!serverError) return null;
+
+    return (
+      <Alert severity="error" onClose={() => setServerError(null)}>
+        {serverError}
+      </Alert>
+    );
   };
 
   return (
     <form className={styles.form} onSubmit={onSubmit}>
+      {displayError()}
       <TextField
         placeholder="Enter your username"
         name="username"

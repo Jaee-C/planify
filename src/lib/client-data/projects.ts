@@ -1,7 +1,8 @@
 import { Project } from "lib/shared";
 import { ProjectFormValues } from "@/components/Projects/FormConstants";
+import { ProjectData } from "@/lib/types";
 
-export async function fetchProjectList(): Promise<Project[]> {
+export async function fetchProjectList(): Promise<ProjectData[]> {
   const httpResponse: Response = await fetch("/api/projects", {
     method: "GET",
   });
@@ -10,19 +11,13 @@ export async function fetchProjectList(): Promise<Project[]> {
     throw new Error(httpResponse.statusText);
   }
 
-  const json = await httpResponse.json();
-  return json.map((item: any): Project => {
-    const newProject: Project = new Project(item.id);
-
-    newProject.name = item._name;
-    newProject.key = item._key;
-    newProject.ownerName = item.owner?.name;
-
-    return newProject;
-  });
+  const json: ProjectData[] = await httpResponse.json();
+  return json;
 }
 
-export async function addProject(data: ProjectFormValues): Promise<any> {
+export async function addProject(
+  data: ProjectFormValues
+): Promise<ProjectData> {
   const httpResponse: Response = await fetch("/api/projects", {
     method: "POST",
     headers: {
@@ -35,12 +30,12 @@ export async function addProject(data: ProjectFormValues): Promise<any> {
     throw new Error(httpResponse.statusText);
   }
 
-  const json = await httpResponse.json();
+  const json: ProjectData = await httpResponse.json();
 
-  return json.message;
+  return json;
 }
 
-export async function getProjectDetails(key: string): Promise<Project> {
+export async function getProjectDetails(key: string): Promise<ProjectData> {
   if (key === "") {
     return new Project(-1);
   }
@@ -52,19 +47,15 @@ export async function getProjectDetails(key: string): Promise<Project> {
     throw new Error(httpResponse.statusText);
   }
 
-  const json = await httpResponse.json();
-  const project: Project = new Project(json.id);
+  const json: ProjectData = await httpResponse.json();
 
-  project.name = json.name;
-  project.key = json.key;
-
-  return project;
+  return json;
 }
 
 export async function editProject(
   data: ProjectFormValues,
   key: string
-): Promise<any> {
+): Promise<ProjectData> {
   const httpResponse: Response = await fetch(`/api/${key}/details`, {
     method: "PUT",
     headers: {
@@ -77,6 +68,6 @@ export async function editProject(
     throw new Error(httpResponse.statusText);
   }
 
-  const json = await httpResponse.json();
-  return json.message;
+  const json: ProjectData = await httpResponse.json();
+  return json;
 }

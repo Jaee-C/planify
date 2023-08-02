@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
-import AppError from "@/lib/service/AppError";
+import AppError from "@/server/service/AppError";
 import RegisterFormData from "./RegisterFormData";
 import { UNKNOWN_ERROR } from "@/lib/client-data/errors";
 

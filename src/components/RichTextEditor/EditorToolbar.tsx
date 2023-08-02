@@ -64,7 +64,7 @@ import {
 } from "lexical";
 import { useCallback, useEffect, useState } from "react";
 import * as React from "react";
-import { IS_APPLE } from "shared/environment";
+import { IS_APPLE } from "@/lib/shared/environment";
 
 import styles from "./EditorToolbar.module.css";
 import useModal from "hooks/useModal";

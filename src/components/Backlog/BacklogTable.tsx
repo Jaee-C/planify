@@ -15,7 +15,7 @@ import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
 import { useMutation } from "react-query";
 import { editIssue, serverDeleteIssue } from "@/lib/client-data/issues";
-import { Issue } from "lib/types";
+import { Issue, IssueData } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
   CreateIssueContext,
@@ -35,8 +35,7 @@ import {
   setBacklogErrorAtom,
 } from "@/components/utils/atom";
 import { createGridRowFromIssue } from "@/components/Backlog/utils";
-import AppError from "@/lib/service/AppError";
-import { IssueData } from "@/lib/shared";
+import AppError from "@/server/service/AppError";
 
 function getDistinctValues(updated: any, original: any): any {
   const distinct: any = {};

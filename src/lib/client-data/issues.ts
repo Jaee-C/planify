@@ -1,6 +1,12 @@
-import { Issue, PriorityType, StatusType } from "lib/types";
-import AppError from "@/lib/service/AppError";
-import { IssueData, IssueFormValues } from "@/lib/shared";
+import {
+  Issue,
+  IssueData,
+  IssueFormValues,
+  PriorityType,
+  StatusType,
+} from "lib/types";
+import AppError from "@/server/service/AppError";
+import { convertDataToIssue } from "@/lib/shared/Issue";
 
 export function toStatusString(
   status: number | undefined,
@@ -33,16 +39,16 @@ export async function fetchIssueList(pKey: string): Promise<IssueData[]> {
   }
 
   const json = await httpResponse.json();
-  return json.data.map((item: any): IssueData => {
-    return {
+  return json.map(
+    (item: any): IssueData => ({
       id: item.id,
       title: item.title,
       status: item.status,
       issueKey: item.issueKey,
       priority: item.priority,
       order: item.order,
-    };
-  });
+    })
+  );
 }
 
 export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
@@ -162,13 +168,6 @@ export async function editIssue(
     }
   }
 
-  const jsonData = json.data[0];
-  const newIssue: Issue = new Issue(jsonData.id);
-  newIssue.title = jsonData.title;
-  newIssue.status = jsonData.status;
-  newIssue.issueKey = jsonData.issueKey;
-  newIssue.priority = jsonData.priority;
-  newIssue.serialisedOrder = jsonData.order;
-
-  return newIssue;
+  const jsonData: IssueData = json.data;
+  return convertDataToIssue(jsonData);
 }

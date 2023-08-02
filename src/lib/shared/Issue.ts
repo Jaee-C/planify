@@ -1,33 +1,11 @@
-import { PriorityType, StatusType } from "@/lib/types";
+import { IssueData, PriorityType, StatusType } from "@/lib/types";
 import { LexoRank } from "lexorank";
-
-export interface IssueFormValues {
-  title?: string;
-  description?: string;
-  status?: number;
-  priority?: number;
-}
-
-/**
- * react-query does not support class as a return type. This interface is
- * converted to Issue class after passed to react components.
- */
-export interface IssueData {
-  id: number;
-  title: string | undefined;
-  description?: string;
-  status: StatusType | undefined;
-  issueKey: string | undefined;
-  priority?: PriorityType;
-  order: string | undefined;
-}
 
 export default class Issue {
   public id: number;
   public title: string | undefined;
   public assignee: string | undefined;
   public description: string | undefined;
-  public reporter: string | undefined;
   public status: StatusType | undefined;
   public issueKey: string | undefined;
   public priority: PriorityType | undefined;
@@ -72,6 +50,18 @@ export default class Issue {
   public initializeOrder(): void {
     this._serialisedOrder = LexoRank.middle();
   }
+
+  public serialiseToData(): IssueData {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      status: this.status,
+      issueKey: this.issueKey,
+      priority: this.priority,
+      order: this.serialisedOrder?.toString(),
+    };
+  }
 }
 
 export function compareIssue(current: Issue, other: Issue): number {
@@ -93,23 +83,4 @@ export function convertDataToIssue(data: IssueData): Issue {
   newIssue.serialisedOrder = data.order;
 
   return newIssue;
-}
-
-export class IssueResponse {
-  public data: any;
-
-  public constructor(data: Issue[]) {
-    this.data = data.map(issue => ({
-      id: issue.id,
-      title: issue.title,
-      status: issue.status,
-      issueKey: issue.issueKey,
-      priority: issue.priority,
-      order: issue.serialisedOrder?.toString(),
-    }));
-  }
-
-  public toJSONString(): string {
-    return JSON.stringify({ data: this.data });
-  }
 }
