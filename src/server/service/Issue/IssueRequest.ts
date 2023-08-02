@@ -1,7 +1,5 @@
-import "server-only";
-
 import { IssueFormValues, StatusType } from "@/lib/types";
-import StatusRepository from "@/server/domain/StatusRepository";
+import StatusRepository from "@/server/dao/StatusRepository";
 import { LexoRank } from "lexorank";
 import StatusService from "@/server/service/StatusService";
 

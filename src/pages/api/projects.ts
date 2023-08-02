@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Project } from "lib/shared";
-import ProjectRepository from "@/server/domain/ProjectRepository";
+import ProjectRepository from "@/server/dao/ProjectRepository";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/server/auth/session";
-import { IProjectDB } from "@/server/domain/interfaces";
+import { IProjectDB } from "@/server/dao/interfaces";
 import ProjectRequest from "@/server/service/ProjectRequest";
 import NextjsProjectRequest from "@/server/service/NextjsProjectRequest";
 import AppError from "@/server/service/AppError";
@@ -12,7 +12,7 @@ import { ProjectData } from "@/lib/types";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ProjectData[] | string | undefined>
+  res: NextApiResponse<string | undefined>
 ): Promise<void> {
   const token: JWT = await getUserToken(req);
   const userId: string = token.id;
@@ -34,7 +34,7 @@ export default async function handler(
       );
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(response);
+      res.end(JSON.stringify(response));
       break;
     case "POST":
       const projectRequest: ProjectRequest = new NextjsProjectRequest(req);

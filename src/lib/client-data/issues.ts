@@ -39,16 +39,16 @@ export async function fetchIssueList(pKey: string): Promise<IssueData[]> {
   }
 
   const json = await httpResponse.json();
-  return json.data.map((item: any): IssueData => {
-    return {
+  return json.map(
+    (item: any): IssueData => ({
       id: item.id,
       title: item.title,
       status: item.status,
       issueKey: item.issueKey,
       priority: item.priority,
       order: item.order,
-    };
-  });
+    })
+  );
 }
 
 export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {

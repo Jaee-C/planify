@@ -15,14 +15,11 @@ export default async function handler(
     return;
   }
 
-  const userService = new UsersService();
+  const userService = new UsersService(projectKey, Number(token.id));
 
   switch (req.method) {
     case "GET":
-      const users = await userService.fetchAllProjectUsers(
-        projectKey,
-        Number(token.id)
-      );
+      const users = await userService.fetchAllProjectUsers();
       res.setHeader("Content-Type", "application/json");
       res.status(200).json(users);
       break;

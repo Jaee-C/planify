@@ -1,6 +1,6 @@
 import { Project } from "@/lib/shared";
-import { IProjectDB } from "@/server/domain/interfaces";
-import ProjectRepository from "@/server/domain/ProjectRepository";
+import { IProjectDB } from "@/server/dao/interfaces";
+import ProjectRepository from "@/server/dao/ProjectRepository";
 import ProjectRequest from "@/server/service/ProjectRequest";
 
 /**

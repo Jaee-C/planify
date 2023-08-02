@@ -41,7 +41,7 @@ export default async function handler(
       );
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(response);
+      res.end(JSON.stringify(response));
       break;
     case "POST":
       const request: IssueRequest = createIssueRequest(req);

@@ -34,6 +34,7 @@
     "@mui/material": "^5.11.11",
     "@mui/x-data-grid": "^6.8.0",
     "@prisma/client": "^5.0.0",
+    "@uidotdev/usehooks": "^2.0.1",
     "axios": "^1.2.4",
     "bcrypt": "^5.1.0",
     "formik": "^2.2.9",
@@ -49,7 +50,6 @@
     "react-icons": "^4.10.1",
     "react-pro-sidebar": "^1.0.0",
     "react-query": "^3.39.3",
-    "server-only": "^0.0.1",
     "uuid": "^9.0.0",
     "yup": "^1.0.2"
   },

@@ -14,15 +14,13 @@ export default async function handler(
     return;
   }
 
-  const userService = new UsersService();
-
   switch (req.method) {
     case "GET":
       if (username.length < 2) {
         res.status(200).json([]);
         return;
       }
-      const result = await userService.searchUsersByUsername(username);
+      const result = await UsersService.searchUsersByUsername(username);
       res.status(200).json(result);
       break;
     default:

@@ -1,4 +1,3 @@
-import "server-only";
 import { NextApiRequest } from "next";
 import ProjectRequest from "./ProjectRequest";
 import AppError from "@/server/service/AppError";

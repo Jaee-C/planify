@@ -1,7 +1,5 @@
-import "server-only";
-
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/server/domain/prisma";
+import { prisma } from "@/server/dao/prisma";
 import { Project } from "@/lib/shared";
 import { IProjectDB } from "./interfaces";
 import ProjectRequest from "@/server/service/ProjectRequest";

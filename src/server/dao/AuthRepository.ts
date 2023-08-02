@@ -1,9 +1,7 @@
-import "server-only";
-
 import { Prisma } from "@prisma/client";
-import { prisma } from "@/server/domain/prisma";
+import { prisma } from "@/server/dao/prisma";
 import { NewUser, UserData, SessionUser } from "@/lib/types";
-import { IUserDB } from "@/server/domain/interfaces";
+import { IUserDB } from "@/server/dao/interfaces";
 import { USER_CREATION_ERROR } from "@/lib/client-data/errors";
 import AppError from "@/server/service/AppError";
 
@@ -19,7 +17,11 @@ type UserPayload = Prisma.UserGetPayload<{
   select: typeof userSelect;
 }>;
 
-class UserRepository implements IUserDB {
+/**
+ * User data access related to authentication only.
+ * @class AuthRepository
+ */
+class AuthRepository implements IUserDB {
   public constructor() {}
   public async getUsernameCount(username: string): Promise<number> {
     return prisma.user.count({
@@ -40,42 +42,6 @@ class UserRepository implements IUserDB {
     });
 
     return dbResult?.username;
-  }
-
-  public async searchAllUsersWithUsername(
-    username: string
-  ): Promise<UserData[]> {
-    const dbResult: UserPayload[] = await prisma.user.findMany({
-      where: {
-        username: {
-          contains: username,
-        },
-      },
-      select: userSelect,
-    });
-
-    return dbResult.map(this.convertToSessionUser);
-  }
-
-  public async getAllUsersInProject(
-    projectKey: string,
-    userId: number
-  ): Promise<UserData[]> {
-    const dbResult: UserPayload[] = await prisma.user.findMany({
-      where: {
-        projects: {
-          some: {
-            project: {
-              key: projectKey,
-            },
-            userId: userId,
-          },
-        },
-      },
-      select: userSelect,
-    });
-
-    return dbResult.map(this.convertToSessionUser);
   }
 
   public async getUserByUsername(username: string): Promise<UserData | null> {
@@ -137,6 +103,6 @@ class UserRepository implements IUserDB {
   }
 }
 
-const userRepo: UserRepository = new UserRepository();
+const userRepo: AuthRepository = new AuthRepository();
 
 export default userRepo;

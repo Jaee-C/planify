@@ -29,7 +29,7 @@ export default async function handler(
       try {
         const details: Project = await project.getProjectDetails();
         res.statusCode = 200;
-        res.end(details.serialiseToData());
+        res.end(JSON.stringify(details.serialiseToData()));
       } catch (e) {
         const error = e as Error;
         res.statusCode = 500;

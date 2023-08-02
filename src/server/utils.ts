@@ -8,8 +8,10 @@ export function getUrlDynamicParam(req: NextApiRequest, key: string): string {
 }
 
 export function getUrlQueryParam(req: NextApiRequest, key: string): string {
-  const { searchParams } = new URL(req.url ?? "");
-  const value = searchParams.get(key);
+  const searchParams = req.query;
+  console.log(searchParams);
+
+  const value = searchParams[key];
 
   return verifyUrlParam(value);
 }

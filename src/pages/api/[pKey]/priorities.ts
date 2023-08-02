@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PriorityType } from "@/lib/types";
-import PriorityRepository from "@/server/domain/PriorityRepository";
+import PriorityRepository from "@/server/dao/PriorityRepository";
 import { getUrlDynamicParam } from "@/server/utils";
 
 export default async function handler(

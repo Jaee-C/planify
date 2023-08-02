@@ -1,5 +1,4 @@
-import "server-only";
-import { prisma } from "@/server/domain/prisma";
+import { prisma } from "@/server/dao/prisma";
 import { Prisma } from "@prisma/client";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue } from "@/lib/shared";

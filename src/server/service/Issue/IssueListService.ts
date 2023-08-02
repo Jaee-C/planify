@@ -1,7 +1,7 @@
-import { IIssueDB, IProjectDB } from "@/server/domain/interfaces";
+import { IIssueDB, IProjectDB } from "@/server/dao/interfaces";
 import StatusService from "@/server/service/StatusService";
-import IssueRepository from "@/server/domain/IssueRepository";
-import ProjectRepository from "@/server/domain/ProjectRepository";
+import IssueRepository from "@/server/dao/IssueRepository";
+import ProjectRepository from "@/server/dao/ProjectRepository";
 import IssueRequest from "@/server/service/Issue/IssueRequest";
 import { Issue } from "@/lib/shared";
 

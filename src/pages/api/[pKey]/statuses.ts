@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import StatusRepository from "@/server/domain/StatusRepository";
+import StatusRepository from "@/server/dao/StatusRepository";
 import { StatusType } from "@/lib/types";
 import { getUrlDynamicParam } from "@/server/utils";
 

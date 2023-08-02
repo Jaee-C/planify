@@ -1,5 +1,5 @@
 import { QueryClient, useQuery, UseQueryResult } from "react-query";
-import { IssueData, PriorityType, StatusType } from "@/lib/types";
+import { IssueData, PriorityType, StatusType, UserData } from "@/lib/types";
 import {
   fetchIssueList,
   fetchPriorities,
@@ -8,6 +8,7 @@ import {
 } from "@/lib/client-data/issues";
 import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
 import { Issue } from "@/lib/shared";
+import { getAllUsersInProject } from "@/lib/client-data/users";
 
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
@@ -55,8 +56,16 @@ export function queryPriorities(
 export function queryIssue(
   projectKey: string,
   issueKey: string
-): UseQueryResult<Issue | undefined> {
+): UseQueryResult<Issue> {
   return useQuery(["issue", projectKey, issueKey], () =>
     getIssue(projectKey, issueKey)
+  );
+}
+
+export function queryProjectUsers(
+  projectKey: string
+): UseQueryResult<UserData[]> {
+  return useQuery(["projectUsers", projectKey], () =>
+    getAllUsersInProject(projectKey)
   );
 }

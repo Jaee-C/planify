@@ -1,4 +1,4 @@
-import userRepo from "@/server/domain/UserRepository";
+import userRepo from "@/server/dao/AuthRepository";
 import { UserData } from "@/lib/types";
 import bcrypt from "bcrypt";
 import { NewUser } from "@/lib/types";
