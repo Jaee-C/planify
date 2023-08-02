@@ -9,13 +9,13 @@ import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/server/auth/session";
 import AppError from "@/server/service/AppError";
 import { INVALID_TOKEN } from "@/lib/client-data/errors";
-import { getUrlDynamicParam } from "@/server/utils";
+import { getUrlParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<IssueData[] | IssueData | undefined>
 ): Promise<void> {
-  const projectKey: string = getUrlDynamicParam(req, "pKey");
+  const projectKey: string = getUrlParam(req, "pKey");
 
   if (projectKey === "") {
     res.status(405).end();

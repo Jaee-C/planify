@@ -12,9 +12,24 @@ export default class UsersService {
     return this._userDb.fetchUsersInProject();
   }
 
-  public static async searchUsersByUsername(
-    username: string
-  ): Promise<UserData[]> {
-    return UserRepository.searchAllUsersWithUsername(username);
+  public async addUserToProject(id: number): Promise<void> {
+    this._userDb.addUserToProject(id);
+  }
+
+  public async searchUsersByUsername(username: string): Promise<UserData[]> {
+    const allUsers: UserData[] =
+      await UserRepository.searchAllUsersWithUsername(username);
+    const projectUsers: UserData[] = await this.fetchAllProjectUsers();
+
+    return this.removeProjectUsers(allUsers, projectUsers);
+  }
+
+  private removeProjectUsers(
+    allUsers: UserData[],
+    projectUsers: UserData[]
+  ): UserData[] {
+    const projectUserId: string[] = projectUsers.map(user => user.id);
+
+    return allUsers.filter(user => !projectUserId.includes(user.id));
   }
 }

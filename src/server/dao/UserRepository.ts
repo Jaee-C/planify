@@ -45,6 +45,26 @@ export default class UserRepository {
     return dbResult.map(UserRepository.convertToUserType);
   }
 
+  public async addUserToProject(id: number): Promise<void> {
+    await prisma.projectMember.create({
+      data: {
+        project: {
+          connect: {
+            key_ownerId: {
+              key: this._projectKey,
+              ownerId: this._userId,
+            },
+          },
+        },
+        user: {
+          connect: {
+            id,
+          },
+        },
+      },
+    });
+  }
+
   private static convertToUserType(dbUser: UserPayloadDetailed): UserData {
     return {
       id: String(dbUser.id),

@@ -1,13 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { PriorityType } from "@/lib/types";
 import PriorityRepository from "@/server/dao/PriorityRepository";
-import { getUrlDynamicParam } from "@/server/utils";
+import { getUrlParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const projectKey: string = getUrlDynamicParam(req, "pKey");
+  const projectKey: string = getUrlParam(req, "pKey");
   const priority: PriorityRepository = new PriorityRepository(projectKey);
 
   if (req.method === "GET") {
