@@ -1,44 +1,87 @@
-import { Issue } from "@/lib/shared";
-import { IIssueDB } from "@/server/dao/interfaces";
-import IssueRepository from "@/server/dao/IssueRepository";
-import IssueRequest from "@/server/service/Issue/IssueRequest";
+import IssueRepository, {
+  EditIssuePayload,
+  IssueTarget,
+  NewIssuePayload,
+} from "@/server/dao/IssueRepository";
+import { IssueData } from "@/lib/types";
+import { NextApiRequest } from "next";
+import { IssueDetailedData } from "@/lib/types/data/IssueData";
 
 export default class IssueService {
-  private readonly _issueStore: IIssueDB;
+  private readonly _target: IssueTarget;
 
-  public constructor(pKey: string, userId: string) {
-    this._issueStore = new IssueRepository(pKey, userId);
+  public constructor(pKey: string, orgKey: string) {
+    this._target = {
+      organisation: orgKey,
+      project: pKey,
+    };
   }
 
-  public async getIssue(key: string): Promise<Issue> {
-    const issueId: number = this.getIssueId(key);
+  public async getAllIssues(): Promise<IssueData[]> {
+    return IssueRepository.fetchAllIssues(this._target);
+  }
 
-    const foundIssue: Issue | null = await this._issueStore.fetchOneIssueWithId(
-      issueId
+  public async saveIssue(req: NextApiRequest): Promise<IssueData> {
+    const data = this.parseSaveInput(req);
+    const res = await IssueRepository.createIssue(this._target, data);
+
+    if (res == null) {
+      throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    }
+
+    return res;
+  }
+
+  public async getOneIssue(key: string): Promise<IssueDetailedData> {
+    const res = await IssueRepository.fetchOneIssue({
+      ...this._target,
+      issueKey: key,
+    });
+
+    if (res === null) {
+      throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    }
+
+    return res;
+  }
+
+  public async editIssue(req: NextApiRequest, key: string): Promise<IssueData> {
+    const data = this.parseEditInput(req);
+
+    const res = await IssueRepository.editIssue(
+      this.addIssueKeyToTarget(key),
+      data
     );
 
-    if (foundIssue === null) {
-      throw new Error("Issue not found");
+    if (res == null) {
+      throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
     }
-    return foundIssue;
+
+    return res;
   }
 
-  public async editIssue(issue: IssueRequest): Promise<Issue> {
-    return this._issueStore.editExistingIssue(issue);
+  public async deleteIssue(key: string) {
+    await IssueRepository.deleteIssue(this.addIssueKeyToTarget(key));
   }
 
-  public async deleteIssue(key: string): Promise<void> {
-    const issueId: number = this.getIssueId(key);
-    await this._issueStore.deleteIssue(issueId);
+  private addIssueKeyToTarget(key: string): IssueTarget {
+    return {
+      ...this._target,
+      issueKey: key,
+    };
   }
 
-  private getIssueId(key: string): number {
-    const splitKey: string[] = key.split("-");
-    const issueId: number = Number(splitKey[1]);
+  private parseSaveInput(req: NextApiRequest): NewIssuePayload {
+    return {
+      title: req.body.title,
+    };
+  }
 
-    if (Number.isNaN(issueId)) {
-      throw new Error("Invalid issue key");
-    }
-    return issueId;
+  private parseEditInput(req: NextApiRequest): EditIssuePayload {
+    return {
+      title: req.body.title,
+      status: req.body.status,
+      order: req.body.order,
+    };
   }
 }

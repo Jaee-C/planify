@@ -20,3 +20,7 @@ export interface IssueData {
   priority?: PriorityType;
   order: string | undefined;
 }
+
+export interface IssueDetailedData extends IssueData {
+  description?: string;
+}

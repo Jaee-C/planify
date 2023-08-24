@@ -1,74 +1,90 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Project {
-  id          Int      @id @default(autoincrement())
-  name        String
-  key         String
-  description String?
-  issues      Issue[]
-  owner       User     @relation(fields: [ownerId], references: [id])
-  ownerId     Int
-  numIssues   Int      @default(0)
-  members     ProjectMember[]
+  id              Int             @id @default(autoincrement())
+  name            String
+  key             String
+  description     String?
+  ownerId         Int
+  numIssues       Int             @default(0)
+  organisationKey String
+  issues          Issue[]
+  owner           User            @relation(fields: [ownerId], references: [id])
+  members         ProjectMember[]
+  organisation    Organisation    @relation(fields: [organisationKey], references: [key])
 
-  @@unique([key, ownerId])
+  @@unique([key, organisationKey])
+}
+
+model Organisation {
+  id          Int       @id @default(autoincrement())
+  key         String    @unique
+  name        String
+  description String?
+  projects    Project[]
 }
 
 model Issue {
   id          Int
   title       String
   description Bytes?
-  status      StatusType @relation(fields: [statusId], references: [id])
   statusId    Int
-  project     Project @relation(fields: [projectId], references: [id])
   projectId   Int
-  priority    PriorityType? @relation(fields: [priorityId], references: [id])
   priorityId  Int?
   boardOrder  String?
+  status      StatusType    @relation(fields: [statusId], references: [id])
+  project     Project       @relation(fields: [projectId], references: [id])
+  priority    PriorityType? @relation(fields: [priorityId], references: [id])
 
   @@id([id, projectId])
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  firstName   String?
-  lastName    String?
-  username    String   @unique
-  email       String?   @unique
-  ownedProjects    Project[]
-  displayName String?
-  password    String
-  projects    ProjectMember[]
+  id            Int             @id @default(autoincrement())
+  firstName     String?
+  lastName      String?
+  username      String          @unique
+  email         String?         @unique
+  displayName   String?
+  password      String
+  ownedProjects Project[]
+  projects      ProjectMember[]
 }
 
 model StatusType {
-  id     Int    @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
   name   String
   issues Issue[]
 }
 
 model PriorityType {
-  id     Int    @id @default(autoincrement())
+  id     Int     @id @default(autoincrement())
   name   String
   issues Issue[]
 }
 
 model ProjectMember {
-  project   Project @relation(fields: [projectId], references: [id])
   projectId Int
-  user      User    @relation(fields: [userId], references: [id])
   userId    Int
+  project   Project @relation(fields: [projectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
 
   @@id([projectId, userId])
+}
+
+model OrganisationToUser {
+  A Int
+  B Int
+
+  @@unique([A, B], map: "_OrganisationToUser_AB_unique")
+  @@index([B], map: "_OrganisationToUser_B_index")
+  @@map("_OrganisationToUser")
 }

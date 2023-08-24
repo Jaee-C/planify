@@ -1,11 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { JWT } from "next-auth/jwt";
-import { getUserToken } from "@/server/auth/session";
 import { Issue } from "@/lib/shared";
 import {
   createIssueRequest,
+  IssueListService,
   IssueRequest,
-  IssueService,
 } from "@/server/service/Issue";
 import AppError from "@/server/service/AppError";
 import { IssueData } from "@/lib/types";
@@ -15,17 +13,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | IssueData>
 ): Promise<void> {
-  const pKey: string = getUrlParam(req, "pKey");
   const issueKey: string = getUrlParam(req, "id");
-  const token: JWT = await getUserToken(req);
+  const projectKey: string = getUrlParam(req, "pKey");
+  const organisation: string = getUrlParam(req, "orgKey");
 
-  const issueService: IssueService = new IssueService(pKey, token.id);
+  if (projectKey === "" || organisation === "") {
+    res.status(405).end();
+    return;
+  }
+
+  const issueService = new IssueListService(projectKey, organisation);
 
   switch (req.method) {
     case "GET":
       try {
-        const issue: Issue = await issueService.getIssue(issueKey);
-        res.status(200).json(issue.serialiseToData());
+        const issue = await issueService.getOneIssue(issueKey);
+        res.status(200).json(issue);
       } catch {
         res.status(404).end();
       }
@@ -34,10 +37,10 @@ export default async function handler(
       const issueRequest: IssueRequest = createIssueRequest(req);
       issueRequest.key = issueKey;
       try {
-        const newIssue: Issue = await issueService.editIssue(issueRequest);
+        const newIssue = await issueService.editIssue(req, issueKey);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.status(200).send(newIssue.serialiseToData());
+        res.status(200).send(newIssue);
       } catch (e) {
         if (e instanceof AppError) {
           res.status(404).send(e.toJSONString());
