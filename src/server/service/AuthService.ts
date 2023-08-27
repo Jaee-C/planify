@@ -8,19 +8,34 @@ export default {
   verifyUser,
   createUser,
   updatePassword,
+  accountExists,
 };
 
 async function verifyUser(email: string, password: string) {
-  const user = await UserRepository.fetchUserIfExists(email);
+  try {
+    const user = await UserRepository.fetchUserIfExists(email);
 
-  if (!user) {
+    if (!user) {
+      return null;
+    }
+
+    if (await bcrypt.compare(password, user.password)) {
+      return toSessionUser(user);
+    }
+  } catch (e) {
     return null;
   }
-
-  if (await bcrypt.compare(password, user.password)) {
-    return toSessionUser(user);
-  }
   return null;
+}
+
+async function accountExists(email: string): Promise<boolean> {
+  try {
+    const user = await UserRepository.fetchUserIfExists(email);
+
+    return user !== null;
+  } catch (e) {
+    return false;
+  }
 }
 
 async function createUser(email: string, password: string) {

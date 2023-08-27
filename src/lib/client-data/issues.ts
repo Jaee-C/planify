@@ -1,6 +1,6 @@
 import {
   Issue,
-  IssueSummarisedData,
+  IssueData,
   IssueFormValues,
   PriorityType,
   StatusType,
@@ -25,9 +25,7 @@ export async function serverDeleteIssue(
   return issueKey;
 }
 
-export async function fetchIssueList(
-  pKey: string
-): Promise<IssueSummarisedData[]> {
+export async function fetchIssueList(pKey: string): Promise<IssueData[]> {
   if (pKey == undefined || Array.isArray(pKey)) {
     return [];
   }
@@ -42,7 +40,7 @@ export async function fetchIssueList(
 
   const json = await httpResponse.json();
   return json.map(
-    (item: any): IssueSummarisedData => ({
+    (item: any): IssueData => ({
       id: item.id,
       title: item.title,
       status: item.status,
@@ -170,6 +168,6 @@ export async function editIssue(
     }
   }
 
-  const jsonData: IssueSummarisedData = json.data;
+  const jsonData: IssueData = json.data;
   return convertDataToIssue(jsonData);
 }

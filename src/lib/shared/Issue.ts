@@ -1,4 +1,4 @@
-import { IssueSummarisedData, PriorityType, StatusType } from "@/lib/types";
+import { IssueData, PriorityType, StatusType } from "@/lib/types";
 import { LexoRank } from "lexorank";
 
 export default class Issue {
@@ -51,7 +51,7 @@ export default class Issue {
     this._serialisedOrder = LexoRank.middle();
   }
 
-  public serialiseToData(): IssueSummarisedData {
+  public serialiseToData(): IssueData {
     return {
       id: this.id,
       title: this.title,
@@ -72,7 +72,7 @@ export function compareIssue(current: Issue, other: Issue): number {
   return current.order.compareTo(other.order);
 }
 
-export function convertDataToIssue(data: IssueSummarisedData): Issue {
+export function convertDataToIssue(data: IssueData): Issue {
   const newIssue: Issue = new Issue(data.id);
 
   newIssue.title = data.title;

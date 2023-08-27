@@ -3,9 +3,9 @@ import IssueRepository, {
   IssueTarget,
   NewIssuePayload,
 } from "@/server/dao/IssueRepository";
-import { IssueSummarisedData } from "@/lib/types";
+import { IssueData } from "@/lib/types";
 import { NextApiRequest } from "next";
-import { IssueDetailedData } from "@/lib/types/data/IssueSummarisedData";
+import { IssueDetailedData } from "@/lib/types/data/IssueData";
 
 export default class IssueService {
   private readonly _target: IssueTarget;
@@ -17,11 +17,11 @@ export default class IssueService {
     };
   }
 
-  public async getAllIssues(): Promise<IssueSummarisedData[]> {
+  public async getAllIssues(): Promise<IssueData[]> {
     return IssueRepository.fetchAllIssues(this._target);
   }
 
-  public async saveIssue(req: NextApiRequest): Promise<IssueSummarisedData> {
+  public async saveIssue(req: NextApiRequest): Promise<IssueData> {
     const data = this.parseSaveInput(req);
     const res = await IssueRepository.createIssue(this._target, data);
 
@@ -45,10 +45,7 @@ export default class IssueService {
     return res;
   }
 
-  public async editIssue(
-    req: NextApiRequest,
-    key: string
-  ): Promise<IssueSummarisedData> {
+  public async editIssue(req: NextApiRequest, key: string): Promise<IssueData> {
     const data = this.parseEditInput(req);
 
     const res = await IssueRepository.editIssue(

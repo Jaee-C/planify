@@ -11,7 +11,7 @@ export interface IssueFormValues {
  * react-query does not support class as a return type. This interface is
  * converted to Issue class after passed to react components.
  */
-export interface IssueSummarisedData {
+export interface IssueData {
   id: number;
   title: string | undefined;
   status: StatusType | undefined;
@@ -20,6 +20,6 @@ export interface IssueSummarisedData {
   order: string | undefined;
 }
 
-export interface IssueDetailedData extends IssueSummarisedData {
+export interface IssueDetailedData extends IssueData {
   description?: string;
 }

@@ -6,12 +6,12 @@ import {
   IssueRequest,
 } from "@/server/service/Issue";
 import AppError from "@/server/service/AppError";
-import { IssueSummarisedData } from "@/lib/types";
+import { IssueData } from "@/lib/types";
 import { getUrlParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<string | IssueSummarisedData>
+  res: NextApiResponse<string | IssueData>
 ): Promise<void> {
   const issueKey: string = getUrlParam(req, "id");
   const projectKey: string = getUrlParam(req, "pKey");

@@ -2,10 +2,7 @@ import { prisma } from "@/server/dao/prisma";
 import { Prisma } from "@prisma/client";
 import AppError from "@/server/service/AppError";
 import { NOT_FOUND_IN_DB } from "@/lib/client-data/errors";
-import {
-  IssueSummarisedData,
-  IssueDetailedData,
-} from "@/lib/types/data/IssueSummarisedData";
+import { IssueData, IssueDetailedData } from "@/lib/types/data/IssueData";
 
 export default {
   fetchAllIssues,
@@ -182,13 +179,13 @@ export async function deleteIssue(target: IssueTarget): Promise<boolean> {
   return true;
 }
 
-function toServerIssueList(payload: IssuePayload[]): IssueSummarisedData[] {
+function toServerIssueList(payload: IssuePayload[]): IssueData[] {
   return payload.map((dbIssue: IssuePayload) => {
     return toIssueSummary(dbIssue);
   });
 }
 
-function toIssueSummary(dbIssue: IssuePayload): IssueSummarisedData {
+function toIssueSummary(dbIssue: IssuePayload): IssueData {
   return {
     id: dbIssue.id,
     title: dbIssue.title,
