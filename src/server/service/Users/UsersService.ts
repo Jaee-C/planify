@@ -1,7 +1,7 @@
 import { UserData } from "@/lib/types";
 import UserRepository from "@/server/dao/UserRepository";
 
-export default class UsersService {
+export class UsersService {
   private readonly _userDb: UserRepository;
 
   public constructor(projectKey: string, userId: number) {
