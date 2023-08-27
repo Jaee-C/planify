@@ -15,7 +15,7 @@ import DataGrid from "@/components/Table/DataGrid";
 import IssueCreateDialog from "@/components/CreateIssue/IssueCreateDialog";
 import { useMutation } from "react-query";
 import { editIssue, serverDeleteIssue } from "@/lib/client-data/issues";
-import { Issue, IssueData } from "lib/types";
+import { Issue, IssueSummarisedData } from "lib/types";
 import { NextRouter, useRouter } from "next/router";
 import {
   CreateIssueContext,
@@ -95,7 +95,7 @@ export default function BacklogTable(): JSX.Element {
   React.useEffect((): void => {
     if (!isLoading && issues) {
       if (issues.length > 0) {
-        const newRows: GridRowsProp = issues.map((row: IssueData) => {
+        const newRows: GridRowsProp = issues.map((row: IssueSummarisedData) => {
           return {
             id: row.id,
             key: row.issueKey,

@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { IssueData } from "lib/types";
+import { IssueSummarisedData } from "lib/types";
 import { IssueListService } from "@/server/service/Issue";
 import AppError from "@/server/service/AppError";
 import { getUrlParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IssueData[] | IssueData | undefined>
+  res: NextApiResponse<IssueSummarisedData[] | IssueSummarisedData | undefined>
 ): Promise<void> {
   const projectKey: string = getUrlParam(req, "pKey");
   const organisation: string = getUrlParam(req, "orgKey");
@@ -20,14 +20,14 @@ export default async function handler(
 
   switch (req.method) {
     case "GET":
-      const response: IssueData[] = await issueList.getAllIssues();
+      const response: IssueSummarisedData[] = await issueList.getAllIssues();
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
       res.end(JSON.stringify(response));
       break;
     case "POST":
       try {
-        const newIssue: IssueData = await issueList.saveIssue(req);
+        const newIssue: IssueSummarisedData = await issueList.saveIssue(req);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
         res.end(newIssue);

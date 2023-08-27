@@ -1,4 +1,4 @@
-import userAuth from "@/server/auth/UserAuth";
+import UserAuth from "@/server/service/AuthService";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
@@ -25,7 +25,7 @@ export const authOptions: NextAuthOptions = {
         // (i.e., the request IP address)
         if (!credentials) return null;
 
-        return await userAuth.verifyUser(
+        return await UserAuth.verifyUser(
           credentials.username,
           credentials.password
         );
@@ -45,7 +45,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }): Promise<JWT> {
       if (user) {
         token.id = user.id;
-        token.name = user.displayName;
       }
       return token;
     },

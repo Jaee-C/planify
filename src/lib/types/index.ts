@@ -4,7 +4,10 @@ export type { default as StatusType } from "./StatusType";
 
 export type { default as PriorityType } from "./PriorityType";
 
-export type { IssueData, IssueFormValues } from "./data/IssueData";
+export type {
+  IssueSummarisedData,
+  IssueFormValues,
+} from "./data/IssueSummarisedData";
 
 export type { ProjectData } from "./data/ProjectData";
 

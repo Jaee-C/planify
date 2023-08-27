@@ -2,7 +2,10 @@ import { prisma } from "@/server/dao/prisma";
 import { Prisma } from "@prisma/client";
 import AppError from "@/server/service/AppError";
 import { NOT_FOUND_IN_DB } from "@/lib/client-data/errors";
-import { IssueDetailedData } from "@/lib/types/data/IssueData";
+import {
+  IssueSummarisedData,
+  IssueDetailedData,
+} from "@/lib/types/data/IssueSummarisedData";
 
 export default {
   fetchAllIssues,
@@ -69,7 +72,7 @@ export async function fetchOneIssue(
     return null;
   }
 
-  return toServerIssue(dbIssue);
+  return toIssueDetailed(dbIssue);
 }
 
 export async function createIssue(target: IssueTarget, data: NewIssuePayload) {
@@ -97,7 +100,7 @@ export async function createIssue(target: IssueTarget, data: NewIssuePayload) {
       select: issueSelect,
     });
 
-    return toServerIssue(res);
+    return toIssueSummary(res);
   } catch (e) {
     return null;
   }
@@ -141,7 +144,7 @@ export async function editIssue(
       },
       select: detailedIssue,
     });
-    return toServerIssue(res);
+    return toIssueDetailed(res);
   } catch (e) {
     return null;
   }
@@ -179,15 +182,24 @@ export async function deleteIssue(target: IssueTarget): Promise<boolean> {
   return true;
 }
 
-function toServerIssueList(payload: IssuePayload[]): IssueDetailedData[] {
+function toServerIssueList(payload: IssuePayload[]): IssueSummarisedData[] {
   return payload.map((dbIssue: IssuePayload) => {
-    return toServerIssue(dbIssue);
+    return toIssueSummary(dbIssue);
   });
 }
 
-function toServerIssue(
-  dbIssue: IssuePayload | DetailedIssuePayload
-): IssueDetailedData {
+function toIssueSummary(dbIssue: IssuePayload): IssueSummarisedData {
+  return {
+    id: dbIssue.id,
+    title: dbIssue.title,
+    issueKey: getIssueKey(dbIssue.project.key, dbIssue.id),
+    status: undefined,
+    priority: undefined,
+    order: dbIssue.boardOrder ?? undefined,
+  };
+}
+
+function toIssueDetailed(dbIssue: DetailedIssuePayload): IssueDetailedData {
   return {
     id: dbIssue.id,
     title: dbIssue.title,

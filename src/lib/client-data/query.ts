@@ -1,5 +1,10 @@
 import { QueryClient, useQuery, UseQueryResult } from "react-query";
-import { IssueData, PriorityType, StatusType, UserData } from "@/lib/types";
+import {
+  IssueSummarisedData,
+  PriorityType,
+  StatusType,
+  UserData,
+} from "@/lib/types";
 import {
   fetchIssueList,
   fetchPriorities,
@@ -18,7 +23,9 @@ export const queryClient: QueryClient = new QueryClient({
   },
 });
 
-export function queryIssues(projectKey: string): UseQueryResult<IssueData[]> {
+export function queryIssues(
+  projectKey: string
+): UseQueryResult<IssueSummarisedData[]> {
   return useQuery(["issues", projectKey], () => fetchIssueList(projectKey), {
     staleTime: ISSUE_STALE_TIME,
   });
@@ -26,7 +33,7 @@ export function queryIssues(projectKey: string): UseQueryResult<IssueData[]> {
 
 export function queryIssuesConverted(
   projectKey: string
-): UseQueryResult<IssueData[]> {
+): UseQueryResult<IssueSummarisedData[]> {
   return useQuery(["issuesConverted", projectKey], () =>
     fetchIssueList(projectKey).then(res => res)
   );

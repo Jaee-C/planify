@@ -1,8 +1,6 @@
+/** The object that's stored in the user's JWT / Session */
 export interface SessionUser {
   id: string;
-  displayName: string;
-  firstName?: string | null;
-  lastName?: string | null;
   email?: string | null;
 }
 
