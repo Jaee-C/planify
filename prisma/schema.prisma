@@ -30,7 +30,7 @@ model Organisation {
   name        String
   description String?
   projects    Project[]
-  users       User[]
+  users       OrganisationUser[]
 }
 
 model Issue {
@@ -57,7 +57,7 @@ model User {
   password      String
   ownedProjects Project[]
   projects      ProjectMember[]
-  organisations Organisation[]
+  organisations OrganisationUser[]
 }
 
 model StatusType {
@@ -79,4 +79,14 @@ model ProjectMember {
   user      User    @relation(fields: [userId], references: [id])
 
   @@id([projectId, userId])
+}
+
+model OrganisationUser {
+  organisationKey    String
+  organisation       Organisation @relation(fields: [organisationKey], references: [key])
+  userId             Int
+  user               User @relation(fields: [userId], references: [id])
+  role               String
+
+  @@id([organisationKey, userId])
 }

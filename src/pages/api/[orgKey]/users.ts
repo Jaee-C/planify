@@ -29,6 +29,8 @@ export default async function handler(
         return;
     }
   } catch (e) {
-    res.status(500).end("Server Error");
+    if (e instanceof Error) {
+      res.status(500).end(e.message);
+    }
   }
 }

@@ -1,9 +1,11 @@
 import { prisma } from "./prisma";
+import { Prisma } from "@prisma/client";
 
 export default {
   fetchUserIfExists,
   createUser,
   updatePassword,
+  searchUser,
 };
 
 async function fetchUserIfExists(email: string) {
@@ -33,3 +35,31 @@ async function updatePassword(email: string, newP: string): Promise<void> {
     },
   });
 }
+
+async function searchUser(search: string): Promise<UserBasicPayload[]> {
+  return prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          displayName: {
+            contains: search,
+          },
+        },
+        {
+          email: {
+            contains: search,
+          },
+        },
+      ],
+    },
+    select: userBasicSelect,
+  });
+}
+
+const userBasicSelect = {
+  email: true,
+  displayName: true,
+} satisfies Prisma.UserSelect;
+type UserBasicPayload = Prisma.UserGetPayload<{
+  select: typeof userBasicSelect;
+}>;
