@@ -23,8 +23,9 @@ export default function SideNavigation(
 ): JSX.Element {
   const { collapseSidebar, collapsed } = useProSidebar();
   const router = useRouter();
-  const { pKey } = router.query;
+  const { pKey, orgKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
+  const organisation: string = verifyUrlParam(orgKey);
 
   return (
     <IconContext.Provider value={{ className: "shared-class", size: "14px" }}>
@@ -83,8 +84,8 @@ export default function SideNavigation(
                 component={
                   <Link
                     href={{
-                      pathname: `/[pKey]/settings`,
-                      query: { pKey: projectKey },
+                      pathname: `/[orgKey[/[pKey]/settings`,
+                      query: { pKey: projectKey, orgKey: organisation },
                     }}
                   />
                 }>

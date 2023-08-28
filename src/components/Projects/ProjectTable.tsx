@@ -20,7 +20,7 @@ import { ProjectData } from "@/lib/types";
 import { useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
 
-const columns: GridColDef[] = [
+const columns = (orgKey: string): GridColDef[] => [
   { field: "key", headerName: "Key", width: 100 },
   {
     field: "name",
@@ -30,7 +30,7 @@ const columns: GridColDef[] = [
     minWidth: 150,
     renderCell: (params: GridRenderCellParams) => (
       <Link
-        href={`/${params.row.key}/backlog`}
+        href={`/${orgKey}/${params.row.key}/backlog`}
         className="hover:underline hover:text-blue-600">
         {params.value}
       </Link>
@@ -93,7 +93,7 @@ export default function ProjectTable(): JSX.Element {
                 outline: "none !important",
               },
             }}
-            columns={columns}
+            columns={columns(organisation)}
             rows={rows}
           />
         </Paper>
