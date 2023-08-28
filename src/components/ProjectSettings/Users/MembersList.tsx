@@ -8,7 +8,8 @@ import { UserData } from "@/lib/types";
 export default function MembersList(): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
-  const { data, isLoading } = queryProjectUsers(projectKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
+  const { data, isLoading } = queryProjectUsers(organisation, projectKey);
 
   if (isLoading) return <></>;
 

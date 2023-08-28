@@ -23,11 +23,14 @@ interface StatusSelectProp {
 export default function StatusSelect(props: StatusSelectProp): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const [value, setValue] = React.useState<StatusType>(NONE_STATUS);
 
   // Server queries
-  const { data: statuses }: UseQueryResult<StatusType[]> =
-    queryStatuses(projectKey);
+  const { data: statuses }: UseQueryResult<StatusType[]> = queryStatuses(
+    organisation,
+    projectKey
+  );
 
   // Set default status as first in list of statuses
   React.useEffect((): void => {

@@ -17,12 +17,15 @@ interface PrioritySelectProp {
 export default function PrioritySelect(props: PrioritySelectProp): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const [validPriorities, setPriorities] = React.useState<PriorityType[]>([
     NONE_PRIORITY,
   ]);
 
-  const { data: priorities }: UseQueryResult<PriorityType[]> =
-    queryPriorities(projectKey);
+  const { data: priorities }: UseQueryResult<PriorityType[]> = queryPriorities(
+    organisation,
+    projectKey
+  );
 
   React.useEffect((): void => {
     if (priorities && priorities.length > 0) {

@@ -35,10 +35,11 @@ export interface IssueFormProps {
 
 export default function CreateForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pKey } = router.query;
+  const { pKey, orgKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
+  const organisation: string = verifyUrlParam(orgKey);
   const newIssueMutation = useMutation(
-    (data: IssueFormValues) => addIssue(projectKey, data),
+    (data: IssueFormValues) => addIssue(organisation, projectKey, data),
     {
       onError: (err: AppError): void => {
         setError(err);

@@ -42,11 +42,15 @@ export async function addProjectUser(
 }
 
 export async function getAllUsersInProject(
+  organisation: string,
   projectKey: string
 ): Promise<UserData[]> {
-  const data: Response = await fetch("/api/" + projectKey + "/users", {
-    method: "GET",
-  });
+  const data: Response = await fetch(
+    `/api/${organisation}/${projectKey}/users1`,
+    {
+      method: "GET",
+    }
+  );
 
   if (data.status !== 200) {
     throw new Error("Failed to fetch user data");

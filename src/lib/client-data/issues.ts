@@ -18,19 +18,25 @@ export function toStatusString(
 }
 
 export async function serverDeleteIssue(
+  organisation: string,
   pKey: string,
   issueKey: string
 ): Promise<string> {
-  await fetch(`/api/${pKey}/issue/${issueKey}`, { method: "DELETE" });
+  await fetch(`/api/${organisation}/${pKey}/issue/${issueKey}`, {
+    method: "DELETE",
+  });
   return issueKey;
 }
 
-export async function fetchIssueList(pKey: string): Promise<IssueData[]> {
+export async function fetchIssueList(
+  org: string,
+  pKey: string
+): Promise<IssueData[]> {
   if (pKey == undefined || Array.isArray(pKey)) {
     return [];
   }
 
-  const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
+  const httpResponse: Response = await fetch(`/api/${org}/${pKey}/issues`, {
     method: "GET",
   });
 
@@ -51,7 +57,10 @@ export async function fetchIssueList(pKey: string): Promise<IssueData[]> {
   );
 }
 
-export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
+export async function fetchStatuses(
+  organisation: string,
+  projectKey: string
+): Promise<StatusType[]> {
   const httpResponse: Response = await fetch(`/api/${projectKey}/statuses`, {
     method: "GET",
   });
@@ -69,6 +78,7 @@ export async function fetchStatuses(projectKey: string): Promise<StatusType[]> {
 }
 
 export async function fetchPriorities(
+  organisation: string,
   projectKey: string
 ): Promise<PriorityType[]> {
   const httpResponse: Response = await fetch(`/api/${projectKey}/priorities`, {
@@ -86,11 +96,12 @@ export async function fetchPriorities(
 }
 
 export async function getIssue(
+  organisation: string,
   projectKey: string,
   issueId: string
 ): Promise<Issue> {
   const httpResponse: Response = await fetch(
-    `/api/${projectKey}/issue/${issueId}`,
+    `/api/${organisation}/${projectKey}/issue/${issueId}`,
     {
       method: "GET",
     }
@@ -120,16 +131,20 @@ export async function getIssue(
 }
 
 export async function addIssue(
+  organisation: string,
   pKey: string,
   data: IssueFormValues
 ): Promise<any> {
-  const httpResponse: Response = await fetch(`/api/${pKey}/issues`, {
-    method: "POST",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  const httpResponse: Response = await fetch(
+    `/api/${organisation}/${pKey}/issues`,
+    {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
 
   const json = await httpResponse.json();
   if (!httpResponse.ok) {
@@ -148,17 +163,21 @@ export async function addIssue(
 }
 
 export async function editIssue(
+  organisation: string,
   pKey: string,
   issueKey: string,
   data: any
 ): Promise<any> {
-  const httpResponse: Response = await fetch(`/api/${pKey}/issue/${issueKey}`, {
-    method: "PUT",
-    headers: {
-      "Content-type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  const httpResponse: Response = await fetch(
+    `/api/${organisation}/${pKey}/issue/${issueKey}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }
+  );
 
   const json = await httpResponse.json();
 

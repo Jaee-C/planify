@@ -78,8 +78,11 @@ function onChange(editor: EditorState): void {}
 export default function DescriptionEditor(props: Props): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const editMutation = useMutation(async (data: any) => {
-    await editIssue(projectKey, props.issueKey, { description: data });
+    await editIssue(organisation, projectKey, props.issueKey, {
+      description: data,
+    });
   });
   const { placeholder = "Enter some text" } = props;
   const initialConfig: InitialConfigType = {

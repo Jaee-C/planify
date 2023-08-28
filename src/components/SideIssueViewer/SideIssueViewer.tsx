@@ -38,6 +38,7 @@ const FormRow = styled(Grid)(() => ({
 export default function SideIssueViewer(): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const { value: issueKey, action: handleEdit } =
     useContext(SidebarEditContext);
   const [title, setTitle] = React.useState<string | undefined>(undefined);
@@ -50,7 +51,11 @@ export default function SideIssueViewer(): JSX.Element {
     data: editingIssue,
     isLoading,
     error,
-  }: UseQueryResult<Issue | undefined> = queryIssue(projectKey, issueKey);
+  }: UseQueryResult<Issue | undefined> = queryIssue(
+    organisation,
+    projectKey,
+    issueKey
+  );
 
   useEffect((): void => {
     if (editingIssue === undefined) return;
@@ -60,7 +65,8 @@ export default function SideIssueViewer(): JSX.Element {
   }, [editingIssue]);
 
   const editIssueMutation = useMutation(
-    async (data: any) => await editIssue(projectKey, issueKey, data),
+    async (data: any) =>
+      await editIssue(organisation, projectKey, issueKey, data),
     {
       onSuccess: async (): Promise<void> => {
         await queryClient.invalidateQueries(["issues", projectKey]);

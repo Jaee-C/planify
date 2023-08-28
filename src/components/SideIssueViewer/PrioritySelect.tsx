@@ -26,13 +26,15 @@ export default function PrioritySelect({
 }: PriorityProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const [value, setValue] = React.useState<PriorityType>(defaultValue);
 
   const { data: priorities, isLoading }: UseQueryResult<PriorityType[]> =
-    queryPriorities(projectKey);
+    queryPriorities(organisation, projectKey);
   const queryClient: QueryClient = useQueryClient();
   const editPriorityMutation = useMutation(
-    async (data: any) => await editIssue(projectKey, issueKey, data),
+    async (data: any) =>
+      await editIssue(organisation, projectKey, issueKey, data),
     {
       onSuccess: async (): Promise<void> => {
         await queryClient.invalidateQueries(["issues", projectKey]);

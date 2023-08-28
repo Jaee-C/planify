@@ -49,10 +49,11 @@ function getDistinctValues(updated: any, original: any): any {
 
 export default function BacklogTable(): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pKey } = router.query;
+  const { pKey, orgKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const { data: issues, isLoading } = queryIssues(projectKey);
-  const { data: statuses } = queryStatuses(projectKey);
+  const organisation: string = verifyUrlParam(orgKey);
+  const { data: issues, isLoading } = queryIssues(organisation, projectKey);
+  const { data: statuses } = queryStatuses(organisation, projectKey);
 
   // Global states
   const [issueRows, setIssueRows] = useAtom(issueRowsAtom);
@@ -63,7 +64,7 @@ export default function BacklogTable(): JSX.Element {
   // Server queries
   const editIssueMutation = useMutation(
     async ([issueKey, data]: any) =>
-      await editIssue(projectKey, issueKey, data),
+      await editIssue(organisation, projectKey, issueKey, data),
     {
       onSuccess: async (res: Issue): Promise<void> => {
         const newRow: GridRowsProp = createGridRowFromIssue(res);
@@ -111,7 +112,7 @@ export default function BacklogTable(): JSX.Element {
   }, [issues, statuses]);
 
   const deleteIssue = useMutation(
-    (issueKey: string) => serverDeleteIssue(projectKey, issueKey),
+    (issueKey: string) => serverDeleteIssue(organisation, projectKey, issueKey),
     {
       onSuccess: async (id: string) => {
         removeOneRow(id);
