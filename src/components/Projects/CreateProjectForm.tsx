@@ -8,6 +8,8 @@ import { Button, Grid, styled } from "@mui/material";
 import FormTextField from "@/components/Form/FormTextField";
 import TextFieldLabel from "@/components/Form/TextFieldLabel";
 import { addProject } from "@/lib/client-data/projects";
+import { verifyUrlParam } from "@/lib/utils";
+import { useRouter } from "next/router";
 
 const FormRow = styled(Grid)(() => ({
   "&.MuiGrid-item": {
@@ -27,9 +29,12 @@ const formValidation = yup.object({
 
 export default function CreateProjectForm(): JSX.Element {
   const createProjectContext = useContext(CreateProjectContext);
+  const router = useRouter();
+  const { orgKey } = router.query;
+  const organisation: string = verifyUrlParam(orgKey);
   const queryClient: QueryClient = useQueryClient();
   const newProjectMutation = useMutation((data: ProjectFormValues) =>
-    addProject(data)
+    addProject(organisation, data)
   );
 
   const formik: FormikProps<ProjectFormValues> = useFormik<ProjectFormValues>({

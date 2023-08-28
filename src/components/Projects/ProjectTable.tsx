@@ -17,6 +17,8 @@ import { useQuery } from "react-query";
 import { fetchProjectList } from "@/lib/client-data/projects";
 import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
 import { ProjectData } from "@/lib/types";
+import { useRouter } from "next/router";
+import { verifyUrlParam } from "@/lib/utils";
 
 const columns: GridColDef[] = [
   { field: "key", headerName: "Key", width: 100 },
@@ -65,9 +67,11 @@ const columns: GridColDef[] = [
 
 export default function ProjectTable(): JSX.Element {
   const [rows, setRows] = React.useState<GridRowsProp>([]);
-  const { data, isLoading } = useQuery<ProjectData[]>(
-    "projects",
-    fetchProjectList
+  const router = useRouter();
+  const { orgKey } = router.query;
+  const organisation: string = verifyUrlParam(orgKey);
+  const { data, isLoading } = useQuery<ProjectData[]>("projects", () =>
+    fetchProjectList(organisation)
   );
 
   React.useEffect((): void => {

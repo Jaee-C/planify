@@ -2,8 +2,8 @@ import { Project } from "lib/shared";
 import { ProjectFormValues } from "@/components/Projects/FormConstants";
 import { ProjectData } from "@/lib/types";
 
-export async function fetchProjectList(): Promise<ProjectData[]> {
-  const httpResponse: Response = await fetch("/api/projects", {
+export async function fetchProjectList(org: string): Promise<ProjectData[]> {
+  const httpResponse: Response = await fetch(`/api/${org}/projects`, {
     method: "GET",
   });
 
@@ -16,9 +16,10 @@ export async function fetchProjectList(): Promise<ProjectData[]> {
 }
 
 export async function addProject(
+  org: string,
   data: ProjectFormValues
 ): Promise<ProjectData> {
-  const httpResponse: Response = await fetch("/api/projects", {
+  const httpResponse: Response = await fetch(`/api/${org}/projects`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,11 +36,14 @@ export async function addProject(
   return json;
 }
 
-export async function getProjectDetails(key: string): Promise<ProjectData> {
+export async function getProjectDetails(
+  org: string,
+  key: string
+): Promise<ProjectData> {
   if (key === "") {
     return new Project(-1);
   }
-  const httpResponse: Response = await fetch(`/api/${key}/details`, {
+  const httpResponse: Response = await fetch(`/api/${org}/${key}/details`, {
     method: "GET",
   });
 
@@ -54,9 +58,10 @@ export async function getProjectDetails(key: string): Promise<ProjectData> {
 
 export async function editProject(
   data: ProjectFormValues,
+  org: string,
   key: string
 ): Promise<ProjectData> {
-  const httpResponse: Response = await fetch(`/api/${key}/details`, {
+  const httpResponse: Response = await fetch(`/api/${org}/${key}/details`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
