@@ -5,6 +5,7 @@ import UserRepository from "@/server/dao/UserRepository";
 export default {
   addUserToOrganisation,
   createOrganisation,
+  removeUser,
 };
 
 export interface NewOrganisation {
@@ -52,6 +53,23 @@ async function createOrganisation(email: string, orgDetails: NewOrganisation) {
 
   // Set `email` as owner
   await setOwner(email, newOrg.key);
+}
+
+async function removeUser(email: string, org: string) {
+  const user = await UserRepository.fetchUserIfExists(email);
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  await prisma.organisationUser.delete({
+    where: {
+      organisationKey_userId: {
+        organisationKey: org,
+        userId: user.id,
+      },
+    },
+  });
 }
 
 async function setOwner(email: string, org: string) {

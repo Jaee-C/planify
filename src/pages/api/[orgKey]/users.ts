@@ -24,6 +24,10 @@ export default async function handler(
         );
         res.status(200).end();
         break;
+      case "DELETE":
+        await OrganisationRepository.removeUser(userEmail, organisation);
+        res.status(200).end();
+        break;
       default:
         res.status(405).end();
         return;
