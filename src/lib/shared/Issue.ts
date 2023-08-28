@@ -55,7 +55,7 @@ export default class Issue {
     return {
       id: this.id,
       title: this.title,
-      description: this.description,
+      // description: this.description,
       status: this.status,
       issueKey: this.issueKey,
       priority: this.priority,
@@ -76,7 +76,7 @@ export function convertDataToIssue(data: IssueData): Issue {
   const newIssue: Issue = new Issue(data.id);
 
   newIssue.title = data.title;
-  newIssue.description = data.description;
+  // newIssue.description = data.description;
   newIssue.status = data.status;
   newIssue.issueKey = data.issueKey;
   newIssue.priority = data.priority;

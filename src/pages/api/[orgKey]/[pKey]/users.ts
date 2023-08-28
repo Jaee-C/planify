@@ -1,25 +1,26 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import UsersService from "@/server/service/Users/UsersService";
-import { getUserToken } from "@/server/auth/session";
 import { getUrlParam } from "@/server/utils";
+import ProjectRepository from "@/server/dao/ProjectRepository";
+import UserRepository from "@/server/dao/UserRepository";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const projectKey: string = getUrlParam(req, "pKey");
-  const token = await getUserToken(req);
+  const project: string = getUrlParam(req, "pKey");
+  const organisation: string = getUrlParam(req, "orgKey");
 
-  if (projectKey === "") {
+  if (project === "") {
     res.status(405).end();
     return;
   }
 
-  const userService = new UsersService(projectKey, Number(token.id));
-
   switch (req.method) {
     case "GET":
-      const users = await userService.fetchAllProjectUsers();
+      const users = await UserRepository.getAllUsers({
+        organisation,
+        project,
+      });
       res.setHeader("Content-Type", "application/json");
       res.status(200).json(users);
       break;
@@ -33,10 +34,18 @@ export default async function handler(
       }
 
       try {
-        await userService.addUserToProject(userId);
+        await ProjectRepository.addUserToProject(
+          {
+            project,
+            organisation,
+          },
+          id
+        );
         res.status(200).end();
       } catch (e) {
-        res.status(500).end();
+        if (e instanceof Error) {
+          res.status(500).end(e.message);
+        }
       }
       break;
     default:

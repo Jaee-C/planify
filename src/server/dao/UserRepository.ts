@@ -6,7 +6,13 @@ export default {
   createUser,
   updatePassword,
   searchUser,
+  getAllUsers,
 };
+
+export interface UserTarget {
+  organisation: string;
+  project?: string;
+}
 
 async function fetchUserIfExists(email: string) {
   return prisma.user.findFirst({
@@ -56,7 +62,21 @@ async function searchUser(search: string): Promise<UserBasicPayload[]> {
   });
 }
 
+async function getAllUsers(target: UserTarget) {
+  return prisma.user.findMany({
+    where: {
+      organisations: {
+        some: {
+          organisationKey: target.organisation,
+        },
+      },
+    },
+    select: userBasicSelect,
+  });
+}
+
 const userBasicSelect = {
+  id: true,
   email: true,
   displayName: true,
 } satisfies Prisma.UserSelect;

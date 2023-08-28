@@ -1,35 +1,31 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Project } from "@/lib/shared";
-import ProjectService from "@/server/service/ProjectService";
-import { JWT } from "next-auth/jwt";
-import { getUserToken } from "@/server/auth/session";
-import ProjectRequest from "@/server/service/ProjectRequest";
-import NextjsProjectRequest from "@/server/service/NextjsProjectRequest";
-import { ProjectData } from "@/lib/types";
 import { getUrlParam } from "@/server/utils";
+import ProjectRepository, {
+  UpdateProject,
+} from "@/server/dao/ProjectRepository";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ProjectData | undefined>
+  res: NextApiResponse
 ): Promise<void> {
-  const projectKey: string = getUrlParam(req, "pKey");
+  const project = getUrlParam(req, "pKey");
+  const organisation = getUrlParam(req, "orgKey");
 
-  if (projectKey === "") {
+  if (project === "" || organisation === "") {
     res.status(405).end();
     return;
   }
 
-  const userToken: JWT = await getUserToken(req);
-  const userId: string = userToken.id;
-
-  const project: ProjectService = new ProjectService(projectKey, userId);
   switch (req.method) {
     case "GET":
       res.setHeader("Content-Type", "application/json");
       try {
-        const details: Project = await project.getProjectDetails();
+        const details = await ProjectRepository.getProjectDetails({
+          project,
+          organisation,
+        });
         res.statusCode = 200;
-        res.end(JSON.stringify(details.serialiseToData()));
+        res.end(JSON.stringify(details));
       } catch (e) {
         const error = e as Error;
         res.statusCode = 500;
@@ -38,13 +34,15 @@ export default async function handler(
       break;
     case "PUT":
       try {
-        const editRequest: ProjectRequest = new NextjsProjectRequest(req);
-        const details: Project = await project.updateProjectDetails(
-          editRequest,
-          projectKey
+        const details = await ProjectRepository.updateProject(
+          {
+            project,
+            organisation,
+          },
+          getProjectRequest(req)
         );
         res.statusCode = 200;
-        res.end(details.serialiseToData());
+        res.end(details);
       } catch (e) {
         const error = e as Error;
         res.statusCode = 500;
@@ -54,4 +52,13 @@ export default async function handler(
     default:
       res.status(405).end();
   }
+}
+
+function getProjectRequest(req: NextApiRequest): UpdateProject {
+  return {
+    name: req.body.name,
+    description: req.body.description,
+    key: req.body.key,
+    owner: req.body.owner,
+  };
 }

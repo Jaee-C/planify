@@ -1,8 +1,156 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/server/dao/prisma";
-import { Project } from "@/lib/shared";
-import { IProjectDB } from "./interfaces";
-import ProjectRequest from "@/server/service/ProjectRequest";
+
+export default {
+  createProject,
+  getAllProjects,
+  addUserToProject,
+  getProjectDetails,
+  updateProject,
+};
+
+export interface NewProject {
+  name: string;
+  description?: string;
+  key: string;
+  owner: number;
+  organisation: string;
+}
+
+export interface UpdateProject {
+  name?: string;
+  description?: string;
+  key?: string;
+  owner?: number;
+}
+
+export interface ProjectTarget {
+  organisation: string;
+  project?: string;
+}
+
+async function createProject(projectDetails: NewProject) {
+  return prisma.project.create({
+    data: {
+      name: projectDetails.name,
+      ownerId: projectDetails.owner,
+      organisationKey: projectDetails.organisation,
+      key: projectDetails.key,
+      description: projectDetails.description,
+    },
+    select: projectSelect,
+  });
+}
+
+async function updateProject(target: ProjectTarget, data: UpdateProject) {
+  if (!target.project) {
+    throw new Error("Project not specified");
+  }
+
+  try {
+    return prisma.project.update({
+      where: {
+        key_organisationKey: {
+          key: target.project,
+          organisationKey: target.organisation,
+        },
+      },
+      data: {
+        name: data.name,
+        description: data.description,
+        ownerId: data.owner,
+        key: data.key,
+      },
+      select: projectSelect,
+    });
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        throw new Error("Project Key is not unique");
+      }
+    }
+  }
+}
+
+async function getAllProjects(org: string) {
+  return prisma.project.findMany({
+    where: {
+      organisation: {
+        key: org,
+      },
+    },
+    select: projectSelect,
+  });
+}
+
+async function addUserToProject(target: ProjectTarget, user: string) {
+  if (!target.project) {
+    throw new Error("No Project Defined");
+  }
+
+  if (!(await userInProjectOrg(target, user))) {
+    throw new Error("User not in Organisation");
+  }
+
+  await prisma.projectMember.create({
+    data: {
+      project: {
+        connect: {
+          key_organisationKey: {
+            key: target.project,
+            organisationKey: target.organisation,
+          },
+        },
+      },
+      user: {
+        connect: {
+          email: user,
+        },
+      },
+    },
+  });
+}
+
+async function getProjectDetails(target: ProjectTarget) {
+  const payload = prisma.project.findFirst({
+    where: {
+      key: target.project,
+      organisationKey: target.organisation,
+    },
+    select: projectSelect,
+  });
+
+  if (payload === null) {
+    throw new Error("Project not found");
+  }
+
+  return payload;
+}
+
+async function userInProjectOrg(target: ProjectTarget, user: string) {
+  if (!target.project) {
+    throw new Error("No Project Defined");
+  }
+
+  const found = await prisma.projectMember.findFirst({
+    where: {
+      project: {
+        key: target.project,
+        organisation: {
+          users: {
+            some: {
+              user: {
+                email: user,
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return found !== null;
+}
 
 const projectSelect = {
   id: true,
@@ -18,112 +166,3 @@ const projectSelect = {
 type ProjectPayload = Prisma.ProjectGetPayload<{
   select: typeof projectSelect;
 }>;
-
-export default class ProjectRepository implements IProjectDB {
-  private readonly _userId: string;
-
-  public constructor(user: string) {
-    this._userId = user;
-  }
-
-  public async fetchAllProjects(): Promise<Project[]> {
-    const dbProjects: ProjectPayload[] = await prisma.project.findMany({
-      select: projectSelect,
-      where: {
-        ownerId: Number(this._userId),
-      },
-    });
-
-    return dbProjects.map(
-      (dbProject: ProjectPayload): Project => this.convertToProject(dbProject)
-    );
-  }
-
-  public async saveProject(req: ProjectRequest): Promise<Project> {
-    if (!req.isValidRequest()) {
-      throw new Error("Invalid request");
-    }
-
-    const dbProject: ProjectPayload = await prisma.project.create({
-      data: this.createProjectPayload(req),
-      select: projectSelect,
-    });
-
-    return this.convertToProject(dbProject);
-  }
-
-  public async getDetails(key: string): Promise<Project> {
-    const dbProject: ProjectPayload | null = await prisma.project.findUnique({
-      where: {
-        key_ownerId: {
-          key,
-          ownerId: Number(this._userId),
-        },
-      },
-      select: projectSelect,
-    });
-
-    if (!dbProject) {
-      throw new Error("Project not found");
-    }
-
-    return this.convertToProject(dbProject);
-  }
-
-  public async editProject(req: ProjectRequest, key: string): Promise<Project> {
-    if (!req.isValidRequest()) {
-      throw new Error("Invalid request");
-    }
-
-    try {
-      const dbProject: ProjectPayload | null = await prisma.project.update({
-        where: {
-          key_ownerId: {
-            key: key,
-            ownerId: Number(this._userId),
-          },
-        },
-        data: this.createEditPayload(req),
-        select: projectSelect,
-      });
-      if (!dbProject) {
-        throw new Error("Project not found");
-      }
-      return this.convertToProject(dbProject);
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  private convertToProject(dbProject: ProjectPayload): Project {
-    const newProject: Project = new Project(dbProject.id);
-    newProject.name = dbProject.name;
-    newProject.key = dbProject.key;
-
-    if (dbProject.owner?.displayName) {
-      newProject.ownerName = dbProject.owner.displayName;
-    }
-    return newProject;
-  }
-
-  private createProjectPayload(req: ProjectRequest): Prisma.ProjectCreateInput {
-    const { name, key, description, ownerId } = req.exportObject();
-    return {
-      name,
-      key,
-      description,
-      owner: {
-        connect: {
-          id: ownerId,
-        },
-      },
-    };
-  }
-
-  private createEditPayload(req: ProjectRequest): Prisma.ProjectUpdateInput {
-    return {
-      name: req.name,
-      key: req.key,
-    };
-  }
-}

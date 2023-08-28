@@ -55,7 +55,7 @@ async function createOrganisation(email: string, orgDetails: NewOrganisation) {
   await setOwner(email, newOrg.key);
 }
 
-async function removeUser(email: string, org: string) {
+async function removeUser(email: string, org: string): Promise<void> {
   const user = await UserRepository.fetchUserIfExists(email);
 
   if (!user) {
@@ -72,7 +72,7 @@ async function removeUser(email: string, org: string) {
   });
 }
 
-async function setOwner(email: string, org: string) {
+async function setOwner(email: string, org: string): Promise<void> {
   const user = await UserRepository.fetchUserIfExists(email);
 
   if (!user) {

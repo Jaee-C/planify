@@ -5,7 +5,7 @@ import UserRepository from "@/server/dao/UserRepository";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IssueData[] | IssueData | undefined>
+  res: NextApiResponse
 ): Promise<void> {
   const query = getUrlParam(req, "search");
 
