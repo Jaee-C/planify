@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUrlParam } from "@/server/utils";
 import OrganisationRepository from "@/server/dao/OrganisationRepository";
+import UserRepository from "@/server/dao/UserRepository";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,6 +17,9 @@ export default async function handler(
 
   try {
     switch (req.method) {
+      case "GET":
+        const users = UserRepository.getAllUsers({ organisation });
+        res.status(200).end(users);
       case "POST":
         // Add new user to organisation
         await OrganisationRepository.addUserToOrganisation(

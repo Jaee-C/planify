@@ -1,10 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { Issue } from "@/lib/shared";
-import {
-  createIssueRequest,
-  IssueListService,
-  IssueRequest,
-} from "@/server/service/Issue";
+import IssueService from "@/server/service/IssueService";
 import AppError from "@/server/service/AppError";
 import { IssueData } from "@/lib/types";
 import { getUrlParam } from "@/server/utils";
@@ -22,7 +17,7 @@ export default async function handler(
     return;
   }
 
-  const issueService = new IssueListService(projectKey, organisation);
+  const issueService = new IssueService(projectKey, organisation);
 
   switch (req.method) {
     case "GET":
@@ -34,8 +29,6 @@ export default async function handler(
       }
       break;
     case "PUT":
-      const issueRequest: IssueRequest = createIssueRequest(req);
-      issueRequest.key = issueKey;
       try {
         const newIssue = await issueService.editIssue(req, issueKey);
         res.statusCode = 200;

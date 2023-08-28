@@ -14,6 +14,22 @@ export interface NewOrganisation {
   key: string;
 }
 
+async function findUsers(query: string, org: string) {
+  if (query === "") {
+    return prisma.user.findMany({
+      where: {
+        organisations: {
+          some: {
+            organisation: {
+              key: org,
+            },
+          },
+        },
+      },
+    });
+  }
+}
+
 async function addUserToOrganisation(email: string, org: string) {
   try {
     const user = await UserRepository.fetchUserIfExists(email);

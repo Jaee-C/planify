@@ -17,7 +17,8 @@ export default async function handler(
         await OrganisationRepository.createOrganisation(email, orgDetails);
         res.status(200).end();
       } catch (e) {
-        if (e instanceof Error) res.status(500).end(e.message);
+        const err = e as Error;
+        res.status(500).end(err.message);
       }
       break;
     default:

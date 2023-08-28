@@ -26,7 +26,7 @@ export default async function handler(
       );
       res.statusCode = 200;
       res.setHeader("Content-Type", "application/json");
-      res.end(createdProject);
+      res.end(JSON.stringify(createdProject));
       break;
     default:
       res.statusCode = 405;

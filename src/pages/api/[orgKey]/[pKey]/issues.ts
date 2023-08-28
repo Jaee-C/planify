@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { IssueData } from "lib/types";
-import { IssueListService } from "@/server/service/Issue";
+import IssueService from "@/server/service/IssueService";
 import AppError from "@/server/service/AppError";
 import { getUrlParam } from "@/server/utils";
 
@@ -16,7 +16,7 @@ export default async function handler(
     return;
   }
 
-  const issueList = new IssueListService(projectKey, organisation);
+  const issueList = new IssueService(projectKey, organisation);
 
   switch (req.method) {
     case "GET":
