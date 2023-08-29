@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import AuthService from "@/server/service/AuthService";
+import AuthService, { NewUserInput } from "@/server/service/AuthService";
 import AppError from "@/server/service/AppError";
 import { USER_CREATION_ERROR, USERNAME_TAKEN } from "@/lib/client-data/errors";
 
@@ -23,7 +23,7 @@ export default async function handler(
   }
 
   try {
-    await AuthService.createUser(user.email, user.password);
+    await AuthService.createUser(parseUserInput(req));
     res.status(200).send("User created");
     return;
   } catch (err) {
@@ -33,4 +33,22 @@ export default async function handler(
     res.end(error.toJSONString());
     return;
   }
+}
+
+function parseUserInput(req: NextApiRequest): NewUserInput {
+  if (
+    !req.body.email ||
+    !req.body.password ||
+    !req.body.firstName ||
+    !req.body.lastName
+  ) {
+    throw new Error("Invalid Inputs");
+  }
+  return {
+    email: req.body.email,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    displayName: req.body.displayName,
+  };
 }

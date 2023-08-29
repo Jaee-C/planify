@@ -1,5 +1,6 @@
 import { prisma } from "./prisma";
 import { Prisma } from "@prisma/client";
+import { NewUserInput } from "@/server/service/AuthService";
 
 export default {
   fetchUserIfExists,
@@ -22,11 +23,13 @@ async function fetchUserIfExists(email: string) {
   });
 }
 
-async function createUser(email: string, password: string): Promise<void> {
+async function createUser(input: NewUserInput): Promise<void> {
   await prisma.user.create({
     data: {
-      email,
-      password,
+      email: input.email,
+      password: input.password,
+      firstName: input.firstName,
+      lastName: input.lastName,
     },
   });
 }

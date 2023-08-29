@@ -11,6 +11,14 @@ export default {
   accountExists,
 };
 
+export interface NewUserInput {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  displayName?: string;
+}
+
 async function verifyUser(email: string, password: string) {
   try {
     const user = await UserRepository.fetchUserIfExists(email);
@@ -38,10 +46,10 @@ async function accountExists(email: string): Promise<boolean> {
   }
 }
 
-async function createUser(email: string, password: string) {
-  const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+async function createUser(input: NewUserInput) {
+  input.password = await bcrypt.hash(input.password, SALT_ROUNDS);
 
-  await UserRepository.createUser(email, hashedPassword);
+  await UserRepository.createUser(input);
 }
 
 async function updatePassword(email: string, oldP: string, newP: string) {
