@@ -4,14 +4,14 @@ import { UseQueryResult } from "react-query";
 import { StatusType } from "@/lib/types";
 import { queryStatuses } from "@/lib/client-data/query";
 import { verifyUrlParam } from "@/lib/utils";
-import StatusChip from "@/components/Form/StatusChip";
+import StatusChip from "@/components/utils/Form/StatusChip";
 import {
   FormControl,
   FormHelperText,
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
-import StyledSelect from "@/components/Form/FormSelectField";
+import StyledSelect from "@/components/utils/Form/FormSelectField";
 import { NONE_STATUS } from "@/lib/constants";
 
 interface StatusSelectProp {

@@ -3,7 +3,7 @@ import { CLEAR_EDITOR_COMMAND, EditorState } from "lexical";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 import { Button } from "@mui/material";
-import { LOAD_INITIAL_STATE_COMMAND } from "@/components/RichTextEditor/commands";
+import { LOAD_INITIAL_STATE_COMMAND } from "@/components/utils/RichTextEditor/commands";
 
 interface SaveEditorProps {
   onSave: (data: string) => void;

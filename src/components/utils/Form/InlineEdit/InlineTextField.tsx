@@ -4,12 +4,12 @@ import React, { useCallback, useRef, useState, useEffect } from "react";
 import { css, jsx } from "@emotion/react";
 
 import Buttons from "./Buttons";
-import useButtonFocusHook from "../../../hooks/use-button-focus-hook";
+import useButtonFocusHook from "../../../../hooks/use-button-focus-hook";
 import ReadView from "./ReadView";
 import { TextFieldProps } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import DefaultEditView from "@/components/Form/InlineEdit/DefaultEditView";
+import DefaultEditView from "@/components/utils/Form/InlineEdit/DefaultEditView";
 
 const inputStyles = css({
   maxWidth: "100%",

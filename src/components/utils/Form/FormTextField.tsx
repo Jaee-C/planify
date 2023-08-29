@@ -16,6 +16,10 @@ const StyledFormField = styled(TextField)(() => ({
   },
   "& .MuiInputLabel-root": {
     fontSize: "0.875rem",
+    top: "5px",
+  },
+  "& .MuiInputLabel-shrink": {
+    fontSize: "0.9rem",
   },
   "&.Mui-focused": {
     color: "rgb(33, 150, 243)",

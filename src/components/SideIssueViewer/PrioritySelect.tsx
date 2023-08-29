@@ -8,7 +8,7 @@ import {
   UseQueryResult,
 } from "react-query";
 import { queryPriorities } from "@/lib/client-data/query";
-import FormAutocomplete from "@/components/Form/FormAutocomplete";
+import FormAutocomplete from "@/components/utils/Form/FormAutocomplete";
 import * as React from "react";
 import { TextField } from "@mui/material";
 import { editIssue } from "@/lib/client-data/issues";

@@ -13,7 +13,7 @@ export interface NewProject {
   name: string;
   description?: string;
   key: string;
-  owner: number;
+  owner: string;
   organisation: string;
 }
 
@@ -21,7 +21,7 @@ export interface UpdateProject {
   name?: string;
   description?: string;
   key?: string;
-  owner?: number;
+  owner?: string;
 }
 
 export interface ProjectTarget {

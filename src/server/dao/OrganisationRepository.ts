@@ -57,7 +57,7 @@ async function findUsers(query: string, org: string) {
   });
 }
 
-async function getDefaultOrganisation(id: number) {
+async function getDefaultOrganisation(id: string) {
   return prisma.organisation.findFirst({
     where: {
       users: {

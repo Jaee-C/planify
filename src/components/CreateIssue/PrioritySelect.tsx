@@ -6,7 +6,7 @@ import React from "react";
 import { NONE_PRIORITY } from "@/lib/constants";
 import { queryPriorities } from "@/lib/client-data/query";
 import { UseQueryResult } from "react-query";
-import StyledSelect from "@/components/Form/FormSelectField";
+import StyledSelect from "@/components/utils/Form/FormSelectField";
 
 interface PrioritySelectProp {
   handleChange: (e: SelectChangeEvent<unknown>) => void;

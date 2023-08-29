@@ -7,7 +7,7 @@ import { Issue } from "@/lib/shared";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssue } from "@/lib/client-data/query";
 import { SidebarEditContext } from "@/components/Backlog";
-import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
+import InlineTextField from "@/components/utils/Form/InlineEdit/InlineTextField";
 import {
   QueryClient,
   useMutation,
@@ -15,8 +15,8 @@ import {
   UseQueryResult,
 } from "react-query";
 import { editIssue } from "@/lib/client-data/issues";
-import FormTextField from "@/components/Form/FormTextField";
-import TextFieldLabel from "@/components/Form/TextFieldLabel";
+import FormTextField from "@/components/utils/Form/FormTextField";
+import TextFieldLabel from "@/components/utils/Form/TextFieldLabel";
 
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "./PrioritySelect";

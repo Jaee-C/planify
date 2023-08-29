@@ -47,7 +47,7 @@ async function getNewProjectDetails(req: NextApiRequest): Promise<NewProject> {
     name,
     key,
     description,
-    owner: Number(userId),
+    owner: userId,
     organisation,
   };
 }

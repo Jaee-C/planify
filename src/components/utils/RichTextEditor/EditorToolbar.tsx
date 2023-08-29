@@ -67,8 +67,8 @@ import * as React from "react";
 import { IS_APPLE } from "@/lib/shared/environment";
 
 import styles from "./EditorToolbar.module.css";
-import useModal from "hooks/useModal";
-import DropDown, { DropDownItem } from "@/components/DropDown";
+import useModal from "@/hooks/useModal";
+import DropDown, { DropDownItem } from "@/components/utils/DropDown";
 import { getSelectedNode } from "./utils/getSelectedNode";
 import { sanitizeUrl } from "./utils/url";
 
@@ -103,7 +103,7 @@ import {
   BsTypeUnderline,
 } from "react-icons/bs";
 import { IconContext } from "react-icons";
-import ToolbarButton from "@/components/RichTextEditor/ToolbarButton";
+import ToolbarButton from "@/components/utils/RichTextEditor/ToolbarButton";
 
 const blockTypeToBlockName = {
   bullet: "Bulleted List",

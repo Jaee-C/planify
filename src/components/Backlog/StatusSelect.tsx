@@ -5,7 +5,7 @@ import { UseQueryResult } from "react-query";
 import { verifyUrlParam } from "@/lib/utils";
 import { StatusType } from "@/lib/types";
 import { queryStatuses } from "@/lib/client-data/query";
-import StatusChip from "@/components/Form/StatusChip";
+import StatusChip from "@/components/utils/Form/StatusChip";
 import { GridRowId, useGridApiContext } from "@mui/x-data-grid";
 
 interface StatusSelectProps {

@@ -6,7 +6,7 @@ import {
   EditorState,
   LexicalEditor,
 } from "lexical";
-import { LOAD_INITIAL_STATE_COMMAND } from "@/components/RichTextEditor/commands";
+import { LOAD_INITIAL_STATE_COMMAND } from "@/components/utils/RichTextEditor/commands";
 
 function restoreState(editor: LexicalEditor, props: Props): boolean {
   if (props.defaultValue) {

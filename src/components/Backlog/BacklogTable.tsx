@@ -24,7 +24,7 @@ import {
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssues, queryStatuses } from "@/lib/client-data/query";
 import StatusSelect from "./StatusSelect";
-import StatusChip from "@/components/Form/StatusChip";
+import StatusChip from "@/components/utils/Form/StatusChip";
 import PrioritySelect from "@/components/Backlog/PrioritySelect";
 import { NONE_PRIORITY } from "@/lib/constants";
 import { useAtom, useSetAtom } from "jotai";

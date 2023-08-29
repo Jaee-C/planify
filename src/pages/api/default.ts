@@ -16,9 +16,7 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       console.log(userId);
-      const org = await OrganisationRepository.getDefaultOrganisation(
-        Number(userId)
-      );
+      const org = await OrganisationRepository.getDefaultOrganisation(userId);
 
       res.status(200).end(JSON.stringify(org));
       break;
