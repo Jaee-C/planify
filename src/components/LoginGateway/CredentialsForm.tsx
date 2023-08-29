@@ -21,7 +21,7 @@ export default function CredentialsForm(): JSX.Element {
 
     const res = await signIn("credentials", {
       redirect: false,
-      username: event.currentTarget.username.value,
+      email: event.currentTarget.email.value,
       password: event.currentTarget.password.value,
       callbackUrl,
     });
@@ -55,8 +55,8 @@ export default function CredentialsForm(): JSX.Element {
     <form className={styles.form} onSubmit={onSubmit}>
       {displayError()}
       <TextField
-        placeholder="Enter your username"
-        name="username"
+        placeholder="Enter your email"
+        name="email"
         type="text"
         fullWidth
         className={styles.textField}

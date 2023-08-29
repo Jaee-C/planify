@@ -3,9 +3,11 @@ import { Prisma } from "@prisma/client";
 import UserRepository from "@/server/dao/UserRepository";
 
 export default {
+  findUsers,
   addUserToOrganisation,
   createOrganisation,
   removeUser,
+  getDefaultOrganisation,
 };
 
 export interface NewOrganisation {
@@ -28,6 +30,43 @@ async function findUsers(query: string, org: string) {
       },
     });
   }
+
+  return prisma.user.findMany({
+    where: {
+      organisations: {
+        some: {
+          organisation: {
+            key: org,
+          },
+        },
+      },
+
+      OR: [
+        {
+          displayName: {
+            contains: query,
+          },
+        },
+        {
+          email: {
+            contains: query,
+          },
+        },
+      ],
+    },
+  });
+}
+
+async function getDefaultOrganisation(id: number) {
+  return prisma.organisation.findFirst({
+    where: {
+      users: {
+        some: {
+          userId: id,
+        },
+      },
+    },
+  });
 }
 
 async function addUserToOrganisation(email: string, org: string) {

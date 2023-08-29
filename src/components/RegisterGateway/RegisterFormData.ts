@@ -1,6 +1,6 @@
 export default class RegisterFormData {
   private readonly _formData: FormData;
-  private _username?: string;
+  private _email?: string;
   private _password?: string;
   private _firstName?: string;
   private _lastName?: string;
@@ -10,12 +10,12 @@ export default class RegisterFormData {
   }
 
   public isValid(): boolean {
-    return Boolean(this._username) && Boolean(this._password);
+    return Boolean(this._email) && Boolean(this._password);
   }
 
   public toString(): string {
     return JSON.stringify({
-      username: this._username,
+      email: this._email,
       password: this._password,
       firstName: this._firstName,
       lastName: this._lastName,
@@ -23,7 +23,7 @@ export default class RegisterFormData {
   }
 
   private populateData(form: FormData): void {
-    this._username = form.get("username") as string;
+    this._email = form.get("email") as string;
     this._password = form.get("password") as string;
     this._firstName = form.get("firstName") as string;
     this._lastName = form.get("lastName") as string;

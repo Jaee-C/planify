@@ -64,9 +64,9 @@ export default function AccountCreationForm(): JSX.Element {
       </div>
       <TextField
         type="text"
-        label="Username"
-        name="username"
-        placeholder="Enter a username"
+        label="Email"
+        name="email"
+        placeholder="Enter an email"
         fullWidth
         className={styles.textField}
       />

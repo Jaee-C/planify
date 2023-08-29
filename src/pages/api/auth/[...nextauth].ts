@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: { label: "Email", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -26,7 +26,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials) return null;
 
         return await UserAuth.verifyUser(
-          credentials.username,
+          credentials.email,
           credentials.password
         );
       },

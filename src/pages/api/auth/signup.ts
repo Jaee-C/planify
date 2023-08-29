@@ -7,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | undefined>
 ): Promise<void> {
-  const { password, ...user } = req.body;
+  const { ...user } = req.body;
 
   if (req.method !== "POST") {
     res.statusCode = 405;
@@ -16,10 +16,7 @@ export default async function handler(
 
   // Validate if username is already taken
   if (await AuthService.accountExists(user.email)) {
-    const error: AppError = new AppError(
-      USERNAME_TAKEN,
-      "Username already taken"
-    );
+    const error: AppError = new AppError(USERNAME_TAKEN, "Email already taken");
     res.statusCode = 409;
     res.end(error.toJSONString());
     return;

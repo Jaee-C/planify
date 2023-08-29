@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { IssueData } from "@/lib/types";
 import OrganisationRepository, {
   NewOrganisation,
 } from "@/server/dao/OrganisationRepository";
@@ -7,7 +6,7 @@ import { getUrlParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IssueData[] | IssueData | undefined>
+  res: NextApiResponse
 ): Promise<void> {
   switch (req.method) {
     case "POST":
@@ -18,7 +17,7 @@ export default async function handler(
         res.status(200).end();
       } catch (e) {
         const err = e as Error;
-        res.status(500).end(err.message);
+        res.status(500).end(JSON.stringify(err.message));
       }
       break;
     default:
