@@ -2,14 +2,14 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { IssueData } from "lib/types";
 import IssueService from "@/server/service/IssueService";
 import AppError from "@/server/service/AppError";
-import { getUrlParam } from "@/server/utils";
+import { getQueryParam, getRequestBody } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<IssueData[] | IssueData | undefined>
+  res: NextApiResponse
 ): Promise<void> {
-  const projectKey: string = getUrlParam(req, "pKey");
-  const organisation: string = getUrlParam(req, "orgKey");
+  const projectKey: string = getQueryParam(req, "pKey");
+  const organisation: string = getQueryParam(req, "orgKey");
 
   if (projectKey === "" || organisation === "") {
     res.status(405).end();
@@ -30,11 +30,12 @@ export default async function handler(
         const newIssue: IssueData = await issueList.saveIssue(req);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.end(newIssue);
+        res.send(JSON.stringify(newIssue));
       } catch (e) {
-        if (e instanceof AppError) {
+        if (e instanceof Error) {
           res.statusCode = 400;
-          res.end(e.toJSONString());
+          console.log(e);
+          res.end(e.message);
         }
       }
       break;

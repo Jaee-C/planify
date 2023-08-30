@@ -2,15 +2,15 @@ import { NextApiRequest, NextApiResponse } from "next";
 import IssueService from "@/server/service/IssueService";
 import AppError from "@/server/service/AppError";
 import { IssueData } from "@/lib/types";
-import { getUrlParam } from "@/server/utils";
+import { getQueryParam } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | IssueData>
 ): Promise<void> {
-  const issueKey: string = getUrlParam(req, "id");
-  const projectKey: string = getUrlParam(req, "pKey");
-  const organisation: string = getUrlParam(req, "orgKey");
+  const issueKey: string = getQueryParam(req, "id");
+  const projectKey: string = getQueryParam(req, "pKey");
+  const organisation: string = getQueryParam(req, "orgKey");
 
   if (projectKey === "" || organisation === "") {
     res.status(405).end();
@@ -23,7 +23,7 @@ export default async function handler(
     case "GET":
       try {
         const issue = await issueService.getOneIssue(issueKey);
-        res.status(200).json(issue);
+        res.status(200).send(JSON.stringify(issue));
       } catch {
         res.status(404).end();
       }
@@ -33,14 +33,11 @@ export default async function handler(
         const newIssue = await issueService.editIssue(req, issueKey);
         res.statusCode = 200;
         res.setHeader("Content-Type", "application/json");
-        res.status(200).send(newIssue);
+        res.status(200).send(JSON.stringify(newIssue));
       } catch (e) {
-        if (e instanceof AppError) {
-          res.status(404).send(e.toJSONString());
-        } else {
-          console.log(AppError.generateAppError(e));
-          res.status(500).send(AppError.generateAppError(e).toJSONString());
-        }
+        const err = e as Error;
+        console.log(err);
+        res.status(404).send(err.message);
       }
       break;
     case "DELETE":

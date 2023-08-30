@@ -47,11 +47,18 @@ export default class IssueService {
 
   public async editIssue(req: NextApiRequest, key: string): Promise<IssueData> {
     const data = this.parseEditInput(req);
+    const issueTarget = this.addIssueKeyToTarget(key);
 
-    const res = await IssueRepository.editIssue(
-      this.addIssueKeyToTarget(key),
-      data
-    );
+    let res = null;
+    if (data.title !== undefined) {
+      res = await IssueRepository.editTitle(issueTarget, data.title);
+    }
+    if (data.status !== undefined) {
+      res = await IssueRepository.editStatus(issueTarget, data.status);
+    }
+    if (data.order !== undefined) {
+      res = await IssueRepository.editOrder(issueTarget, data.order);
+    }
 
     if (res == null) {
       throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");

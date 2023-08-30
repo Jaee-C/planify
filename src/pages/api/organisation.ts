@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import OrganisationRepository, {
   NewOrganisation,
 } from "@/server/dao/OrganisationRepository";
-import { getUrlParam } from "@/server/utils";
+import { getRequestBody } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,7 +11,7 @@ export default async function handler(
   switch (req.method) {
     case "POST":
       try {
-        const email = getUrlParam(req, "user");
+        const email = getRequestBody(req, "user");
         const orgDetails = getOrgParam(req);
         await OrganisationRepository.createOrganisation(email, orgDetails);
         res.status(200).end();
@@ -26,8 +26,8 @@ export default async function handler(
 }
 
 function getOrgParam(req: NextApiRequest): NewOrganisation {
-  const orgName = getUrlParam(req, "name");
-  const key = getUrlParam(req, "key");
+  const orgName = getRequestBody(req, "name");
+  const key = getRequestBody(req, "key");
 
   return {
     name: orgName,

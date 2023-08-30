@@ -8,7 +8,9 @@ export default {
   fetchAllIssues,
   fetchOneIssue,
   createIssue,
-  editIssue,
+  editTitle,
+  editStatus,
+  editOrder,
   deleteIssue,
 };
 
@@ -99,6 +101,103 @@ export async function createIssue(target: IssueTarget, data: NewIssuePayload) {
 
     return toIssueSummary(res);
   } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export async function editTitle(target: IssueTarget, title: string) {
+  if (!target.issueKey) {
+    return null;
+  }
+
+  const projectId = await getProjectId(target);
+
+  if (Number.isNaN(projectId)) {
+    return null;
+  }
+
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id,
+          projectId,
+        },
+      },
+      data: {
+        title,
+      },
+      select: detailedIssue,
+    });
+    return toIssueDetailed(res);
+  } catch (e) {
+    throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    return null;
+  }
+}
+
+export async function editStatus(target: IssueTarget, data: number) {
+  if (!target.issueKey) {
+    return null;
+  }
+
+  const projectId = await getProjectId(target);
+
+  if (Number.isNaN(projectId)) {
+    return null;
+  }
+
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id,
+          projectId,
+        },
+      },
+      data: {
+        statusId: data,
+      },
+      select: detailedIssue,
+    });
+    return toIssueDetailed(res);
+  } catch (e) {
+    throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    return null;
+  }
+}
+
+export async function editOrder(target: IssueTarget, data: string) {
+  if (!target.issueKey) {
+    return null;
+  }
+
+  const projectId = await getProjectId(target);
+
+  if (Number.isNaN(projectId)) {
+    return null;
+  }
+
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id,
+          projectId,
+        },
+      },
+      data: {
+        boardOrder: data,
+      },
+      select: detailedIssue,
+    });
+    return toIssueDetailed(res);
+  } catch (e) {
+    throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
     return null;
   }
 }
@@ -143,6 +242,7 @@ export async function editIssue(
     });
     return toIssueDetailed(res);
   } catch (e) {
+    console.log(e);
     return null;
   }
 }
@@ -190,7 +290,7 @@ function toIssueSummary(dbIssue: IssuePayload): IssueData {
     id: dbIssue.id,
     title: dbIssue.title,
     issueKey: getIssueKey(dbIssue.project.key, dbIssue.id),
-    status: undefined,
+    status: dbIssue.status,
     priority: undefined,
     order: dbIssue.boardOrder ?? undefined,
   };
@@ -202,7 +302,7 @@ function toIssueDetailed(dbIssue: DetailedIssuePayload): IssueDetailedData {
     title: dbIssue.title,
     issueKey: getIssueKey(dbIssue.project.key, dbIssue.id),
     description: "",
-    status: undefined,
+    status: dbIssue.status,
     priority: undefined,
     order: dbIssue.boardOrder ?? undefined,
   };

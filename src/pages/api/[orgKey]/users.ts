@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUrlParam } from "@/server/utils";
+import { getQueryParam } from "@/server/utils";
 import OrganisationRepository from "@/server/dao/OrganisationRepository";
 import UserRepository from "@/server/dao/UserRepository";
 
@@ -7,8 +7,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | undefined>
 ): Promise<void> {
-  const organisation: string = getUrlParam(req, "orgKey");
-  const userEmail: string = getUrlParam(req, "newuser");
+  const organisation: string = getQueryParam(req, "orgKey");
+  const userEmail: string = getQueryParam(req, "newuser");
 
   if (organisation === "") {
     res.status(405).end();

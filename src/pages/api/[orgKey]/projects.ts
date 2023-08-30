@@ -2,13 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import ProjectRepository, { NewProject } from "@/server/dao/ProjectRepository";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/server/auth/session";
-import { getUrlParam } from "@/server/utils";
+import { getQueryParam, getRequestBody } from "@/server/utils";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | undefined>
 ): Promise<void> {
-  const organisation = getUrlParam(req, "orgKey");
+  const organisation = getQueryParam(req, "orgKey");
 
   // Handle Request
   switch (req.method) {
@@ -20,6 +20,8 @@ export default async function handler(
       break;
     case "POST":
       const projectDetails = await getNewProjectDetails(req);
+
+      console.log(projectDetails);
 
       const createdProject = await ProjectRepository.createProject(
         projectDetails
@@ -35,10 +37,11 @@ export default async function handler(
 }
 
 async function getNewProjectDetails(req: NextApiRequest): Promise<NewProject> {
-  const name = getUrlParam(req, "name");
-  const key = getUrlParam(req, "key");
-  const description = getUrlParam(req, "description");
-  const organisation = getUrlParam(req, "orgKey");
+  const name = getRequestBody(req, "name");
+  const key = getRequestBody(req, "key");
+  const description = getRequestBody(req, "description");
+
+  const organisation = getQueryParam(req, "orgKey");
 
   const token: JWT = await getUserToken(req);
   const userId: string = token.id;

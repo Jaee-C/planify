@@ -45,25 +45,19 @@ export async function fetchIssueList(
   }
 
   const json = await httpResponse.json();
-  return json.map(
-    (item: any): IssueData => ({
-      id: item.id,
-      title: item.title,
-      status: item.status,
-      issueKey: item.issueKey,
-      priority: item.priority,
-      order: item.order,
-    })
-  );
+  return json as IssueData[];
 }
 
 export async function fetchStatuses(
   organisation: string,
   projectKey: string
 ): Promise<StatusType[]> {
-  const httpResponse: Response = await fetch(`/api/${projectKey}/statuses`, {
-    method: "GET",
-  });
+  const httpResponse: Response = await fetch(
+    `/api/${organisation}/${projectKey}/statuses`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!httpResponse.ok) {
     throw new Error(httpResponse.statusText);
@@ -81,9 +75,12 @@ export async function fetchPriorities(
   organisation: string,
   projectKey: string
 ): Promise<PriorityType[]> {
-  const httpResponse: Response = await fetch(`/api/${projectKey}/priorities`, {
-    method: "GET",
-  });
+  const httpResponse: Response = await fetch(
+    `/api/${organisation}/${projectKey}/priorities`,
+    {
+      method: "GET",
+    }
+  );
 
   if (!httpResponse.ok) {
     throw new Error(httpResponse.statusText);
@@ -153,13 +150,7 @@ export async function addIssue(
     }
   }
 
-  const jsonData = json.data[0];
-  const newIssue: Issue = new Issue(jsonData.id);
-  newIssue.title = jsonData.title;
-  newIssue.status = jsonData.status;
-  newIssue.issueKey = jsonData.issueKey;
-  newIssue.priority = jsonData.priority;
-  return newIssue;
+  return json as IssueData;
 }
 
 export async function editIssue(
@@ -187,6 +178,5 @@ export async function editIssue(
     }
   }
 
-  const jsonData: IssueData = json.data;
-  return convertDataToIssue(jsonData);
+  return convertDataToIssue(json as IssueData);
 }

@@ -204,7 +204,7 @@ export function createBacklogColumns(
       align: "left",
       width: 125,
       valueFormatter: (params: GridValueFormatterParams): string =>
-        params.value.name,
+        params.value === "" ? params.value.name : "None",
       renderEditCell: (params: GridRenderCellParams): React.ReactNode => {
         return (
           <StatusSelect

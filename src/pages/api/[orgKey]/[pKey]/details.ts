@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getUrlParam } from "@/server/utils";
+import { getQueryParam } from "@/server/utils";
 import ProjectRepository, {
   UpdateProject,
 } from "@/server/dao/ProjectRepository";
@@ -8,8 +8,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
-  const project = getUrlParam(req, "pKey");
-  const organisation = getUrlParam(req, "orgKey");
+  const project = getQueryParam(req, "pKey");
+  const organisation = getQueryParam(req, "orgKey");
 
   if (project === "" || organisation === "") {
     res.status(405).end();
