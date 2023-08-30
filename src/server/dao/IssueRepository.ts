@@ -1,260 +1,361 @@
 import { prisma } from "@/server/dao/prisma";
 import { Prisma } from "@prisma/client";
-import IssueRequest from "@/server/service/Issue/IssueRequest";
-import { Issue } from "@/lib/shared";
-import { IIssueDB } from "./interfaces";
 import AppError from "@/server/service/AppError";
-import {
-  INVALID_DATA_TYPES,
-  INVALID_SELECT,
-  NOT_FOUND_IN_DB,
-} from "@/lib/client-data/errors";
+import { NOT_FOUND_IN_DB } from "@/lib/client-data/errors";
+import { IssueData, IssueDetailedData } from "@/lib/types/data/IssueData";
 
-export default class IssueRepository implements IIssueDB {
-  private readonly _projectKey: string;
-  private readonly _userId: string;
+export default {
+  fetchAllIssues,
+  fetchOneIssue,
+  createIssue,
+  editTitle,
+  editStatus,
+  editOrder,
+  deleteIssue,
+};
 
-  public constructor(pKey: string, user: string) {
-    this._projectKey = pKey;
-    this._userId = user;
+/** Helper function is defined in utils to convert API request to this format*/
+export interface IssueTarget {
+  organisation: string;
+  project: string;
+  issueKey?: string;
+}
+
+export interface NewIssuePayload {
+  title: string;
+}
+
+export interface EditIssuePayload {
+  title: string;
+  description?: Buffer;
+  status?: number;
+  priority?: number;
+  order?: string;
+}
+
+export async function fetchAllIssues(target: IssueTarget) {
+  const dbIssues: IssuePayload[] = await prisma.issue.findMany({
+    where: {
+      project: {
+        key: target.project,
+        organisationKey: target.organisation,
+      },
+    },
+    select: issueSelect,
+  });
+
+  return toServerIssueList(dbIssues);
+}
+
+export async function fetchOneIssue(
+  target: IssueTarget
+): Promise<IssueDetailedData | null> {
+  if (target.issueKey === undefined) {
+    return null;
   }
 
-  public async fetchAllIssues(): Promise<Issue[]> {
-    const dbIssues: IssuePayload[] = await prisma.issue.findMany({
-      where: {
+  const issueId = getIssueId(target.issueKey);
+
+  const dbIssue = await prisma.issue.findFirst({
+    where: {
+      project: {
+        key: target.project,
+        organisationKey: target.organisation,
+      },
+      id: issueId,
+    },
+    select: detailedIssue,
+  });
+
+  if (!dbIssue) {
+    return null;
+  }
+
+  return toIssueDetailed(dbIssue);
+}
+
+export async function createIssue(target: IssueTarget, data: NewIssuePayload) {
+  const issueCount: number = await getAndIncrementIssueCount(target);
+
+  try {
+    const res = await prisma.issue.create({
+      data: {
+        id: issueCount,
+        title: data.title,
+        status: {
+          connect: {
+            id: 1,
+          },
+        },
         project: {
-          ownerId: Number(this._userId),
-          key: this._projectKey,
+          connect: {
+            key_organisationKey: {
+              key: target.project,
+              organisationKey: target.organisation,
+            },
+          },
         },
       },
       select: issueSelect,
     });
 
-    return this.dbToServerIssueList(dbIssues);
+    return toIssueSummary(res);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
+export async function editTitle(target: IssueTarget, title: string) {
+  if (!target.issueKey) {
+    return null;
   }
 
-  public async fetchOneIssueWithId(id: number): Promise<Issue | null> {
-    const dbIssue: DetailedIssuePayload | null = await prisma.issue.findFirst({
+  const projectId = await getProjectId(target);
+
+  if (Number.isNaN(projectId)) {
+    return null;
+  }
+
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
       where: {
-        project: {
-          ownerId: Number(this._userId),
-          key: this._projectKey,
+        id_projectId: {
+          id,
+          projectId,
         },
-        id: id,
+      },
+      data: {
+        title,
       },
       select: detailedIssue,
     });
+    return toIssueDetailed(res);
+  } catch (e) {
+    throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    return null;
+  }
+}
 
-    if (!dbIssue) {
-      return null;
-    }
-
-    return this.dbToServerIssue(dbIssue);
+export async function editStatus(target: IssueTarget, data: number) {
+  if (!target.issueKey) {
+    return null;
   }
 
-  public async saveNewIssue(req: IssueRequest): Promise<Issue> {
-    if (!(req.title && req.status)) {
-      throw new AppError(
-        INVALID_DATA_TYPES,
-        "Invalid request: missing title or status"
-      );
-    }
+  const projectId = await getProjectId(target);
 
-    const issueCount: number = await this.getAndIncrementIssueCount();
-    let payload: IssuePayload;
-
-    try {
-      payload = await prisma.issue.create({
-        data: this.createDBIssuePayload(issueCount, req),
-        select: issueSelect,
-      });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        this.handlePrismaErrors(e);
-      }
-    }
-
-    // @ts-ignore
-    return this.dbToServerIssue(payload);
+  if (Number.isNaN(projectId)) {
+    return null;
   }
 
-  public async editExistingIssue(req: IssueRequest): Promise<Issue> {
-    if (req.id === undefined || req.id < 0) {
-      throw new AppError(NOT_FOUND_IN_DB, "Invalid issue id.");
-    }
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id,
+          projectId,
+        },
+      },
+      data: {
+        statusId: data,
+      },
+      select: detailedIssue,
+    });
+    return toIssueDetailed(res);
+  } catch (e) {
+    throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    return null;
+  }
+}
 
-    const pid: number | null = await this.findProjectId();
+export async function editOrder(target: IssueTarget, data: string) {
+  if (!target.issueKey) {
+    return null;
+  }
 
-    let dbPayload: IssuePayload;
-    try {
-      dbPayload = await prisma.issue.update({
-        where: {
-          id_projectId: {
-            id: req.id,
-            projectId: pid,
+  const projectId = await getProjectId(target);
+
+  if (Number.isNaN(projectId)) {
+    return null;
+  }
+
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id,
+          projectId,
+        },
+      },
+      data: {
+        boardOrder: data,
+      },
+      select: detailedIssue,
+    });
+    return toIssueDetailed(res);
+  } catch (e) {
+    throw new Error("CHECHE'S ERROR, ISSUE ERROR NOT YET IMPLEMENTED");
+    return null;
+  }
+}
+
+export async function editIssue(
+  target: IssueTarget,
+  data: EditIssuePayload
+): Promise<IssueDetailedData | null> {
+  if (!target.issueKey) {
+    return null;
+  }
+
+  const projectId = await getProjectId(target);
+
+  if (Number.isNaN(projectId)) {
+    return null;
+  }
+
+  const id = getIssueId(target.issueKey);
+  try {
+    const res = await prisma.issue.update({
+      where: {
+        id_projectId: {
+          id,
+          projectId,
+        },
+      },
+      data: {
+        ...data,
+        status: {
+          connect: {
+            id: data.status,
           },
         },
-        select: issueSelect,
-        data: {
-          title: req.title,
-          description: req.getEncodedDescription(),
-          statusId: req.status,
-          priorityId: req.priority,
-          boardOrder: req.order,
+        priority: {
+          connect: {
+            id: data.priority,
+          },
         },
-      });
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        this.handlePrismaErrors(e);
-      }
-    }
+      },
+      select: detailedIssue,
+    });
+    return toIssueDetailed(res);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
 
-    // @ts-ignore
-    return this.dbToServerIssue(dbPayload);
+export async function deleteIssue(target: IssueTarget): Promise<boolean> {
+  if (target.issueKey === undefined) {
+    return false;
+  }
+  const id: number = getIssueId(target.issueKey);
+
+  if (Number.isNaN(id)) {
+    return false;
   }
 
-  public async deleteIssue(id: number): Promise<void> {
-    const pid: number | null = await this.findProjectId();
+  try {
+    const projectId = await getProjectId(target);
+
+    if (Number.isNaN(projectId)) {
+      return false;
+    }
 
     await prisma.issue.delete({
       where: {
         id_projectId: {
           id,
-          projectId: pid,
+          projectId: projectId,
         },
       },
     });
+  } catch (e) {
+    return false;
   }
 
-  private dbToServerIssueList(payload: IssuePayload[]): Issue[] {
-    return payload.map((dbIssue: IssuePayload) => {
-      return this.dbToServerIssue(dbIssue);
-    });
+  return true;
+}
+
+function toServerIssueList(payload: IssuePayload[]): IssueData[] {
+  return payload.map((dbIssue: IssuePayload) => {
+    return toIssueSummary(dbIssue);
+  });
+}
+
+function toIssueSummary(dbIssue: IssuePayload): IssueData {
+  return {
+    id: dbIssue.id,
+    title: dbIssue.title,
+    issueKey: getIssueKey(dbIssue.project.key, dbIssue.id),
+    status: dbIssue.status,
+    priority: undefined,
+    order: dbIssue.boardOrder ?? undefined,
+  };
+}
+
+function toIssueDetailed(dbIssue: DetailedIssuePayload): IssueDetailedData {
+  return {
+    id: dbIssue.id,
+    title: dbIssue.title,
+    issueKey: getIssueKey(dbIssue.project.key, dbIssue.id),
+    description: "",
+    status: dbIssue.status,
+    priority: undefined,
+    order: dbIssue.boardOrder ?? undefined,
+  };
+}
+
+function getIssueKey(project: string, id: number): string {
+  return `${project}-${id}`;
+}
+
+function getIssueId(key: string): number {
+  const separated = key.split("-");
+  return Number(separated[1]);
+}
+
+async function getProjectId(target: IssueTarget): Promise<number> {
+  const project = await prisma.project.findFirst({
+    where: {
+      key: target.project,
+      organisationKey: target.organisation,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (project === null) {
+    return Number.NaN;
   }
 
-  /**
-   * Convert payload from db to internal representation that can be reused
-   */
-  private dbToServerIssue(payload: IssuePayload | DetailedIssuePayload): Issue {
-    const result: Issue = new Issue(payload.id);
+  return project.id;
+}
 
-    result.title = payload.title;
-    result.status = { id: payload.status.id, name: payload.status.name };
-    result.issueKey = `${payload.project.key}-${payload.id}`;
-    if (payload.priority) {
-      result.priority = {
-        id: payload.priority.id,
-        name: payload.priority.name,
-      };
-    }
-
-    if (
-      "description" in payload &&
-      payload.description &&
-      payload.description.length > 0
-    ) {
-      result.description = payload.description.toString("utf-8");
-    }
-    if (payload.boardOrder) result.serialisedOrder = payload.boardOrder;
-
-    return result;
-  }
-
-  /** Create issue payload for db */
-  private createDBIssuePayload(
-    id: number,
-    req: IssueRequest
-  ): Prisma.IssueCreateInput {
-    const createPayload: any = {
-      id,
-      title: req.title,
-      description: req.getEncodedDescription(),
-      project: {
-        connect: {
-          key_ownerId: {
-            key: this._projectKey,
-            ownerId: Number(this._userId),
-          },
-        },
+async function getAndIncrementIssueCount(target: IssueTarget): Promise<number> {
+  const countPayload: IssueNumberPayload | null = await prisma.project.update({
+    where: {
+      key_organisationKey: {
+        key: target.project,
+        organisationKey: target.organisation,
       },
-      status: {
-        connect: {
-          id: req.status,
-        },
+    },
+    data: {
+      numIssues: {
+        increment: 1,
       },
-      priority: undefined,
-    };
+    },
+    select: issueNumberSelect,
+  });
 
-    // Dynamically add fields if provided
-    if (req && typeof req.priority === "number") {
-      createPayload.priority = {
-        connect: {
-          id: req.priority,
-        },
-      };
-    }
-
-    return Prisma.validator<Prisma.IssueCreateInput>()(createPayload);
+  if (countPayload === null) {
+    throw new AppError(NOT_FOUND_IN_DB, "Project not found");
   }
 
-  /**
-   * Issue count is stored in the project table, so we need to fetch it and
-   * increment it by one whenever a new issue is created.
-   * I haven't found a way to incorporate this with the `INSERT` query, so
-   * this is the best I can do for now.
-   * @private
-   */
-  private async getAndIncrementIssueCount(): Promise<number> {
-    const countPayload: IssueNumberPayload | null = await prisma.project.update(
-      {
-        where: {
-          key_ownerId: {
-            ownerId: Number(this._userId),
-            key: this._projectKey,
-          },
-        },
-        data: {
-          numIssues: {
-            increment: 1,
-          },
-        },
-        select: issueNumberSelect,
-      }
-    );
-
-    if (countPayload === null) {
-      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
-    }
-
-    return countPayload.numIssues;
-  }
-
-  private async findProjectId(): Promise<number> {
-    const projectPayload: any | null = await prisma.project.findFirst({
-      where: {
-        ownerId: Number(this._userId),
-        key: this._projectKey,
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (projectPayload === null) {
-      throw new AppError(NOT_FOUND_IN_DB, "Project not found");
-    }
-
-    return projectPayload.id;
-  }
-
-  private handlePrismaErrors(e: Prisma.PrismaClientKnownRequestError): void {
-    switch (e.code) {
-      case "P2003":
-        throw new AppError(INVALID_SELECT, e.message);
-      case "P2025":
-        throw new AppError(NOT_FOUND_IN_DB, "Modified issue not found");
-    }
-  }
+  return countPayload.numIssues;
 }
 
 /** Prisma Types */

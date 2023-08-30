@@ -39,6 +39,7 @@ export default function PrioritySelect(
 ): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const [validPriorities, setValidPriorities] = React.useState<PriorityType[]>([
     NONE_PRIORITY,
   ]);
@@ -47,7 +48,7 @@ export default function PrioritySelect(
 
   // Server queries
   const { data: priorities, isLoading }: UseQueryResult<PriorityType[]> =
-    queryPriorities(projectKey);
+    queryPriorities(organisation, projectKey);
   React.useEffect(() => {
     if (priorities) {
       setValidPriorities([NONE_PRIORITY, ...priorities]);

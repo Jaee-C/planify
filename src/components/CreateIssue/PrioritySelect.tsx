@@ -6,7 +6,7 @@ import React from "react";
 import { NONE_PRIORITY } from "@/lib/constants";
 import { queryPriorities } from "@/lib/client-data/query";
 import { UseQueryResult } from "react-query";
-import StyledSelect from "@/components/Form/FormSelectField";
+import StyledSelect from "@/components/utils/Form/FormSelectField";
 
 interface PrioritySelectProp {
   handleChange: (e: SelectChangeEvent<unknown>) => void;
@@ -17,12 +17,15 @@ interface PrioritySelectProp {
 export default function PrioritySelect(props: PrioritySelectProp): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const [validPriorities, setPriorities] = React.useState<PriorityType[]>([
     NONE_PRIORITY,
   ]);
 
-  const { data: priorities }: UseQueryResult<PriorityType[]> =
-    queryPriorities(projectKey);
+  const { data: priorities }: UseQueryResult<PriorityType[]> = queryPriorities(
+    organisation,
+    projectKey
+  );
 
   React.useEffect((): void => {
     if (priorities && priorities.length > 0) {

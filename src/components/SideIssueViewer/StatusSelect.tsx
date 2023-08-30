@@ -11,7 +11,7 @@ import { verifyUrlParam } from "@/lib/utils";
 import { StatusType } from "@/lib/types";
 import { queryStatuses } from "@/lib/client-data/query";
 import { editIssue } from "@/lib/client-data/issues";
-import StatusChip from "@/components/Form/StatusChip";
+import StatusChip from "@/components/utils/Form/StatusChip";
 
 interface StatusSelectProps {
   /** Currently editing issue's key */
@@ -46,14 +46,16 @@ const StyledSelect = styled(Select)(() => ({
 export default function StatusSelect(props: StatusSelectProps): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const [value, setValue] = React.useState<StatusType>();
 
   // Server queries
   const queryClient: QueryClient = useQueryClient();
   const { data: statuses, isLoading }: UseQueryResult<StatusType[]> =
-    queryStatuses(projectKey);
+    queryStatuses(organisation, projectKey);
   const editStatusMutation = useMutation(
-    async (data: any) => await editIssue(projectKey, props.issueKey, data),
+    async (data: any) =>
+      await editIssue(organisation, projectKey, props.issueKey, data),
     {
       onSuccess: async (): Promise<void> => {
         await queryClient.invalidateQueries(["issues", projectKey]);

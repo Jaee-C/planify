@@ -7,8 +7,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: "/:pKey/settings",
-        destination: "/:pKey/settings/details",
+        source: "/:orgKey/:pKey/settings",
+        destination: "/:orgKey/:pKey/settings/details",
         permanent: true,
       },
     ];

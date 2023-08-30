@@ -9,7 +9,7 @@ const createJestConfig = nextJest({ dir: "./" });
 const customJestConfig = {
   // The root of your source code, typically /src
   // `<rootDir>` is a token Jest substitutes
-  roots: ["./"],
+  roots: ["<rootDir>/src"],
   modulePaths: ["<rootDir>", "<rootDir>/src"],
   moduleDirectories: ["node_modules"],
   moduleNameMapper: {
@@ -22,11 +22,11 @@ const customJestConfig = {
     "^.+\\.[t|j]sx?$": "ts-jest",
   },
 
-  setupFilesAfterEnv: ["@testing-library/jest-dom/extend-expect"],
+  setupFilesAfterEnv: [
+    "@testing-library/jest-dom/extend-expect",
+    "<rootDir>/src/singleton.ts",
+  ],
 
-  // Test spec file resolution pattern
-  // Matches parent folder `__tests__` and filename
-  // should contain `tests` or `spec`.
   testRegex: "(/tests/.*|(\\.|/)(tests|spec))\\.[t|j]sx?$",
 
   // Module file extensions for importing

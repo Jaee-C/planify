@@ -7,7 +7,7 @@ import { Issue } from "@/lib/shared";
 import { verifyUrlParam } from "@/lib/utils";
 import { queryIssue } from "@/lib/client-data/query";
 import { SidebarEditContext } from "@/components/Backlog";
-import InlineTextField from "@/components/Form/InlineEdit/InlineTextField";
+import InlineTextField from "@/components/utils/Form/InlineEdit/InlineTextField";
 import {
   QueryClient,
   useMutation,
@@ -15,8 +15,8 @@ import {
   UseQueryResult,
 } from "react-query";
 import { editIssue } from "@/lib/client-data/issues";
-import FormTextField from "@/components/Form/FormTextField";
-import TextFieldLabel from "@/components/Form/TextFieldLabel";
+import FormTextField from "@/components/utils/Form/FormTextField";
+import TextFieldLabel from "@/components/utils/Form/TextFieldLabel";
 
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "./PrioritySelect";
@@ -38,6 +38,7 @@ const FormRow = styled(Grid)(() => ({
 export default function SideIssueViewer(): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const { value: issueKey, action: handleEdit } =
     useContext(SidebarEditContext);
   const [title, setTitle] = React.useState<string | undefined>(undefined);
@@ -50,7 +51,11 @@ export default function SideIssueViewer(): JSX.Element {
     data: editingIssue,
     isLoading,
     error,
-  }: UseQueryResult<Issue | undefined> = queryIssue(projectKey, issueKey);
+  }: UseQueryResult<Issue | undefined> = queryIssue(
+    organisation,
+    projectKey,
+    issueKey
+  );
 
   useEffect((): void => {
     if (editingIssue === undefined) return;
@@ -60,7 +65,8 @@ export default function SideIssueViewer(): JSX.Element {
   }, [editingIssue]);
 
   const editIssueMutation = useMutation(
-    async (data: any) => await editIssue(projectKey, issueKey, data),
+    async (data: any) =>
+      await editIssue(organisation, projectKey, issueKey, data),
     {
       onSuccess: async (): Promise<void> => {
         await queryClient.invalidateQueries(["issues", projectKey]);

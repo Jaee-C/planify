@@ -1,25 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession, NextAuthOptions, Session } from "next-auth";
+import { NextApiRequest } from "next";
 import { getToken, JWT } from "next-auth/jwt";
-
-export async function getUserSession(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  authOptions: NextAuthOptions
-): Promise<Session> {
-  const session: Session | null = await getServerSession(req, res, authOptions);
-
-  if (session) {
-    return session;
-  }
-
-  return {
-    user: {
-      name: "Guest",
-    },
-    expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toString(),
-  };
-}
 
 /**
  * Returns the JWT token of a request. If a request is unauthenticated, a guest
@@ -27,7 +7,12 @@ export async function getUserSession(
  * @param req
  */
 export async function getUserToken(req: NextApiRequest): Promise<JWT> {
-  const token: JWT | null = await getToken({ req });
+  const token: JWT | null = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  console.log(token, "session");
 
   if (token) {
     return token;

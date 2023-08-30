@@ -14,9 +14,12 @@ export interface IssueFormValues {
 export interface IssueData {
   id: number;
   title: string | undefined;
-  description?: string;
   status: StatusType | undefined;
   issueKey: string | undefined;
   priority?: PriorityType;
   order: string | undefined;
+}
+
+export interface IssueDetailedData extends IssueData {
+  description?: string;
 }

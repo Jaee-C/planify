@@ -23,10 +23,11 @@ const formValidation = Yup.object().shape({
 
 export default function Form(): JSX.Element {
   const router = useRouter();
-  const pKey = router.query.pKey;
+  const { orgKey, pKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
+  const organisation: string = verifyUrlParam(orgKey);
   const { data } = useQuery(["project", projectKey], () =>
-    getProjectDetails(projectKey)
+    getProjectDetails(organisation, projectKey)
   );
   const serverProjectDetails = convertProjectToFormValues(data);
   const formik = useFormik({
@@ -35,7 +36,7 @@ export default function Form(): JSX.Element {
     enableReinitialize: true,
     onSubmit: async (values): Promise<void> => {
       console.log(values);
-      await editProject(values, projectKey);
+      await editProject(values, organisation, projectKey);
     },
   });
 

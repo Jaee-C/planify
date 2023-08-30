@@ -1,95 +1,88 @@
-import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
-import { UserData } from "@/lib/types";
+import { Prisma } from "@prisma/client";
+import { NewUserInput } from "@/server/service/AuthService";
 
-export default class UserRepository {
-  private readonly _projectKey;
-  private readonly _userId: number;
-  public constructor(pKey: string, userId: number) {
-    this._projectKey = pKey;
-    this._userId = userId;
-  }
-  public async fetchUsersInProject(): Promise<UserData[]> {
-    const dbResult: UserPayloadDetailed[] = await prisma.user.findMany({
-      where: {
-        projects: {
-          some: {
-            project: {
-              key: this._projectKey,
-              ownerId: this._userId,
-            },
+export default {
+  fetchUserIfExists,
+  createUser,
+  updatePassword,
+  searchUser,
+  getAllUsers,
+};
+
+export interface UserTarget {
+  organisation: string;
+  project?: string;
+}
+
+async function fetchUserIfExists(email: string) {
+  return prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
+}
+
+async function createUser(input: NewUserInput): Promise<void> {
+  await prisma.user.create({
+    data: {
+      email: input.email,
+      password: input.password,
+      firstName: input.firstName,
+      lastName: input.lastName,
+    },
+  });
+}
+
+async function updatePassword(email: string, newP: string): Promise<void> {
+  await prisma.user.update({
+    data: {
+      password: newP,
+    },
+    where: {
+      email,
+    },
+  });
+}
+
+async function searchUser(search: string): Promise<UserBasicPayload[]> {
+  return prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          displayName: {
+            contains: search,
           },
         },
-      },
-      select: userDetailedSelect,
-    });
-    return dbResult.map(UserRepository.convertToUserType);
-  }
-
-  public static async searchAllUsersWithUsername(
-    username: string
-  ): Promise<UserData[]> {
-    const dbResult: UserPayloadBasic[] | null = await prisma.user.findMany({
-      where: {
-        username: {
-          contains: username,
-        },
-      },
-      select: userBasicSelect,
-    });
-
-    if (dbResult === null) {
-      return [];
-    }
-
-    return dbResult.map(UserRepository.convertToUserType);
-  }
-
-  public async addUserToProject(id: number): Promise<void> {
-    await prisma.projectMember.create({
-      data: {
-        project: {
-          connect: {
-            key_ownerId: {
-              key: this._projectKey,
-              ownerId: this._userId,
-            },
+        {
+          email: {
+            contains: search,
           },
         },
-        user: {
-          connect: {
-            id,
-          },
+      ],
+    },
+    select: userBasicSelect,
+  });
+}
+
+async function getAllUsers(target: UserTarget) {
+  return prisma.user.findMany({
+    where: {
+      organisations: {
+        some: {
+          organisationKey: target.organisation,
         },
       },
-    });
-  }
-
-  private static convertToUserType(dbUser: UserPayloadDetailed): UserData {
-    return {
-      id: String(dbUser.id),
-      username: dbUser.username,
-      displayName: dbUser.displayName ?? "",
-    };
-  }
+    },
+    select: userBasicSelect,
+  });
 }
 
 const userBasicSelect = {
   id: true,
+  email: true,
   displayName: true,
-  username: true,
 } satisfies Prisma.UserSelect;
-
-type UserPayloadBasic = Prisma.UserGetPayload<{
+type UserBasicPayload = Prisma.UserGetPayload<{
   select: typeof userBasicSelect;
-}>;
-
-const userDetailedSelect = {
-  id: true,
-  displayName: true,
-  username: true,
-} satisfies Prisma.UserSelect;
-
-type UserPayloadDetailed = Prisma.UserGetPayload<{
-  select: typeof userDetailedSelect;
 }>;

@@ -20,20 +20,20 @@ import styles from "./Editor.module.css";
 import { styled } from "@mui/material";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { CheckListPlugin } from "@lexical/react/LexicalCheckListPlugin";
-import SaveEditorPlugin from "../RichTextEditor/plugins/SaveEditorPlugin";
-import EditorTheme from "@/components/RichTextEditor/themes/EditorTheme";
+import SaveEditorPlugin from "@/components/utils/RichTextEditor/plugins/SaveEditorPlugin";
+import EditorTheme from "@/components/utils/RichTextEditor/themes/EditorTheme";
 
 // No SSR for toolbar, since keyboard shortcut hints depends on client type
 import dynamic from "next/dynamic";
-import Placeholder from "@/components/RichTextEditor/Placeholder";
+import Placeholder from "@/components/utils/RichTextEditor/Placeholder";
 import { ClearEditorPlugin } from "@lexical/react/LexicalClearEditorPlugin";
 import { useMutation } from "react-query";
 import { editIssue } from "@/lib/client-data/issues";
 import { NextRouter, useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
-import LoadInitialDataPlugin from "@/components/RichTextEditor/plugins/LoadInitialDataPlugin";
+import LoadInitialDataPlugin from "@/components/utils/RichTextEditor/plugins/LoadInitialDataPlugin";
 const EditorToolbarPlugin = dynamic(
-  () => import("../RichTextEditor/EditorToolbar"),
+  () => import("@/components/utils/RichTextEditor/EditorToolbar"),
   {
     ssr: false,
   }
@@ -78,8 +78,11 @@ function onChange(editor: EditorState): void {}
 export default function DescriptionEditor(props: Props): JSX.Element {
   const router: NextRouter = useRouter();
   const projectKey: string = verifyUrlParam(router.query.pKey);
+  const organisation: string = verifyUrlParam(router.query.orgKey);
   const editMutation = useMutation(async (data: any) => {
-    await editIssue(projectKey, props.issueKey, { description: data });
+    await editIssue(organisation, projectKey, props.issueKey, {
+      description: data,
+    });
   });
   const { placeholder = "Enter some text" } = props;
   const initialConfig: InitialConfigType = {

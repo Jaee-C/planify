@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import userRegister from "@/server/auth/UserAuth";
-import { NewUser } from "@/lib/types";
+import AuthService, { NewUserInput } from "@/server/service/AuthService";
 import AppError from "@/server/service/AppError";
 import { USER_CREATION_ERROR, USERNAME_TAKEN } from "@/lib/client-data/errors";
 
@@ -8,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | undefined>
 ): Promise<void> {
-  const { password, ...user } = req.body;
+  const { ...user } = req.body;
 
   if (req.method !== "POST") {
     res.statusCode = 405;
@@ -16,18 +15,15 @@ export default async function handler(
   }
 
   // Validate if username is already taken
-  if (await userRegister.checkUsernameExists(user.username)) {
-    const error: AppError = new AppError(
-      USERNAME_TAKEN,
-      "Username already taken"
-    );
+  if (await AuthService.accountExists(user.email)) {
+    const error: AppError = new AppError(USERNAME_TAKEN, "Email already taken");
     res.statusCode = 409;
     res.end(error.toJSONString());
     return;
   }
 
   try {
-    await userRegister.saveUser(password, createUser(user));
+    await AuthService.createUser(parseUserInput(req));
     res.status(200).send("User created");
     return;
   } catch (err) {
@@ -39,19 +35,20 @@ export default async function handler(
   }
 }
 
-function createUser(user: any): NewUser {
-  let displayName: string;
-
-  if (user.displayName) displayName = user.displayName;
-  else if (user.firstName && user.lastName)
-    displayName = `${user.firstName} ${user.lastName}`;
-  else displayName = user.username;
-
+function parseUserInput(req: NextApiRequest): NewUserInput {
+  if (
+    !req.body.email ||
+    !req.body.password ||
+    !req.body.firstName ||
+    !req.body.lastName
+  ) {
+    throw new Error("Invalid Inputs");
+  }
   return {
-    username: user.username,
-    email: user.email,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    displayName,
+    email: req.body.email,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    displayName: req.body.displayName,
   };
 }

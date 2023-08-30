@@ -7,8 +7,8 @@ import { Alert, Button, Divider, Grid, styled } from "@mui/material";
 import { addIssue } from "@/lib/client-data/issues";
 import { Issue } from "@/lib/shared";
 import { verifyUrlParam } from "@/lib/utils";
-import FormTextField from "../Form/FormTextField";
-import TextFieldLabel from "../Form/TextFieldLabel";
+import FormTextField from "@/components/utils/Form/FormTextField";
+import TextFieldLabel from "@/components/utils/Form/TextFieldLabel";
 import { EMPTY_FORM } from "./FormConstants";
 import StatusSelect from "./StatusSelect";
 import PrioritySelect from "@/components/CreateIssue/PrioritySelect";
@@ -35,10 +35,11 @@ export interface IssueFormProps {
 
 export default function CreateForm(props: IssueFormProps): JSX.Element {
   const router: NextRouter = useRouter();
-  const { pKey } = router.query;
+  const { pKey, orgKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
+  const organisation: string = verifyUrlParam(orgKey);
   const newIssueMutation = useMutation(
-    (data: IssueFormValues) => addIssue(projectKey, data),
+    (data: IssueFormValues) => addIssue(organisation, projectKey, data),
     {
       onError: (err: AppError): void => {
         setError(err);

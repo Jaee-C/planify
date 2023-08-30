@@ -17,8 +17,10 @@ import { useQuery } from "react-query";
 import { fetchProjectList } from "@/lib/client-data/projects";
 import CreateProjectDialog from "@/components/Projects/CreateProjectDialog";
 import { ProjectData } from "@/lib/types";
+import { useRouter } from "next/router";
+import { verifyUrlParam } from "@/lib/utils";
 
-const columns: GridColDef[] = [
+const columns = (orgKey: string): GridColDef[] => [
   { field: "key", headerName: "Key", width: 100 },
   {
     field: "name",
@@ -28,7 +30,7 @@ const columns: GridColDef[] = [
     minWidth: 150,
     renderCell: (params: GridRenderCellParams) => (
       <Link
-        href={`/${params.row.key}/backlog`}
+        href={`/${orgKey}/${params.row.key}/backlog`}
         className="hover:underline hover:text-blue-600">
         {params.value}
       </Link>
@@ -65,9 +67,11 @@ const columns: GridColDef[] = [
 
 export default function ProjectTable(): JSX.Element {
   const [rows, setRows] = React.useState<GridRowsProp>([]);
-  const { data, isLoading } = useQuery<ProjectData[]>(
-    "projects",
-    fetchProjectList
+  const router = useRouter();
+  const { orgKey } = router.query;
+  const organisation: string = verifyUrlParam(orgKey);
+  const { data, isLoading } = useQuery<ProjectData[]>("projects", () =>
+    fetchProjectList(organisation)
   );
 
   React.useEffect((): void => {
@@ -89,7 +93,7 @@ export default function ProjectTable(): JSX.Element {
                 outline: "none !important",
               },
             }}
-            columns={columns}
+            columns={columns(organisation)}
             rows={rows}
           />
         </Paper>
@@ -104,6 +108,6 @@ function convertProjectDataToRow(data: ProjectData): GridRowModel {
     id: data.id,
     key: data.key,
     name: data.name,
-    owner: data.owner?.name ?? "",
+    owner: data.owner?.displayName ?? "",
   };
 }

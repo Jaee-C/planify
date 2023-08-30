@@ -14,7 +14,7 @@ export default class Project {
     this._data.key = value;
   }
   public set ownerName(name: string) {
-    this._data.owner = { name };
+    this._data.owner = { displayName: name };
   }
 
   public get id(): number {
@@ -29,8 +29,8 @@ export default class Project {
     return this._data.key.toUpperCase();
   }
   public get ownerName(): string {
-    if (!this._data.owner || !this._data.owner.name) return "None";
-    return this._data.owner.name;
+    if (!this._data.owner || !this._data.owner.displayName) return "None";
+    return this._data.owner.displayName;
   }
 
   public serialiseToData(): ProjectData {
@@ -42,6 +42,6 @@ export function convertDataToProject(data: ProjectData): Project {
   const project = new Project(data.id);
   project.name = data.name ?? "";
   project.key = data.key ?? "";
-  project.ownerName = data.owner?.name ?? "None";
+  project.ownerName = data.owner?.displayName ?? "None";
   return project;
 }

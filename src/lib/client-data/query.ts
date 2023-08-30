@@ -18,35 +18,49 @@ export const queryClient: QueryClient = new QueryClient({
   },
 });
 
-export function queryIssues(projectKey: string): UseQueryResult<IssueData[]> {
-  return useQuery(["issues", projectKey], () => fetchIssueList(projectKey), {
-    staleTime: ISSUE_STALE_TIME,
-  });
+export function queryIssues(
+  organisation: string,
+  projectKey: string
+): UseQueryResult<IssueData[]> {
+  return useQuery(
+    ["issues", projectKey],
+    () => fetchIssueList(organisation, projectKey),
+    {
+      staleTime: ISSUE_STALE_TIME,
+    }
+  );
 }
 
 export function queryIssuesConverted(
+  organisation: string,
   projectKey: string
 ): UseQueryResult<IssueData[]> {
   return useQuery(["issuesConverted", projectKey], () =>
-    fetchIssueList(projectKey).then(res => res)
+    fetchIssueList(organisation, projectKey).then(res => res)
   );
 }
 
 export function queryStatuses(
+  organisation: string,
   projectKey: string
 ): UseQueryResult<StatusType[]> {
-  return useQuery(["statuses", projectKey], () => fetchStatuses(projectKey), {
-    enabled: projectKey !== "",
-    staleTime: STALE_TIME,
-  });
+  return useQuery(
+    ["statuses", projectKey],
+    () => fetchStatuses(organisation, projectKey),
+    {
+      enabled: projectKey !== "",
+      staleTime: STALE_TIME,
+    }
+  );
 }
 
 export function queryPriorities(
+  organisation: string,
   projectKey: string
 ): UseQueryResult<PriorityType[]> {
   return useQuery(
     ["priorities", projectKey],
-    () => fetchPriorities(projectKey),
+    () => fetchPriorities(organisation, projectKey),
     {
       staleTime: STALE_TIME,
     }
@@ -54,18 +68,20 @@ export function queryPriorities(
 }
 
 export function queryIssue(
+  organisation: string,
   projectKey: string,
   issueKey: string
 ): UseQueryResult<Issue> {
   return useQuery(["issue", projectKey, issueKey], () =>
-    getIssue(projectKey, issueKey)
+    getIssue(organisation, projectKey, issueKey)
   );
 }
 
 export function queryProjectUsers(
+  organisation: string,
   projectKey: string
 ): UseQueryResult<UserData[]> {
   return useQuery(["projectUsers", projectKey], () =>
-    getAllUsersInProject(projectKey)
+    getAllUsersInProject(organisation, projectKey)
   );
 }

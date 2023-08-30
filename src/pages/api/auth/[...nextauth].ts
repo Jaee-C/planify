@@ -1,4 +1,4 @@
-import userAuth from "@/server/auth/UserAuth";
+import UserAuth from "@/server/service/AuthService";
 import NextAuth, { NextAuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
@@ -13,10 +13,10 @@ export const authOptions: NextAuthOptions = {
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: { label: "Email", type: "text", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
@@ -25,8 +25,8 @@ export const authOptions: NextAuthOptions = {
         // (i.e., the request IP address)
         if (!credentials) return null;
 
-        return await userAuth.verifyUser(
-          credentials.username,
+        return await UserAuth.verifyUser(
+          credentials.email,
           credentials.password
         );
       },
@@ -45,7 +45,6 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }): Promise<JWT> {
       if (user) {
         token.id = user.id;
-        token.name = user.displayName;
       }
       return token;
     },

@@ -46,15 +46,20 @@ export default function Board(props: BoardProps): JSX.Element {
   const [allIssues, setAllIssues] = useState<Issue[]>([]);
 
   const router = useRouter();
-  const { pKey } = router.query;
+  const { pKey, orgKey } = router.query;
   const projectKey: string = verifyUrlParam(pKey);
-  const { data: issues, isLoading: issueLoading } =
-    queryIssuesConverted(projectKey);
-  const { data: statuses, isLoading: statusLoading } =
-    queryStatuses(projectKey);
+  const organisation: string = verifyUrlParam(orgKey);
+  const { data: issues, isLoading: issueLoading } = queryIssuesConverted(
+    organisation,
+    projectKey
+  );
+  const { data: statuses, isLoading: statusLoading } = queryStatuses(
+    organisation,
+    projectKey
+  );
   const editIssueMutation = useMutation(
     async ([issueKey, data]: any) =>
-      await editIssue(projectKey, issueKey, data),
+      await editIssue(organisation, projectKey, issueKey, data),
     {
       onSuccess: (updated: Issue) => {
         const newIssues = clientUpdateIssue(allIssues, updated);

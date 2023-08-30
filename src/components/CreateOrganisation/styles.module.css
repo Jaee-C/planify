@@ -1,0 +1,41 @@
+.orgWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100vh;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    height: fit-content;
+    column-gap: 160px;
+    grid-column-gap: 160px;
+    padding: 80px;
+    flex: 1 0 auto;
+    min-height: 0;
+}
+
+.widget {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    white-space: normal;
+    border-radius: 5px;
+    position: relative;
+    padding: 40px;
+    justify-content: center;
+    align-items: center;
+}
+
+.h2 {
+    margin-top: 0;
+    font-weight: 500;
+    font-size: 1.25rem;
+}
+
+.formEntry {
+    margin-bottom: 10px;
+}
