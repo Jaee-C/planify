@@ -6,6 +6,7 @@ import { IoHelpCircle } from "react-icons/io5";
 import TopNavigationButton from "./TopNavigationButton";
 import TopNavigationIcon from "./TopNavigationIcon";
 import AccountSpace from "@/components/TopNavigation/AccountSpace";
+import OrganisationSelector from "@/components/TopNavigation/OrganisationSelector";
 
 export enum NavigationPage {
   HOME,
@@ -29,6 +30,7 @@ export default function TopNavigation(props: TopNavigationProps): JSX.Element {
       className="bg-slate-100 top-0 z-50 px-5 h-14 flex items-center
                        justify-between text-sm font-medium border-b-2">
       <nav className="min-w-0 flex grow items-stretch relative shrink-0 h-full">
+        <OrganisationSelector />
         <TopNavigationButton
           href="/"
           active={props.activePage === NavigationPage.HOME}>
