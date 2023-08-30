@@ -108,6 +108,6 @@ function convertProjectDataToRow(data: ProjectData): GridRowModel {
     id: data.id,
     key: data.key,
     name: data.name,
-    owner: data.owner?.name ?? "",
+    owner: data.owner?.displayName ?? "",
   };
 }
