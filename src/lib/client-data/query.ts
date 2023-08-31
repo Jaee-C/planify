@@ -9,6 +9,7 @@ import {
 import { ISSUE_STALE_TIME, STALE_TIME } from "@/lib/constants";
 import { Issue } from "@/lib/shared";
 import { getAllUsersInProject } from "@/lib/client-data/users";
+import Organisation from "@/lib/types/data/Organisation";
 
 export const queryClient: QueryClient = new QueryClient({
   defaultOptions: {
@@ -84,4 +85,18 @@ export function queryProjectUsers(
   return useQuery(["projectUsers", projectKey], () =>
     getAllUsersInProject(organisation, projectKey)
   );
+}
+
+export function queryOrganisations(): UseQueryResult<Organisation[]> {
+  return useQuery(["organisations"], async () => {
+    const res = await fetch("/api/organisation", {
+      method: "GET",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to get user's organsations");
+    }
+
+    return res.json();
+  });
 }

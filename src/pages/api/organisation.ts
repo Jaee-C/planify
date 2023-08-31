@@ -3,12 +3,24 @@ import OrganisationRepository, {
   NewOrganisation,
 } from "@/server/dao/OrganisationRepository";
 import { getRequestBody } from "@/server/utils";
+import { getUserToken } from "@/server/auth/session";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> {
+  const token = await getUserToken(req);
+  const userId = token.id;
+
   switch (req.method) {
+    case "GET":
+      try {
+        const orgs = await OrganisationRepository.getAllOrganisations(userId);
+        res.status(200).send(JSON.stringify(orgs));
+      } catch (e) {
+        const err = e as Error;
+        res.status(500).end(JSON.stringify(err.message));
+      }
     case "POST":
       try {
         const email = getRequestBody(req, "user");
