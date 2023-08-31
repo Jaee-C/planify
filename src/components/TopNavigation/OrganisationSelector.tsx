@@ -18,7 +18,6 @@ export default function OrganisationSelector(): JSX.Element {
     if (orgs === undefined) {
       return;
     }
-    console.log(orgs);
     setOrganisations(orgs);
     setCurrent(organisation);
   }, [orgs]);
@@ -29,7 +28,11 @@ export default function OrganisationSelector(): JSX.Element {
   };
 
   if (status === "loading") {
-    return <div>loading...</div>;
+    return (
+      <div className={styles.wrapper}>
+        <div>loading...</div>
+      </div>
+    );
   }
 
   return (
