@@ -1,38 +1,36 @@
 import React from "react";
+import { queryOrganisations } from "@/lib/client-data/query";
+import Organisation from "@/lib/types/data/Organisation";
 
 import styles from "./styles.module.css";
-
-interface Organisation {
-  id: number;
-  name: string;
-  key: string;
-}
+import { useRouter } from "next/router";
+import { verifyUrlParam } from "@/lib/utils";
 
 export default function OrganisationSelector(): JSX.Element {
+  const router = useRouter();
   const [current, setCurrent] = React.useState<string>("");
+  const { data: orgs, status } = queryOrganisations();
   const [organisations, setOrganisations] = React.useState<Organisation[]>([]);
+  const { orgKey } = router.query;
+  const organisation = verifyUrlParam(orgKey);
 
   React.useEffect(() => {
-    const orgs = [
-      {
-        id: 1,
-        name: "Default",
-        key: "def",
-      },
-      {
-        id: 2,
-        name: "Home",
-        key: "hom",
-      },
-    ];
-
+    if (orgs === undefined) {
+      return;
+    }
+    console.log(orgs);
     setOrganisations(orgs);
-    setCurrent("def");
-  }, []);
+    setCurrent(organisation);
+  }, [orgs]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
     console.log("Switch to " + e.target.value);
+    router.push(`/${e.target.value}/projects`);
   };
+
+  if (status === "loading") {
+    return <div>loading...</div>;
+  }
 
   return (
     <>

@@ -1,5 +1,7 @@
 **This project is still under development, please keep this in mind when using it.  [more below](#warning-warning)**
 
+[Documentation](https://wengjae.atlassian.net/l/cp/QFwctoQR)
+
 ## Introduction
 
 This is a project management software that is open source and self-hostable. It is built with [Next.js](https://nextjs.org/) and [Tailwind CSS](https://tailwindcss.com/).

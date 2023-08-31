@@ -8,6 +8,7 @@ export default {
   createOrganisation,
   removeUser,
   getDefaultOrganisation,
+  getAllOrganisations,
 };
 
 export interface NewOrganisation {
@@ -66,6 +67,19 @@ async function getDefaultOrganisation(id: string) {
         },
       },
     },
+  });
+}
+
+async function getAllOrganisations(id: string): Promise<OrganisationPayload[]> {
+  return prisma.organisation.findMany({
+    where: {
+      users: {
+        some: {
+          userId: id,
+        },
+      },
+    },
+    select: organisationSimpleSelect,
   });
 }
 
@@ -150,3 +164,13 @@ async function setOwner(email: string, org: string): Promise<void> {
     },
   });
 }
+
+const organisationSimpleSelect = {
+  id: true,
+  name: true,
+  key: true,
+} satisfies Prisma.OrganisationSelect;
+
+export type OrganisationPayload = Prisma.OrganisationGetPayload<{
+  select: typeof organisationSimpleSelect;
+}>;
