@@ -1,11 +1,13 @@
 import Head from "next/head";
+import TopNavBar from "@/components/TopNavBar";
 
 export default function Settings(): JSX.Element {
   return (
     <>
       <Head>
-        <header>Settings</header>
+        <title>Settings</title>
       </Head>
+      <TopNavBar />
       <h1>Settings Page</h1>
       <table>
         <thead>

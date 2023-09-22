@@ -1,9 +1,11 @@
 import React, { MouseEventHandler } from "react";
 import RoundButton from "../utils/RoundButton";
+import Link from "next/link";
 
 interface NavigationIconProp {
   icon: React.ReactNode;
   onClick?: MouseEventHandler;
+  link?: string;
 }
 
 /**
@@ -16,10 +18,11 @@ interface NavigationIconProp {
 export default function TopNavigationIcon({
   icon,
   onClick,
+  link,
 }: NavigationIconProp): JSX.Element {
   return (
     <RoundButton className="mr-2" onClick={onClick}>
-      {icon}
+      <Link href={link ? link : "#"}>{icon}</Link>
     </RoundButton>
   );
 }

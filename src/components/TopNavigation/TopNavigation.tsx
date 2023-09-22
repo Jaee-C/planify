@@ -51,7 +51,10 @@ export default function TopNavigation(props: TopNavigationProps): JSX.Element {
             <TopNavigationIcon icon={<IoHelpCircle />} />
           </div>
           <div className="flex items-center shrink-0">
-            <TopNavigationIcon icon={<AiTwotoneSetting />} />
+            <TopNavigationIcon
+              icon={<AiTwotoneSetting />}
+              link={"/aba/settings"}
+            />
           </div>
         </IconContext.Provider>
         <AccountSpace />
