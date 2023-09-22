@@ -15,8 +15,12 @@ export default async function handler(
 
   switch (req.method) {
     case "GET":
-      console.log(userId);
       const org = await OrganisationRepository.getDefaultOrganisation(userId);
+
+      if (org === null) {
+        res.status(404).end();
+        return;
+      }
 
       res.status(200).end(JSON.stringify(org));
       break;
