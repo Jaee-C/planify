@@ -46,7 +46,7 @@ export async function getAllUsersInProject(
   projectKey: string
 ): Promise<UserData[]> {
   const data: Response = await fetch(
-    `/api/${organisation}/${projectKey}/users1`,
+    `/api/${organisation}/${projectKey}/users`,
     {
       method: "GET",
     }
@@ -57,5 +57,28 @@ export async function getAllUsersInProject(
   }
 
   const users: UserData[] = await data.json();
+  return users;
+}
+
+export async function getAllUsersInOrganisation(
+  organisation: string
+): Promise<UserData[]> {
+  const res: Response = await fetch(`/api/${organisation}/users`, {
+    method: "GET",
+  });
+
+  if (res.status !== 200) {
+    throw new Error("Failed to fetch user data");
+  }
+
+  const data = await res.json();
+  const users: UserData[] = [];
+  for (const entry of data) {
+    users.push({
+      id: entry.id,
+      email: entry.email,
+      displayName: entry.displayName,
+    });
+  }
   return users;
 }

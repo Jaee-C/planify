@@ -5,7 +5,7 @@ import UserRepository from "@/server/dao/UserRepository";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<string | undefined>
+  res: NextApiResponse
 ): Promise<void> {
   const organisation: string = getQueryParam(req, "orgKey");
   const userEmail: string = getRequestBody(req, "newuser");
@@ -18,8 +18,10 @@ export default async function handler(
   try {
     switch (req.method) {
       case "GET":
-        const users = UserRepository.getAllUsers({ organisation });
-        res.status(200).end(users);
+        const users = await UserRepository.getAllUsers({ organisation });
+        console.log(JSON.stringify(users));
+        res.setHeader("Content-Type", "application/json");
+        res.status(200).end(JSON.stringify(users));
         break;
       case "POST":
         // Add new user to organisation

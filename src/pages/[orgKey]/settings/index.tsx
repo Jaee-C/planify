@@ -1,40 +1,29 @@
 import Head from "next/head";
-import NewTable, { TableRow } from "@/components/NewTable";
+import { QueryClient, QueryClientProvider } from "react-query";
+
 import Layout from "./_layout";
 import NewUserForm from "./_newUserForm";
+import UsersTable from "./_usersTable";
 
 import styles from "./styles.module.css";
 
+const queryClient = new QueryClient();
+
 export default function Settings(): JSX.Element {
   return (
-    <Layout>
-      <Head>
-        <title>Settings</title>
-      </Head>
-      <div className={styles.usersContent}>
-        <h1>Users</h1>
-        <div style={{ height: "75px" }}>
-          <NewUserForm />
+    <QueryClientProvider client={queryClient}>
+      <Layout>
+        <Head>
+          <title>Settings</title>
+        </Head>
+        <div className={styles.usersContent}>
+          <h1>Users</h1>
+          <div style={{ height: "75px" }}>
+            <NewUserForm />
+          </div>
+          <UsersTable />
         </div>
-        <div className={styles.table}>
-          <NewTable>
-            <thead className={styles.tableHeader}>
-              <TableRow>
-                <th className={styles.userColumn}>User</th>
-                <th>Status</th>
-                <th className={styles.actionsColumn}>Actions</th>
-              </TableRow>
-            </thead>
-            <tbody className={styles.tableBody}>
-              <TableRow>
-                <td>user@test.mail</td>
-                <td>Active</td>
-                <td>Edit, Delete</td>
-              </TableRow>
-            </tbody>
-          </NewTable>
-        </div>
-      </div>
-    </Layout>
+      </Layout>
+    </QueryClientProvider>
   );
 }
