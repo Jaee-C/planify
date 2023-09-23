@@ -18,7 +18,7 @@ export default function MembersList(): JSX.Element {
       <ul>
         {data?.map((user: UserData) => (
           <li>
-            Display Name: {user.displayName}; username: {user.username}
+            Display Name: {user.displayName}; email: {user.email}
           </li>
         ))}
       </ul>

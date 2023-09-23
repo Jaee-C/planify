@@ -9,6 +9,7 @@ import AccountSpace from "@/components/TopNavigation/AccountSpace";
 import OrganisationSelector from "@/components/TopNavigation/OrganisationSelector";
 import { QueryClientProvider } from "react-query";
 import { queryClient } from "@/lib/client-data/query";
+import Link from "next/link";
 
 export enum NavigationPage {
   HOME,
@@ -50,7 +51,10 @@ export default function TopNavigation(props: TopNavigationProps): JSX.Element {
             <TopNavigationIcon icon={<IoHelpCircle />} />
           </div>
           <div className="flex items-center shrink-0">
-            <TopNavigationIcon icon={<AiTwotoneSetting />} />
+            <TopNavigationIcon
+              icon={<AiTwotoneSetting />}
+              link={"/aba/settings"}
+            />
           </div>
         </IconContext.Provider>
         <AccountSpace />

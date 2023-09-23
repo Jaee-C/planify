@@ -12,8 +12,6 @@ export async function getUserToken(req: NextApiRequest): Promise<JWT> {
     secret: process.env.NEXTAUTH_SECRET,
   });
 
-  console.log(token, "session");
-
   if (token) {
     return token;
   }

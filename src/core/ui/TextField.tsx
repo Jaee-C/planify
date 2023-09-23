@@ -2,27 +2,49 @@ import { styled } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 const MyTextField = styled(TextField)(({ theme }) => ({
-  "& input": {
-    fontSize: "14px",
-    backgroundColor: "transparent",
-    fontWeight: 400,
-  },
-  "& fieldset": {
-    borderRadius: "3px",
-    border: "2px solid #DFE1E6",
-  },
-  "&:hover fieldset": {
-    border: "2px solid #DFE1E6 !important",
-  },
-  "&.Mui-focused fieldset, & .Mui-focused:hover fieldset": {
-    border: `2px solid ${theme.palette.primary.main} !important`,
+  // Base styles
+  "& .MuiOutlinedInput-root": {
+    "& > fieldset": {
+      borderRadius: "3px",
+      border: "2px solid #DFE1E6",
+    },
+    "& > input": {
+      padding: "6px 10px",
+      fontSize: "0.85rem",
+      fontWeight: 400,
+      backgroundColor: "#FAFBFC",
+    },
   },
 
-  "&:hover input": {
-    backgroundColor: `${theme.palette.grey[200]}`,
+  // Hover
+  "& .MuiOutlinedInput-root:hover": {
+    "& > fieldset": {
+      border: "2px solid #DFE1E6",
+    },
+    "& > input": {
+      backgroundColor: "#efefef",
+    },
   },
+
+  // Focused
+  "& .MuiOutlinedInput-root.Mui-focused": {
+    "& > fieldset": {
+      border: `2px solid ${theme.palette.primary.main}`,
+    },
+    "& > input": {
+      backgroundColor: "white",
+    },
+  },
+
   "&.Mui-focused input, & .Mui-focused:hover input": {
     backgroundColor: "transparent",
+  },
+
+  // Error
+  "& .MuiOutlinedInput-root.Mui-error": {
+    "& > fieldset": {
+      borderColor: theme.palette.error.main,
+    },
   },
 
   // Label

@@ -88,7 +88,8 @@ async function addUserToOrganisation(email: string, org: string) {
     const user = await UserRepository.fetchUserIfExists(email);
 
     if (!user) {
-      throw new Error("User not found");
+      console.log(`User ${email} not found`);
+      return;
     }
 
     await prisma.organisationUser.create({
@@ -101,10 +102,11 @@ async function addUserToOrganisation(email: string, org: string) {
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code == "P2025") {
-        throw new Error("User not found");
+        console.log(`User ${email} not found`);
       } else if (e.code === "P2018") {
-        throw new Error("Organisation not found");
+        console.log("OrganisationSettings not found");
       }
+      throw e;
     }
     throw e;
   }
