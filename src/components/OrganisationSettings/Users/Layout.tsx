@@ -1,7 +1,7 @@
 import React from "react";
 
 import TopNavBar from "@/components/TopNavBar";
-import SettingsSidebar from "./_settingsSidebar";
+import SettingsSidebar from "./Sidebar";
 
 import styles from "./styles.module.css";
 

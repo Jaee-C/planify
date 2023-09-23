@@ -2,7 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
 
-import NavButton from "./_navButton";
+import NavButton from "./NavButton";
 
 import styles from "./styles.module.css";
 import { constructHrefWithOrg as getHref } from "@/components/utils";

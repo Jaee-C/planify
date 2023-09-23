@@ -8,7 +8,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { inviteUser } from "@/lib/client-data/users";
 import { useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
-import { Alert } from "@mui/material";
 
 interface UserForm {
   email: string;

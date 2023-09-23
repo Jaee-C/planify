@@ -1,0 +1,84 @@
+/* Overall Layout */
+.layout {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    margin-top: 0;
+}
+
+/* Side Navigation bar */
+.sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    top: 56px;
+    z-index: 500;
+    background-color: #F2F4F9;
+    width: 200px;
+}
+
+.buttonsContainer {
+    padding: 16px;
+}
+
+/* Core content */
+.content {
+    will-change: padding-left;
+    padding-left: 200px;
+    margin-top: 56px;
+    width: calc(100vw - 200px);
+}
+
+/* User Users Table */
+.table {
+    color: #333131;
+    margin-top: 20px;
+}
+
+.tableHeader {
+    font-weight: 500;
+    color: #636363;
+}
+
+.tableBody {
+    font-size: 0.85rem;
+}
+
+.userColumn {
+    width: 30%;
+}
+
+.actionsColumn {
+    width: 11%;
+}
+
+.actionButton {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* form styles */
+.form {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.submitButton {
+    background-color: #0F3C65;
+    color: #FFF;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-weight: 500;
+    cursor: pointer;
+    max-height: 32px;
+}
+
+.submitButton:hover {
+    background-color: #16538d;
+}
+

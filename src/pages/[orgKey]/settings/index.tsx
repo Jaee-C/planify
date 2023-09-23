@@ -1,13 +1,14 @@
+import React from "react";
 import Head from "next/head";
 import { QueryClient, QueryClientProvider } from "react-query";
-
-import Layout from "./_layout";
-import NewUserForm from "./_newUserForm";
-import UsersTable from "./_usersTable";
+import { Alert } from "@mui/material";
+import {
+  Layout,
+  NewUserForm,
+  UsersTable,
+} from "@/components/OrganisationSettings/Users";
 
 import styles from "./styles.module.css";
-import { Alert } from "@mui/material";
-import React from "react";
 
 const queryClient = new QueryClient();
 

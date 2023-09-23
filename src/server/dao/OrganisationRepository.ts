@@ -104,7 +104,7 @@ async function addUserToOrganisation(email: string, org: string) {
       if (e.code == "P2025") {
         console.log(`User ${email} not found`);
       } else if (e.code === "P2018") {
-        console.log("Organisation not found");
+        console.log("OrganisationSettings not found");
       }
       throw e;
     }

@@ -89,7 +89,7 @@ async function addUserToProject(target: ProjectTarget, user: string) {
   }
 
   if (!(await userInProjectOrg(target, user))) {
-    throw new Error("User not in Organisation");
+    throw new Error("User not in OrganisationSettings");
   }
 
   await prisma.projectMember.create({

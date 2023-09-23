@@ -66,7 +66,7 @@ export default function AddMemberForm(): JSX.Element {
             if (typeof option === "string") {
               return option;
             }
-            return `${option.displayName} (${option.username ?? ""})`;
+            return `${option.displayName} (${option.email ?? ""})`;
           }}
           disableClearable
           freeSolo
