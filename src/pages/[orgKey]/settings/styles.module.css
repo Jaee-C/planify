@@ -57,3 +57,25 @@
 .actionsColumn {
     width: 11%;
 }
+
+/* form styles */
+.form {
+    display: flex;
+    gap: 20px;
+}
+
+.submitButton {
+    background-color: #0F3C65;
+    color: #FFF;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    font-weight: 500;
+    cursor: pointer;
+    max-height: 32px;
+}
+
+.submitButton:hover {
+    background-color: #16538d;
+}
+

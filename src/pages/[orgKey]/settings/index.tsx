@@ -1,6 +1,7 @@
 import Head from "next/head";
 import NewTable, { TableRow } from "@/components/NewTable";
 import Layout from "./_layout";
+import NewUserForm from "./_newUserForm";
 
 import styles from "./styles.module.css";
 
@@ -12,6 +13,9 @@ export default function Settings(): JSX.Element {
       </Head>
       <div className={styles.usersContent}>
         <h1>Users</h1>
+        <div style={{ height: "75px" }}>
+          <NewUserForm />
+        </div>
         <div className={styles.table}>
           <NewTable>
             <thead className={styles.tableHeader}>
