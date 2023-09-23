@@ -113,7 +113,6 @@ export async function removeUser(
   });
 
   if (!res.ok) {
-    console.error("Failed to delete user.");
     const fail = await res.json();
     throw new Error(fail.message);
   }

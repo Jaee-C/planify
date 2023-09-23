@@ -7,7 +7,11 @@ import { getAllUsersInOrganisation, removeUser } from "@/lib/client-data/users";
 
 import styles from "./styles.module.css";
 
-export default function UsersTable(): JSX.Element {
+interface Props {
+  setAlert: (_: string) => void;
+}
+
+export default function UsersTable(props: Props): JSX.Element {
   const queryClient = useQueryClient();
   const router = useRouter();
   const { orgKey } = router.query;
@@ -16,7 +20,9 @@ export default function UsersTable(): JSX.Element {
     (email: string) => removeUser(organisation, email),
     {
       onSuccess: () => queryClient.invalidateQueries(["users", organisation]),
-      onError: error => console.log(error),
+      onError: error => {
+        props.setAlert("" + error);
+      },
     }
   );
   const { data, status } = useQuery(["users", organisation], () =>
