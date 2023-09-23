@@ -1,17 +1,11 @@
 import "react";
 import { MdOutlineSettings, MdAccountCircle } from "react-icons/md";
-
-import styles from "./styles.module.css";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
 
-function constructHref(orgKey: string, target: string): string {
-  if (orgKey === "") {
-    return "/";
-  }
-  return `/${orgKey}${target}`;
-}
+import styles from "./styles.module.css";
+import { constructHrefWithOrg } from "@/components/utils";
 
 export default function TopNavBar(): JSX.Element {
   const router = useRouter();
@@ -19,7 +13,7 @@ export default function TopNavBar(): JSX.Element {
   const organisation: string = verifyUrlParam(orgKey);
 
   return (
-    <div className={styles.navbarContainer}>
+    <nav className={styles.navbarContainer}>
       <h1>
         <Link href={"/"}>Planify</Link>
       </h1>
@@ -28,17 +22,19 @@ export default function TopNavBar(): JSX.Element {
           <Link href={"/"}>Home</Link>
         </li>
         <li>
-          <Link href={constructHref(organisation, "/projects")}>Projects</Link>
+          <Link href={constructHrefWithOrg(organisation, "/projects")}>
+            Projects
+          </Link>
         </li>
       </ul>
       <div className={styles.icons}>
-        <Link href={constructHref(organisation, "/settings")}>
+        <Link href={constructHrefWithOrg(organisation, "/settings")}>
           <MdOutlineSettings size={24} />
         </Link>
         <Link href={"#"}>
           <MdAccountCircle size={24} />
         </Link>
       </div>
-    </div>
+    </nav>
   );
 }

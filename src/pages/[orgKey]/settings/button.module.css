@@ -1,0 +1,22 @@
+.navButton {
+    padding-inline: 12px;
+    padding-block: 10px;
+    border-radius: 3px;
+}
+
+.navButton a {
+    color: #42526E;
+    font-size: 0.9rem;
+}
+
+.navButton:hover {
+    background-color: #EBECF0;
+}
+
+.active {
+    background-color: #EBECF0;
+}
+
+.active a {
+    color: #044CB9;
+}

@@ -1,30 +1,36 @@
 import Head from "next/head";
-import TopNavBar from "@/components/TopNavBar";
+import NewTable, { TableRow } from "@/components/NewTable";
+import Layout from "./_layout";
+
+import styles from "./styles.module.css";
 
 export default function Settings(): JSX.Element {
   return (
-    <>
+    <Layout>
       <Head>
         <title>Settings</title>
       </Head>
-      <TopNavBar />
-      <h1>Settings Page</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Name</th>
-            <th>actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>user@test.mail</td>
-            <td>Test User</td>
-            <td>Edit, Delete</td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+      <div className={styles.usersContent}>
+        <h1>Users</h1>
+        <div className={styles.table}>
+          <NewTable>
+            <thead className={styles.tableHeader}>
+              <TableRow>
+                <th className={styles.userColumn}>User</th>
+                <th>Status</th>
+                <th className={styles.actionsColumn}>Actions</th>
+              </TableRow>
+            </thead>
+            <tbody className={styles.tableBody}>
+              <TableRow>
+                <td>user@test.mail</td>
+                <td>Active</td>
+                <td>Edit, Delete</td>
+              </TableRow>
+            </tbody>
+          </NewTable>
+        </div>
+      </div>
+    </Layout>
   );
 }
