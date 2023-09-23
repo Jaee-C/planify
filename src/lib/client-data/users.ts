@@ -82,3 +82,39 @@ export async function getAllUsersInOrganisation(
   }
   return users;
 }
+
+export async function inviteUser(
+  organisation: string,
+  data: any
+): Promise<void> {
+  const res = await fetch(`/api/${organisation}/users`, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    console.error("Failed to invite user.");
+  }
+}
+
+export async function removeUser(
+  organisation: string,
+  email: string
+): Promise<void> {
+  const res = await fetch(`/api/${organisation}/users`, {
+    method: "DELETE",
+    body: JSON.stringify({ email }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    console.error("Failed to delete user.");
+    const fail = await res.json();
+    throw new Error(fail.message);
+  }
+}

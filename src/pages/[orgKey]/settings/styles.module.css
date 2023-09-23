@@ -58,6 +58,14 @@
     width: 11%;
 }
 
+.actionButton {
+    border: none;
+    background-color: transparent;
+    padding: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 /* form styles */
 .form {
     display: flex;
