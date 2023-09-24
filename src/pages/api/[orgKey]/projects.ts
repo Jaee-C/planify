@@ -3,12 +3,17 @@ import ProjectRepository, { NewProject } from "@/server/dao/ProjectRepository";
 import { JWT } from "next-auth/jwt";
 import { getUserToken } from "@/server/auth/session";
 import { getQueryParam, getRequestBody } from "@/server/utils";
+import { verifyOrgPermission } from "@/server/auth/permissions";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<string | undefined>
 ): Promise<void> {
   const organisation = getQueryParam(req, "orgKey");
+
+  if (!(await verifyOrgPermission(req, res))) {
+    return;
+  }
 
   // Handle Request
   switch (req.method) {

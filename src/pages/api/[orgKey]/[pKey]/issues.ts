@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { IssueData } from "lib/types";
 import IssueService from "@/server/service/IssueService";
-import AppError from "@/server/service/AppError";
-import { getQueryParam, getRequestBody } from "@/server/utils";
+import { getQueryParam } from "@/server/utils";
+import { verifyOrgPermission } from "@/server/auth/permissions";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,6 +10,10 @@ export default async function handler(
 ): Promise<void> {
   const projectKey: string = getQueryParam(req, "pKey");
   const organisation: string = getQueryParam(req, "orgKey");
+
+  if (!(await verifyOrgPermission(req, res))) {
+    return;
+  }
 
   if (projectKey === "" || organisation === "") {
     res.status(405).end();
