@@ -1,11 +1,11 @@
 import "react";
-import { MdOutlineSettings, MdAccountCircle } from "react-icons/md";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
+import { constructHrefWithOrg } from "@/components/utils";
+import AccountSpace from "./AccountSpace";
 
 import styles from "./styles.module.css";
-import { constructHrefWithOrg } from "@/components/utils";
 
 export default function TopNavBar(): JSX.Element {
   const router = useRouter();
@@ -27,14 +27,7 @@ export default function TopNavBar(): JSX.Element {
           </Link>
         </li>
       </ul>
-      <div className={styles.icons}>
-        <Link href={constructHrefWithOrg(organisation, "/settings")}>
-          <MdOutlineSettings size={24} />
-        </Link>
-        <Link href={"#"}>
-          <MdAccountCircle size={24} />
-        </Link>
-      </div>
+      <AccountSpace />
     </nav>
   );
 }

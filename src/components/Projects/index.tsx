@@ -1,9 +1,9 @@
-import "react";
+import React, { createContext, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Button, Card } from "@mui/material";
 import ProjectTable from "@/components/Projects/ProjectTable";
-import React, { createContext, useState } from "react";
 import TableToolbar from "@/components/Table/TableToolbar";
+import Layout from "./Layout";
 
 const queryClient: QueryClient = new QueryClient();
 
@@ -22,24 +22,26 @@ export default function ProjectsPage(): JSX.Element {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="p-5 flex-grow w-28">
-        <Card
-          className="p-4 py-2.5 rounded-xl mt-6 bg-slate-50"
-          sx={{ boxShadow: "none" }}
-          raised={false}>
-          <TableToolbar title={"Projects"}>
-            <Button
-              className="bg-blue-600 text-xs"
-              variant="contained"
-              onClick={createProjectProps.action}>
-              Create&nbsp;Project
-            </Button>
-          </TableToolbar>
-          <CreateProjectContext.Provider value={createProjectProps}>
-            <ProjectTable />
-          </CreateProjectContext.Provider>
-        </Card>
-      </div>
+      <Layout>
+        <div className="p-5 flex-grow">
+          <Card
+            className="p-4 py-2.5 rounded-xl mt-6"
+            sx={{ boxShadow: "none" }}
+            raised={false}>
+            <TableToolbar title={"Projects"}>
+              <Button
+                className="bg-blue-600 text-xs"
+                variant="contained"
+                onClick={createProjectProps.action}>
+                Create&nbsp;Project
+              </Button>
+            </TableToolbar>
+            <CreateProjectContext.Provider value={createProjectProps}>
+              <ProjectTable />
+            </CreateProjectContext.Provider>
+          </Card>
+        </div>
+      </Layout>
     </QueryClientProvider>
   );
 }

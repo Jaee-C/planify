@@ -55,7 +55,7 @@
     gap: 10px;
 }
 
-.icons > a {
+.icons > a, .icons > button {
     background-color: transparent;
     border: none;
     border-radius: 25px;
@@ -64,4 +64,11 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
+    cursor: pointer;
+    color: white;
+}
+
+.icons > a:hover, .icons > button:hover {
+    background-color: #4e5f6c;
+    color: white;
 }
