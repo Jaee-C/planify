@@ -1,6 +1,8 @@
 import * as React from "react";
-import { Toolbar, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { PropsWithChildren } from "react";
+
+import styles from "./styles.module.css";
 
 interface TableToolbarProps {
   title: string;
@@ -10,11 +12,7 @@ function TableToolbar(
   props: PropsWithChildren<TableToolbarProps>
 ): JSX.Element {
   return (
-    <Toolbar
-      sx={{
-        pl: 0,
-        pr: 0,
-      }}>
+    <div className={styles.toolbar}>
       <Typography
         sx={{ flex: "1 1 100%" }}
         variant="h6"
@@ -23,7 +21,7 @@ function TableToolbar(
         {props.title}
       </Typography>
       {props.children}
-    </Toolbar>
+    </div>
   );
 }
 

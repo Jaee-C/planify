@@ -2,7 +2,7 @@ import React, { createContext, useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Button, Card } from "@mui/material";
 import ProjectTable from "@/components/Projects/ProjectTable";
-import TableToolbar from "@/components/Table/TableToolbar";
+import { TableToolbar } from "@/components/NewTable";
 import Layout from "./Layout";
 
 const queryClient: QueryClient = new QueryClient();
