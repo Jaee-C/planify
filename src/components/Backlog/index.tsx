@@ -1,5 +1,4 @@
 import * as React from "react";
-import { QueryClientProvider } from "react-query";
 import BacklogTable from "@/components/Backlog/BacklogTable";
 import { createContext, useState } from "react";
 import SideIssueViewer from "@/components/SideIssueViewer";
@@ -7,7 +6,6 @@ import { Button } from "@mui/material";
 import TableToolbar from "@/components/Table/TableToolbar";
 import { IconContext } from "react-icons";
 import TableAlert from "@/components/Backlog/TableAlert";
-import { queryClient } from "@/lib/client-data/query";
 
 interface SidebarContextProps {
   action: (id: string) => void;
