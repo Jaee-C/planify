@@ -4,6 +4,7 @@ import OrganisationRepository from "@/server/dao/OrganisationRepository";
 import UserRepository from "@/server/dao/UserRepository";
 import { getUserToken } from "@/server/auth/session";
 import { JWT } from "next-auth/jwt";
+import { verifyOrgPermission } from "@/server/auth/permissions";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,6 +17,10 @@ export default async function handler(
 
   if (organisation === "") {
     res.status(405).end();
+    return;
+  }
+
+  if (!(await verifyOrgPermission(req, res))) {
     return;
   }
 

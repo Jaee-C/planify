@@ -3,6 +3,7 @@ import IssueService from "@/server/service/IssueService";
 import AppError from "@/server/service/AppError";
 import { IssueData } from "@/lib/types";
 import { getQueryParam } from "@/server/utils";
+import { verifyOrgPermission } from "@/server/auth/permissions";
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,6 +15,10 @@ export default async function handler(
 
   if (projectKey === "" || organisation === "") {
     res.status(405).end();
+    return;
+  }
+
+  if (!(await verifyOrgPermission(req, res))) {
     return;
   }
 
