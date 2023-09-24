@@ -11,8 +11,15 @@ export async function fetchProjectList(org: string): Promise<ProjectData[]> {
     throw new Error(httpResponse.statusText);
   }
 
-  const json: ProjectData[] = await httpResponse.json();
-  return json;
+  const json = await httpResponse.json();
+  return json.map((entry: any) => ({
+    id: entry.id,
+    name: entry.name,
+    key: entry.key,
+    owner: {
+      displayName: entry.owner.displayName,
+    },
+  }));
 }
 
 export async function addProject(

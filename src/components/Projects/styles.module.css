@@ -1,0 +1,24 @@
+.content {
+  margin-top: 56px;
+  width: 80%;
+  margin-inline: auto;
+}
+
+@media (min-width: 1200px) {
+  .content {
+    width: 1200px;
+  }
+}
+
+/* Project Table */
+.nameColumn {
+  width: 30%;
+}
+
+.keyColumn {
+  width: 15%;
+}
+
+.actionsColumn {
+  width: 10%;
+}

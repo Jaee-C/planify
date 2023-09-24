@@ -7,4 +7,28 @@
 .tableRow > td, .tableRow > th {
     border-bottom: 2px solid #E3E3E3;
     padding-block: 10px;
+    color: #636363;
+}
+
+.table thead {
+     font-weight: 500;
+}
+
+.table tbody {
+    font-size: 0.9rem;
+    color: #636363;
+}
+
+.table tbody a {
+    color: #636363;
+}
+
+.tableRow a:hover {
+    text-decoration: underline;
+}
+
+.toolbar {
+    display: flex;
+    margin-bottom: 25px;
+    align-items: center;
 }
