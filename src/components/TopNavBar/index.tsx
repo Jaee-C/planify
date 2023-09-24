@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { verifyUrlParam } from "@/lib/utils";
 import { constructHrefWithOrg } from "@/components/utils";
 import AccountSpace from "./AccountSpace";
+import OrganisationSelect from "./OrganisationSelect";
 
 import styles from "./styles.module.css";
 
@@ -17,6 +18,8 @@ export default function TopNavBar(): JSX.Element {
       <h1>
         <Link href={"/"}>Planify</Link>
       </h1>
+      <OrganisationSelect />
+      &nbsp;|&nbsp;
       <ul className={styles.navigationLinks}>
         <li>
           <Link href={"/"}>Home</Link>
